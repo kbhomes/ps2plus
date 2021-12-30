@@ -1,3 +1,6 @@
+#ifndef COMMANDS_COMMAND_H
+#define COMMANDS_COMMAND_H
+
 #include "../platform.h"
 #include "../controller_state.h"
 
@@ -58,3 +61,5 @@ extern command_processor map_motors_command;
 extern command_processor configure_analog_response_command;
 
 extern command_processor *command_processors[];
+
+#endif /* COMMANDS_COMMAND_H */

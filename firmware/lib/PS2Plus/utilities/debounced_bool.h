@@ -1,3 +1,6 @@
+#ifndef UTILITIES_DEBOUNCED_BOOL_H
+#define UTILITIES_DEBOUNCED_BOOL_H
+
 #include <stdbool.h>
 
 /**
@@ -16,3 +19,5 @@ typedef struct {
 void debounced_init(debounced_bool *, bool default_value, unsigned long minimum_duration);
 bool debounced_update(debounced_bool *, bool value);
 bool debounced_read(debounced_bool *);
+
+#endif /* UTILITIES_DEBOUNCED_BOOL_H */

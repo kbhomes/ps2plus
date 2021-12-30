@@ -19,7 +19,7 @@ command_result dd46_process(command_packet *packet, controller_state *state) {
   if (packet->data_index == 0) {
     packet->write(0x00);
   } else {
-    if (packet->command_index == 1) {
+    if (packet->command_index == 0) {
       // Determines which byte array should be sent as part of this command's response
       // (only the bottom bit of this byte is taken to avoid going out-of-bounds)
       dd46_memory.constant_index = packet->command_byte & 0b1;

@@ -1,3 +1,6 @@
+#ifndef CONTROLLER_INPUT_H
+#define CONTROLLER_INPUT_H
+
 #include <stdbool.h>
 #include <stdint.h>
 #include "utilities/debounced_bool.h"
@@ -47,3 +50,5 @@ typedef struct {
 
 void controller_input_initialize(controller_input *input);
 uint16_t controller_input_as_digital(controller_input *input);
+
+#endif /* CONTROLLER_INPUT_H */

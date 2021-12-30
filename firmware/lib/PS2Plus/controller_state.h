@@ -1,3 +1,6 @@
+#ifndef CONTROLLER_STATE_H
+#define CONTROLLER_STATE_H
+
 #include "controller_input.h"
 
 enum controller_analog_mode {
@@ -37,6 +40,9 @@ typedef struct {
   controller_rumble_motor rumble_motor_large;
 } controller_state;
 
+void controller_state_initialize(controller_state *);
 uint8_t controller_state_get_mode(controller_state *);
 bool controller_state_is_digital(controller_state *);
 bool controller_state_is_analog(controller_state *);
+
+#endif /* CONTROLLER_STATE_H */

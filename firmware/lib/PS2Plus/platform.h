@@ -1,3 +1,6 @@
+#ifndef PLATFORM_H
+#define PLATFORM_H
+
 #include <stdint.h>
 #include <stddef.h>
 
@@ -19,3 +22,5 @@ void platform_sleep(unsigned int millis);
 
 uint8_t platform_spi_read();
 void platform_spi_write(uint8_t);
+
+#endif /* PLATFORM_H */

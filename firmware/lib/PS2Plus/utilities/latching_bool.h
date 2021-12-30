@@ -1,3 +1,6 @@
+#ifndef UTILITIES_LATCHING_BOOL_H
+#define UTILITIES_LATCHING_BOOL_H
+
 #include <stdbool.h>
 
 /**
@@ -12,3 +15,5 @@ typedef struct {
 void latching_init(latching_bool *, bool initial_value);
 bool latching_update(latching_bool *, bool active);
 bool latching_read(latching_bool *);
+
+#endif /* UTILITIES_LATCHING_BOOL_H */
