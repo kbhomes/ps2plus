@@ -9,13 +9,13 @@ int main(void) {
   platform_init();
 
 #ifdef PLATFORM_ARDUINO
-  Serial.begin(9600);
-
+  pinMode(LED_BUILTIN, OUTPUT);
+  
   for (;;) {
     if (digitalRead(PIN_BUTTON) == HIGH) {
-      platform_spi_write(0x32);
+      digitalWrite(LED_BUILTIN, HIGH);
     } else {
-      platform_spi_read();
+      digitalWrite(LED_BUILTIN, LOW);
     }
   }
 #endif

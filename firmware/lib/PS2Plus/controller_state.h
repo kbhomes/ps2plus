@@ -3,11 +3,11 @@
 
 #include "controller_input.h"
 
-enum controller_analog_mode {
+typedef enum controller_analog_mode {
   CMDigital    = 0x41, // digital buttons only (2 bytes of data)
   CMAnalog     = 0x73, // digital buttons, analog joysticks (6 bytes of data)
   CMAnalogFull = 0x79, // digital buttons, analog joysticks, button pressures (18 bytes of data)
-};
+} controller_analog_mode;
 
 typedef struct {
   uint8_t mapping;

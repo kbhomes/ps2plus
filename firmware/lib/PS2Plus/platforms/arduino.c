@@ -21,11 +21,11 @@ void platform_sleep(unsigned int millis) {
 }
 
 uint8_t platform_spi_read() {
-  return Serial.read() & 0xFF;
+  return 0;
 }
 
 void platform_spi_write(uint8_t value) {
-  Serial.write(value);
+  
 }
 
 #endif

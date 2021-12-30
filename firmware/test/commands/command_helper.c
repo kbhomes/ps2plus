@@ -1,6 +1,7 @@
 #include "command_helper.h"
 
-const size_t OUTPUT_BUFFER_SIZE = 255;
+#define OUTPUT_BUFFER_SIZE 255
+
 uint8_t output_buffer[OUTPUT_BUFFER_SIZE] = { 0x00 };
 int output_index = 0;
 bool helper_debug_enabled = false;

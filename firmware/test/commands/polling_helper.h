@@ -7,9 +7,9 @@
 #include <unity.h>
 
 // Total sizes of the command payloads for the different controller modes
-const size_t POLLING_PAYLOAD_DIGITAL_SIZE = 2;
-const size_t POLLING_PAYLOAD_ANALOG_SIZE = 6;
-const size_t POLLING_PAYLOAD_ANALOG_FULL_SIZE = 18;
+#define POLLING_PAYLOAD_DIGITAL_SIZE 2
+#define POLLING_PAYLOAD_ANALOG_SIZE 6
+#define POLLING_PAYLOAD_ANALOG_FULL_SIZE 18
 
 /**
  * @brief Returns the number of bytes expected in the command payload for the given controller mode 

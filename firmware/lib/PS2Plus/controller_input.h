@@ -38,7 +38,7 @@ typedef enum {
   NUM_JOYSTICK_AXES
 } controller_input_joystick_axis;
 
-const size_t NUM_PRESSURE_SENSITIVE_BUTTONS = 12;
+#define NUM_PRESSURE_SENSITIVE_BUTTONS 12
 extern controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS];
 
 /**
