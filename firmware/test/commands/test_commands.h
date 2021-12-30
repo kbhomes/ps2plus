@@ -2,6 +2,7 @@
 #include <unity.h>
 
 #include "command_helper.h"
+#include "polling_helper.h"
 
 /**
  * @brief Global controller state used by the command processors
@@ -41,9 +42,3 @@ void test_map_motors_command_retains_mappings();
 void test_configure_analog_response_command_digital_mode();
 void test_configure_analog_response_command_analog_mode();
 void test_configure_analog_response_command_analog_full_mode();
-
-// Validation methods used by the main polling and enter/exit config tests
-size_t poll_payload_size_for_mode(controller_analog_mode mode);
-void poll_check_digital_buttons(uint8_t command_id, const uint8_t *payload);
-void poll_check_analog_joysticks(uint8_t command_id, const uint8_t *payload);
-void poll_check_analog_pressures(uint8_t command_id, const uint8_t *payload);
