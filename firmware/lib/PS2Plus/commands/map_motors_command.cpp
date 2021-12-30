@@ -35,7 +35,7 @@ command_result mm_process(command_packet *packet, controller_state *state) {
   return CRCompleted;
 }
 
-command_processor button_inclusions_command = {
+command_processor map_motors_command = {
     .id = 0x4D,
     .initialize = &mm_initialize,
     .process = &mm_process,

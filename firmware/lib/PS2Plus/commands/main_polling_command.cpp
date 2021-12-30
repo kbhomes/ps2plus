@@ -100,4 +100,4 @@ command_processor enter_exit_config_command = {
   .id = 0x43,
   .initialize = &mpc_initialize,
   .process = &mpc_process,
-}
+};
