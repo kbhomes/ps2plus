@@ -33,6 +33,11 @@ int main(void) {
   RUN_TEST(test_main_polling_command_analog_mode);
   RUN_TEST(test_main_polling_command_analog_full_mode);
   RUN_TEST(test_main_polling_command_with_motors);
+  RUN_TEST(test_enter_exit_config_command_digital_mode_polling);
+  RUN_TEST(test_enter_exit_config_command_analog_mode_polling);
+  RUN_TEST(test_enter_exit_config_command_analog_full_mode_polling);
+  RUN_TEST(test_enter_exit_config_command_enter_config);
+  RUN_TEST(test_enter_exit_config_command_exit_config);
   RUN_TEST(test_switch_digital_analog_mode_command_set_digital);
   RUN_TEST(test_switch_digital_analog_mode_command_set_analog);
   RUN_TEST(test_switch_digital_analog_mode_command_set_analog_with_lock);

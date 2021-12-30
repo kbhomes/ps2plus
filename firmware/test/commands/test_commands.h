@@ -16,6 +16,11 @@ void test_main_polling_command_digital_mode();
 void test_main_polling_command_analog_mode();
 void test_main_polling_command_analog_full_mode();
 void test_main_polling_command_with_motors();
+void test_enter_exit_config_command_digital_mode_polling();
+void test_enter_exit_config_command_analog_mode_polling();
+void test_enter_exit_config_command_analog_full_mode_polling();
+void test_enter_exit_config_command_enter_config();
+void test_enter_exit_config_command_exit_config();
 void test_switch_digital_analog_mode_command_set_digital();
 void test_switch_digital_analog_mode_command_set_analog();
 void test_switch_digital_analog_mode_command_set_analog_with_lock();
@@ -36,3 +41,9 @@ void test_map_motors_command_retains_mappings();
 void test_configure_analog_response_command_digital_mode();
 void test_configure_analog_response_command_analog_mode();
 void test_configure_analog_response_command_analog_full_mode();
+
+// Validation methods used by the main polling and enter/exit config tests
+size_t poll_payload_size_for_mode(controller_analog_mode mode);
+void poll_check_digital_buttons(uint8_t command_id, const uint8_t *payload);
+void poll_check_analog_joysticks(uint8_t command_id, const uint8_t *payload);
+void poll_check_analog_pressures(uint8_t command_id, const uint8_t *payload);
