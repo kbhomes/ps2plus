@@ -8,7 +8,7 @@ command_result car_initialize(controller_state *state) {
 }
 
 command_result car_process(command_packet *packet, controller_state *state) {
-  platform_spi_write(CAR_RESPONSE_BYTES[packet->index]);
+  packet->write(CAR_RESPONSE_BYTES[packet->data_index]);
   
   // Apparently there is no indication that any software actually does configuration
   // of individual pressure-sensitive buttons; so we'll just set the controller into
@@ -18,7 +18,7 @@ command_result car_process(command_packet *packet, controller_state *state) {
   }
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != 6) {
+  if (packet->data_index + 1 != 6) {
     return CRProcessing;
   }
 

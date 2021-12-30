@@ -8,15 +8,15 @@ command_result si_initialize(controller_state *state) {
 }
 
 command_result si_process(command_packet *packet, controller_state *state) {
-  if (packet->index == 2) {
+  if (packet->data_index == 2) {
     // Third byte is the status of the analog LED
-    platform_spi_write(controller_state_is_analog(state) ? 0x01 : 0x00);
+    packet->write(controller_state_is_analog(state) ? 0x01 : 0x00);
   } else {
-    platform_spi_write(SI_RESPONSE_BYTES[packet->index]);
+    packet->write(SI_RESPONSE_BYTES[packet->data_index]);
   }
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != 6) {
+  if (packet->data_index + 1 != 6) {
     return CRProcessing;
   }
 

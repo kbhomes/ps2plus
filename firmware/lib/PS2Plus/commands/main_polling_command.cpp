@@ -65,25 +65,25 @@ command_result eec_initialize(controller_state *state) {
 
 command_result mpc_process(command_packet *packet, controller_state *state) {
   // For standard polling, simply write data to the console one byte at a time
-  platform_spi_write(mpc_memory.controller_input_bytes[packet->index]);
+  packet->write(mpc_memory.controller_input_bytes[packet->data_index]);
 
   if (mpc_memory.poll_type == PollWithMotors) {
     // Attempt to power the small/large motors, if necessary
-    if (packet->index == 1 && state->rumble_motor_small.mapping == 0x00) {
-      state->rumble_motor_small.value = (packet->value == 0xFF) ? 0xFF : 0x00;
+    if (packet->command_index == 0 && state->rumble_motor_small.mapping == 0x00) {
+      state->rumble_motor_small.value = (packet->command_byte == 0xFF) ? 0xFF : 0x00;
     }
 
-    if (packet->index == 2 && state->rumble_motor_large.mapping == 0x01) {
-      state->rumble_motor_large.value = packet->value;
+    if (packet->command_index == 1 && state->rumble_motor_large.mapping == 0x01) {
+      state->rumble_motor_large.value = packet->command_byte;
     }
   } else if (mpc_memory.poll_type == PollWithConfig) {
-    if (packet->index == 1) {
-      state->config_mode = packet->value == 0x01;
+    if (packet->command_index == 0) {
+      state->config_mode = packet->command_byte == 0x01;
     }
   }
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != mpc_memory.controller_input_length) {
+  if (packet->data_index + 1 != mpc_memory.controller_input_length) {
     return CRProcessing;
   }
 

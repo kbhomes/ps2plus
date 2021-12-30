@@ -8,14 +8,14 @@ command_result dd47_initialize(controller_state *state) {
 }
 
 command_result dd47_process(command_packet *packet, controller_state *state) {
-  if (packet->index == 0) {
-    platform_spi_write(0x00);
+  if (packet->data_index == 0) {
+    packet->write(0x00);
   } else {
-    platform_spi_write(DD47_CONSTANT_BYTES[packet->index - 1]);
+    packet->write(DD47_CONSTANT_BYTES[packet->data_index - 1]);
   }
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != 6) {
+  if (packet->data_index + 1 != 6) {
     return CRProcessing;
   }
 

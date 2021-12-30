@@ -16,22 +16,22 @@ command_result dd46_initialize(controller_state *state) {
 }
 
 command_result dd46_process(command_packet *packet, controller_state *state) {
-  if (packet->index == 0) {
-    platform_spi_write(0x00);
+  if (packet->data_index == 0) {
+    packet->write(0x00);
   } else {
-    if (packet->index == 1) {
+    if (packet->command_index == 1) {
       // Determines which byte array should be sent as part of this command's response
       // (only the bottom bit of this byte is taken to avoid going out-of-bounds)
-      dd46_memory.constant_index = packet->value & 0b1;
+      dd46_memory.constant_index = packet->command_byte & 0b1;
     }
 
     // Write the corresponding byte from the selected constant
     const uint8_t *target_bytes = DD46_CONSTANT_BYTES[dd46_memory.constant_index];
-    platform_spi_write(target_bytes[packet->index - 1]);
+    packet->write(target_bytes[packet->data_index - 1]);
   }
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != 6) {
+  if (packet->data_index + 1 != 6) {
     return CRProcessing;
   }
 

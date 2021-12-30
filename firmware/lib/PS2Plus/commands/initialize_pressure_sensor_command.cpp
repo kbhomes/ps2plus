@@ -8,10 +8,10 @@ command_result ips_initialize(controller_state *state) {
 }
 
 command_result ips_process(command_packet *packet, controller_state *state) {
-  platform_spi_write(IPS_RESPONSE_BYTES[packet->index]);
+  packet->write(IPS_RESPONSE_BYTES[packet->data_index]);
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != 6) {
+  if (packet->data_index + 1 != 6) {
     return CRProcessing;
   }
 

@@ -13,10 +13,10 @@ command_result bic_process(command_packet *packet, controller_state *state) {
   const uint8_t *response = (state->analog_mode == CMDigital) 
       ? BIC_DIGITAL_INCLUSION_BYTES 
       : BIC_ANALOG_INCLUSION_BYTES;
-  platform_spi_write(response[packet->index]);
+  packet->write(response[packet->data_index]);
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != 6) {
+  if (packet->data_index + 1 != 6) {
     return CRProcessing;
   }
 

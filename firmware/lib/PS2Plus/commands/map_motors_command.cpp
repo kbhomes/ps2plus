@@ -12,23 +12,23 @@ command_result mm_process(command_packet *packet, controller_state *state) {
   //       mappings could come in any order or position in the packet.
 
   // Write the current motor mappings 
-  if (packet->index == 0) {
-    platform_spi_write(state->rumble_motor_small.mapping);
-  } else if (packet->index == 1) {
-    platform_spi_write(state->rumble_motor_large.mapping);
+  if (packet->data_index == 0) {
+    packet->write(state->rumble_motor_small.mapping);
+  } else if (packet->data_index == 1) {
+    packet->write(state->rumble_motor_large.mapping);
   } else {
-    platform_spi_write(0xFF);
+    packet->write(0xFF);
   }
 
   // Read the new motor mappings
-  if (packet->index == 1) {
-    state->rumble_motor_small.mapping = packet->value;
-  } else if (packet->index == 2) {
-    state->rumble_motor_large.mapping = packet->value;
+  if (packet->command_index == 0) {
+    state->rumble_motor_small.mapping = packet->command_byte;
+  } else if (packet->command_index == 1) {
+    state->rumble_motor_large.mapping = packet->command_byte;
   }
  
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->index + 1 != 6) {
+  if (packet->data_index + 1 != 6) {
     return CRProcessing;
   }
 

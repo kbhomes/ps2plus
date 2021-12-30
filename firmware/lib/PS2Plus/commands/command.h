@@ -10,14 +10,29 @@ typedef enum {
 
 typedef struct {
   /**
-   * @brief Most recently read byte from the console
+   * @brief Command ID for this packet (e.g.: 42h for the main polling command)
    */
-  uint8_t value;
+  uint8_t id;
 
   /**
-   * @brief Index of the byte in the command packet, after the initial 3-byte header
+   * @brief Most recently read byte from the console
    */
-  uint8_t index;
+  uint8_t command_byte;
+
+  /**
+   * @brief Index of the most recently read COMMAND byte in the command packet, not including the 3-byte header
+   */
+  uint8_t command_index;
+
+  /**
+   * @brief Index of the to-be-written DATA byte in the command packet, not including the 3-byte header
+   */
+  uint8_t data_index;
+
+  /**
+   * @brief Write function to send a byte back to the console
+   */
+  void (*write)(uint8_t data);
 } command_packet;
 
 typedef struct {
