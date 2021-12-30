@@ -7,14 +7,19 @@
 #include <unity.h>
 
 /**
- * @brief Initialize/reset all command helpers
+ * @brief Reset the command output buffer (useful if testing multiple commands in sequence)
  */
-void helper_initialize();
+void helper_reset_output();
 
 /**
  * @brief Enable verbose debug printing to aid troubleshooting test failures
  */
 void helper_enable_debug();
+
+/**
+ * @brief Initialize/reset all command helpers
+ */
+void helper_initialize();
 
 /**
  * @brief Given a controller state and a specific command with payload, finds the appropriate command processor,
@@ -28,5 +33,8 @@ void helper_enable_debug();
  * }
  */
 uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const uint8_t *command_bytes, size_t command_length);
+
+void helper_print_hex_array(const uint8_t *array, size_t length); 
+void helper_print_binary_byte(uint8_t value);
 
 #endif /* TEST_COMMAND_HELPER_H */

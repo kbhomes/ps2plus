@@ -4,8 +4,8 @@
 #include "controller_input.h"
 
 enum controller_analog_mode {
-  CMDigital    = 0x41, // digital buttons only (5 bytes of data)
-  CMAnalog     = 0x73, // digital buttons, analog joysticks (9 bytes of data)
+  CMDigital    = 0x41, // digital buttons only (2 bytes of data)
+  CMAnalog     = 0x73, // digital buttons, analog joysticks (6 bytes of data)
   CMAnalogFull = 0x79, // digital buttons, analog joysticks, button pressures (18 bytes of data)
 };
 
@@ -44,5 +44,6 @@ void controller_state_initialize(controller_state *);
 uint8_t controller_state_get_mode(controller_state *);
 bool controller_state_is_digital(controller_state *);
 bool controller_state_is_analog(controller_state *);
+bool controller_state_include_button_pressure(controller_state *);
 
 #endif /* CONTROLLER_STATE_H */

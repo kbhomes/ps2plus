@@ -5,11 +5,16 @@ uint8_t output_buffer[OUTPUT_BUFFER_SIZE] = { 0x00 };
 int output_index = 0;
 bool helper_debug_enabled = false;
 
-void print_hex_array(const uint8_t *array, size_t length) {
+void helper_print_hex_array(const uint8_t *array, size_t length) {
   for (size_t i = 0; i < length; i++) {
     printf("%02X ", array[i]);
   }
-  printf("\n");
+}
+
+void helper_print_binary_byte(uint8_t value) {
+  for (int i = 7; i >= 0; i--) {
+    printf("%d", (value >> i) & 0b1);
+  }
 }
 
 /**
@@ -19,19 +24,20 @@ void packet_write_stub(uint8_t value) {
   output_buffer[output_index++] = value;
 }
 
-void helper_initialize() {
-  // Reset the output buffer
+void helper_reset_output() {
   output_index = 0;
   for (size_t i = 0; i < OUTPUT_BUFFER_SIZE; i++) {
     output_buffer[i] = 0;
   }
-
-  // Reset helper flags
-  helper_debug_enabled = false;
 }
 
-void helper_enable_debug(bool value) {
-  helper_debug_enabled = value;
+void helper_enable_debug() {
+  helper_debug_enabled = true;
+}
+
+void helper_initialize() {
+  helper_reset_output();
+  helper_debug_enabled = false;
 }
 
 uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const uint8_t *command_bytes, size_t command_length) {
@@ -68,7 +74,7 @@ uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const u
     // All results should be `CRProcessing` (ongoing command), while the last should be `CRCompleted`
     command_result expected_result = (i + 1 == command_length) ? CRCompleted : CRProcessing;
     command_result actual_result = processor->process(&packet, state);
-    TEST_ASSERT_EQUAL(expected_result, actual_result);
+    TEST_ASSERT_EQUAL_MESSAGE(expected_result, actual_result, "Received unexpected command result status");
 
     // Allow the command processor to read and write the next byte
     packet.command_index++;
@@ -79,9 +85,11 @@ uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const u
   if (helper_debug_enabled) {
     // Debug!
     printf("TX: ");
-    print_hex_array(command_bytes, command_length);
+    helper_print_hex_array(command_bytes, command_length);
+    printf("\n");
     printf("RX: ");
-    print_hex_array(&output_buffer[initial_index], command_length);
+    helper_print_hex_array(&output_buffer[initial_index], command_length);
+    printf("\n");
   }
 
   return &output_buffer[initial_index];

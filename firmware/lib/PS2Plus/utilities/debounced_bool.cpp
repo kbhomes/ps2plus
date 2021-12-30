@@ -33,6 +33,13 @@ bool debounced_update(debounced_bool *debounce, bool value) {
   return debounce->debounced_value;
 }
 
+bool debounced_force(debounced_bool *debounce, bool value) {
+  // TODO: Unit test for this function
+  debounce->current_value = value;
+  debounce->debounced_value = value;
+  return value;
+}
+
 bool debounced_read(debounced_bool *debounce) {
   // If a debounce timer is currently running, perform the duration check
   if (debounce->current_value != debounce->debounced_value) {

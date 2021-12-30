@@ -38,7 +38,8 @@ typedef enum {
   NUM_JOYSTICK_AXES
 } controller_input_joystick_axis;
 
-extern controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[12];
+const size_t NUM_PRESSURE_SENSITIVE_BUTTONS = 12;
+extern controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS];
 
 /**
  * @brief Input state of the emulated PS2 controller

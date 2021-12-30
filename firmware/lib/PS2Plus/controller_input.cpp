@@ -2,7 +2,7 @@
 
 #define DEBOUNCE_DIGITAL_BUTTON_MS 2
 
-controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[12] = {
+controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS] = {
   DDRight, DDLeft, DDUp, DDDown,
   DBTriangle, DBCircle, DBCross, DBSquare,
   DBL1, DBR1, DBL2, DBR2,

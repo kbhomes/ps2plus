@@ -1,6 +1,5 @@
 #include "test_commands.h"
 
-// Status info command payload is always the same
 const uint8_t COMMAND_ID = 0x45;
 const size_t PAYLOAD_SIZE = 6;
 const uint8_t COMMAND_INPUT[PAYLOAD_SIZE] = { 0x5A, 0x5A, 0x5A, 0x5A, 0x5A, 0x5A, };

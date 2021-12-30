@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <stdlib.h>
 
 /**
  * @brief Initialize the executing platform as required for runtime execution
