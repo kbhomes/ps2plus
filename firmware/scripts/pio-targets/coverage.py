@@ -37,3 +37,9 @@ env.AddCustomTarget(
     coverage_generate_report,
   ]
 )
+
+env.Append(
+  LINKFLAGS=[
+      "--coverage"
+  ]
+)

@@ -55,7 +55,7 @@ void polling_check_analog_joysticks(controller_state *state, uint8_t command_id,
   uint8_t *actual_output = helper_run_command(state, command_id, payload, payload_size);
   for (size_t i = 0; i < NUM_JOYSTICK_AXES; i++) {
     char message_buffer[64];
-    sprintf(message_buffer, "Joystick axis %d should have value %02X", i, state->input.joysticks[i]);
+    sprintf(message_buffer, "Joystick axis %zu should have value %02X", i, state->input.joysticks[i]);
     TEST_ASSERT_EQUAL_HEX8_MESSAGE(state->input.joysticks[i], actual_output[POLLING_PAYLOAD_DIGITAL_SIZE + i], message_buffer);
   }
 }
