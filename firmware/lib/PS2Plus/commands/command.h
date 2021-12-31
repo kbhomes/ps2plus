@@ -1,8 +1,8 @@
 #ifndef COMMANDS_COMMAND_H
 #define COMMANDS_COMMAND_H
 
-#include "../platform.h"
-#include "../controller_state.h"
+#include <platforms/platform.h>
+#include <controller_state.h>
 
 typedef enum {
   CRInitialized,
@@ -61,5 +61,7 @@ extern command_processor map_motors_command;
 extern command_processor configure_analog_response_command;
 
 extern command_processor *command_processors[];
+
+command_processor *command_find_processor(uint8_t id);
 
 #endif /* COMMANDS_COMMAND_H */

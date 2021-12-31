@@ -1,6 +1,6 @@
 #include "test_commands.h"
 
-#include <platform.h>
+#include <platforms/platform.h>
 #include <stdio.h>
 #include <unity.h>
 
@@ -22,7 +22,7 @@ void setUp() {
 }
 
 int main(void) {
-  platform_init();
+  platform_init(NULL);
 
   UNITY_BEGIN();
   RUN_TEST(test_initialize_pressure_sensor_command_constant_response);

@@ -55,13 +55,7 @@ uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const u
   };
 
   // Find the correct command processor for the given ID
-  command_processor *processor = NULL;
-  for (size_t i = 0; command_processors[i] != NULL; i++) {
-    if (command_processors[i]->id == command_id) {
-      processor = command_processors[i];
-    }
-  } 
-
+  command_processor *processor = command_find_processor(command_id);
   if (processor == NULL) {
     char buffer[255];
     sprintf(buffer, "Could not find command processor for ID: %x", command_id);

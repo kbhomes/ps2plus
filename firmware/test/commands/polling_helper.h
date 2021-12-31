@@ -2,7 +2,7 @@
 #define TEST_POLLING_HELPER_H
 
 #include <commands/command.h>
-#include <platform.h>
+#include <platforms/platform.h>
 #include <stdio.h>
 #include <unity.h>
 

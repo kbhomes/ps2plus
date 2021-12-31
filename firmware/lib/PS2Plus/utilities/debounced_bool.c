@@ -1,6 +1,6 @@
 #include "debounced_bool.h"
 
-#include "platform.h"
+#include <platforms/platform.h>
 
 void debounced_init(debounced_bool *debounce, bool default_value, unsigned long minimum_duration) {
   debounce->minimum_duration = minimum_duration;
@@ -11,7 +11,7 @@ void debounced_init(debounced_bool *debounce, bool default_value, unsigned long 
 }
 
 bool debounced_update(debounced_bool *debounce, bool value) {
-  unsigned long current_time = platform_millis();
+  unsigned long current_time = platform_timing_millis();
   unsigned long current_duration = current_time - debounce->last_debounce_time;
 
   if (value == debounce->default_value) {
@@ -43,7 +43,7 @@ bool debounced_force(debounced_bool *debounce, bool value) {
 bool debounced_read(debounced_bool *debounce) {
   // If a debounce timer is currently running, perform the duration check
   if (debounce->current_value != debounce->debounced_value) {
-    unsigned long current_time = platform_millis();
+    unsigned long current_time = platform_timing_millis();
     unsigned long current_duration = current_time - debounce->last_debounce_time;
 
     if (current_duration >= debounce->minimum_duration) {

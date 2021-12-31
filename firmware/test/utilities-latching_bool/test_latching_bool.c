@@ -1,4 +1,4 @@
-#include <platform.h>
+#include <platforms/platform.h>
 #include <utilities/latching_bool.h>
 #include <unistd.h>
 #include <unity.h>
@@ -44,7 +44,7 @@ void test_latching_read_after_update() {
 }
 
 int main(void) {
-  platform_init();
+  platform_init(NULL);
 
   UNITY_BEGIN();
   RUN_TEST(test_latching_initialization);

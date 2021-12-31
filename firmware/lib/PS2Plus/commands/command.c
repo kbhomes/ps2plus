@@ -14,3 +14,13 @@ command_processor *command_processors[] = {
   &configure_analog_response_command,     // 4Fh
   NULL
 };
+
+command_processor *command_find_processor(uint8_t id) {
+  for (size_t i = 0; command_processors[i] != NULL; i++) {
+    if (command_processors[i]->id == id) {
+      return command_processors[i];
+    }
+  } 
+  
+  return NULL;
+}
