@@ -6,6 +6,9 @@
 #define PORT_ACK PORTD
 #define PORT_ACK_PIN PORTD4
 
+// Suppressing "unused" warnings for register clear variables
+#define UNUSED(X) ((void)(X))
+
 #define DIGITAL_FAST_HIGH(port, pin) port |= (1 << pin)
 #define DIGITAL_FAST_LOW(port, pin) port &= ~(1 << pin)
 #define PINMODE_FAST_OUTPUT(ddr, pin) ddr |= (1 << pin)
@@ -54,9 +57,10 @@ void arduino_setup_spi_playstation() {
   {
     // Clear SPI registers -- primarily, the SPIF flag (indicating that an SPI transfer was completed)
     // is cleared by reading the SPIF bit in the SPSR register, followed by reading the SPDR register.
-    volatile char clear;
+    char clear;
     clear = SPSR;
     clear = SPDR;
+    UNUSED(clear);
   }
 
   // Enable the correct pin directions
