@@ -6,6 +6,18 @@
 #include <platforms/platform.h>
 
 volatile int byte_number = 0;
+volatile controller_state state = { 
+  .input = {
+    .digital_buttons = { 0 },
+    .joysticks = { 0 },
+  },
+  .analog_mode = CMDigital,
+  .analog_mode_locked = false,
+  .config_mode = false,
+  .rumble_motor_small = { .mapping = 0xFF, .value = 0x00 },
+  .rumble_motor_large = { .mapping = 0xFF, .value = 0x00 },
+};
+volatile command_packet packet;
 
 void interrupt_handler() {
   uint8_t read = platform_spi_playstation_read();
@@ -37,7 +49,7 @@ int main(void) {
       platform_spi_playstation_write(0xFF);
     }
 
-    delayMicroseconds(1);
+    delayMicroseconds(2);
   }
 
   return 0;

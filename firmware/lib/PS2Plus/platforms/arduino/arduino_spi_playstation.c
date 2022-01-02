@@ -2,17 +2,26 @@
 
 #include "arduino_platform.h"
 
+// Fast port-based pin manipulation to avoid the large overhead of 
+// the digitalRead and digitalWrite functions
+#define DIGITAL_FAST_HIGH(port, pin) port |= (1 << pin)
+#define DIGITAL_FAST_LOW(port, pin) port &= ~(1 << pin)
+#define DIGITAL_FAST_READ(port, pin) (port & (1 << pin))
+#define PINMODE_FAST_OUTPUT(ddr, pin) ddr |= (1 << pin)
+#define PINMODE_FAST_INPUT(ddr, pin) ddr &= ~(1 << pin)
+
+// Acknowledge pin, along with identifiers for fast port manipulation
 #define PIN_ACK 4
 #define PORT_ACK PORTD
 #define PORT_ACK_PIN PORTD4
 
+// Attention pin (i.e.: the active low SPI chip select pin)
+#define PIN_ATT PIN_SPI_SS
+#define PORT_ATT PORTB
+#define PORT_ATT_PIN PORTB2
+
 // Suppressing "unused" warnings for register clear variables
 #define UNUSED(X) ((void)(X))
-
-#define DIGITAL_FAST_HIGH(port, pin) port |= (1 << pin)
-#define DIGITAL_FAST_LOW(port, pin) port &= ~(1 << pin)
-#define PINMODE_FAST_OUTPUT(ddr, pin) ddr |= (1 << pin)
-#define PINMODE_FAST_INPUT(ddr, pin) ddr &= ~(1 << pin)
 
 /**
  * Arduino boards use AVR microcontrollers with standard SPI capabilities. High quality
@@ -67,7 +76,7 @@ void arduino_setup_spi_playstation() {
   pinMode(MOSI, INPUT_PULLUP);
   pinMode(MISO, OUTPUT);
   pinMode(SCK, INPUT_PULLUP);
-  pinMode(SS, INPUT_PULLUP);
+  pinMode(PIN_ATT, INPUT_PULLUP);
   pinMode(PIN_ACK, OUTPUT);
 }
 
@@ -78,7 +87,8 @@ void platform_spi_playstation_ack() {
 }
 
 bool platform_spi_playstation_selected() {
-  return digitalRead(SS) == LOW;
+  return digitalRead(PIN_ATT) == LOW;
+  // return !DIGITAL_FAST_READ(PORT_ATT, PORT_ATT_PIN);
 }
 
 bool platform_spi_playstation_data_available() {
@@ -93,6 +103,8 @@ void platform_spi_playstation_write(uint8_t value) {
   SPDR = value;
 }
 
+/*
+// Non-interrupt based SPI read/write communication
 uint8_t platform_spi_playstation_transmit(uint8_t value) {
   // Write the value out
   SPDR = value;
@@ -105,5 +117,6 @@ uint8_t platform_spi_playstation_transmit(uint8_t value) {
   // Read the value from the console
   return SPDR;
 }
+*/
 
 #endif /* PLATFORM_ARDUINO */
