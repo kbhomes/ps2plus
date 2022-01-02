@@ -38,10 +38,7 @@ ISR(SPI_STC_vect) {
 
 void setup_spi_peripheral_mode() {
   // Enables SPI with hardware interrupts
-  // SPCR |= _BV(SPE); 
-  // SPCR |= _BV(SPIE);
-  // SPCR |= _BV(DORD);
-  SPCR = /*_BV(SPIE) |*/_BV(SPE) | _BV(DORD) | _BV(CPOL) | _BV(CPHA);
+  SPCR = _BV(SPE) | _BV(DORD) | _BV(CPOL) | _BV(CPHA);
 
   // Clear SPI Registers
   {
@@ -51,8 +48,12 @@ void setup_spi_peripheral_mode() {
   }
 
   // Enable the correct pin directions
+  pinMode(MOSI, INPUT_PULLUP);
   pinMode(MISO, OUTPUT);
-  pinMode(SS, INPUT);
+  pinMode(SCK, INPUT_PULLUP);
+  pinMode(SS, INPUT_PULLUP);
+
+  SPCR |= _BV(SPIE);
 }
 
 void uart_putchar(char c, FILE *stream) {
@@ -122,14 +123,11 @@ bool platform_spi_data_available() {
 }
 
 uint8_t platform_spi_read() {
-  uint8_t byte = SPDR;
-  // printf("<- %02X\n", byte);
-  return byte;
+  return SPDR;
 }
 
 void platform_spi_write(uint8_t value) {
   SPDR = value;
-  // printf("-> %02X\n", value);
 }
 
 uint8_t platform_memory_read(size_t address) {
