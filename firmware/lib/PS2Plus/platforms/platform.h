@@ -8,7 +8,7 @@
 
 #include "memory.h"
 #include "timing.h"
-#include "spi.h"
+#include "spi_playstation.h"
 
 /**
  * What does any given platform need?
