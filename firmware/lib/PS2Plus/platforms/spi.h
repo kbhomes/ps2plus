@@ -12,4 +12,6 @@ uint8_t platform_spi_read();
 
 void platform_spi_write(uint8_t);
 
+uint8_t platform_spi_transmit(uint8_t value);
+
 #endif /* PLATFORMS_SPI_H */

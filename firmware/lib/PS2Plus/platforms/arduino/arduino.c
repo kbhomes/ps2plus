@@ -53,7 +53,7 @@ void setup_spi_peripheral_mode() {
   pinMode(SCK, INPUT_PULLUP);
   pinMode(SS, INPUT_PULLUP);
 
-  SPCR |= _BV(SPIE);
+  // SPCR |= _BV(SPIE);
 }
 
 void uart_putchar(char c, FILE *stream) {
@@ -128,6 +128,19 @@ uint8_t platform_spi_read() {
 
 void platform_spi_write(uint8_t value) {
   SPDR = value;
+}
+
+uint8_t platform_spi_transmit(uint8_t value) {
+  // Write the value out
+  SPDR = value;
+
+  // Wait until the transmission has completed
+  while (!(SPSR & _BV(SPIF))) {
+    delayMicroseconds(1);
+  }
+  
+  // Read the value from the console
+  return SPDR;
 }
 
 uint8_t platform_memory_read(size_t address) {
