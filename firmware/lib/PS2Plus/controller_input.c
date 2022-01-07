@@ -9,9 +9,9 @@ controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSUR
 };
 
 void controller_input_initialize(controller_input *input) {
-  // Write each digital button value as an active-high bit
+  // Write each digital button value as an active-low bit
   for (int i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
-    debounced_init(&input->digital_buttons[i], 0, DEBOUNCE_DIGITAL_BUTTON_MS);
+    debounced_init(&input->digital_buttons[i], 1, DEBOUNCE_DIGITAL_BUTTON_MS);
   }
 
   // Set mid-axis values for each joystick
@@ -23,7 +23,7 @@ void controller_input_initialize(controller_input *input) {
 uint16_t controller_input_as_digital(controller_input *input) {
   uint16_t output = 0;
 
-  // Write each digital button value as an active-high bit
+  // Write each digital button value as an active-low bit
   for (int i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
     int value = debounced_read(&input->digital_buttons[i]);
     int shift = NUM_DIGITAL_BUTTONS - i - 1;

@@ -60,6 +60,13 @@ extern command_processor device_descriptor_4c_command;
 extern command_processor map_motors_command;
 extern command_processor configure_analog_response_command;
 
+/**
+ * @brief Table of polling commands indexed by the lower nibble of the command ID.
+ * 
+ * All polling commands that can be processed have a 4 as the higher nibble. The correct
+ * command processor can be quickly obtained by taking the lower nibble of the command ID
+ * and indexing into this array. An invalid command will have a NULL processor.
+ */
 extern command_processor *command_processors[];
 
 command_processor *command_find_processor(uint8_t id);

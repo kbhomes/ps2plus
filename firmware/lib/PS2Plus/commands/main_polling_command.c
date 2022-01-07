@@ -4,38 +4,55 @@
 struct {
   uint8_t controller_input_bytes[18];
   size_t controller_input_length;
-} mpc_memory;
+} mpc_memory = {
+  .controller_input_bytes = { 
+    0xFF, 0xFF, // Digital
+    0x7F, 0x7F, 0x7F, 0x7F, // Joystick
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // Button pressures
+  },
+  .controller_input_length = 0,
+};
 
 /**
  * @brief Converts the current controller input into the array of bytes that will
  *        be sent to the console as part of the polling command
  */
 void mpc_read_controller_input_bytes(controller_state *state) {
-  int index = 0;
-
-  // Store digital button information
-  uint16_t digital = controller_input_as_digital(&state->input);
-  mpc_memory.controller_input_bytes[index++] = (digital >> 8) & 0xFF;
-  mpc_memory.controller_input_bytes[index++] = digital & 0xFF;
-
-  if (controller_state_is_analog(state)) {
-    // Store analog joystick information
-    for (int j = 0; j < NUM_JOYSTICK_AXES; j++) {
-      mpc_memory.controller_input_bytes[index++] = state->input.joysticks[j];
-    }
-
+  if (controller_state_is_digital(state)) {
+    mpc_memory.controller_input_length = 2;
+  } else if (controller_state_is_analog(state)) {
     if (controller_state_include_button_pressure(state)) {
-      // Store button pressure information (which will be converted to pure 00h or FFh)
-      for (unsigned int b = 0; b < (sizeof(DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP) / sizeof(controller_input_digital_button)); b++) {
-        controller_input_digital_button button = DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[b];
-        uint8_t digital_value = debounced_read(&state->input.digital_buttons[button]);
-        mpc_memory.controller_input_bytes[index++] = (digital_value == 1) ? 0xFF : 0x00;
-      }
+      mpc_memory.controller_input_length = 6;
+    } else {
+      mpc_memory.controller_input_length = 18;
     }
   }
 
-  // Keep track of how many controller input bytes will be sent to the console
-  mpc_memory.controller_input_length = index;
+  // int index = 0;
+
+  // // Store digital button information
+  // uint16_t digital = controller_input_as_digital(&state->input);
+  // mpc_memory.controller_input_bytes[index++] = (digital >> 8) & 0xFF;
+  // mpc_memory.controller_input_bytes[index++] = digital & 0xFF;
+
+  // if (controller_state_is_analog(state)) {
+  //   // Store analog joystick information
+  //   for (int j = 0; j < NUM_JOYSTICK_AXES; j++) {
+  //     mpc_memory.controller_input_bytes[index++] = state->input.joysticks[j];
+  //   }
+
+  //   if (controller_state_include_button_pressure(state)) {
+  //     // Store button pressure information (which will be converted to pure 00h or FFh)
+  //     for (unsigned int b = 0; b < (sizeof(DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP) / sizeof(controller_input_digital_button)); b++) {
+  //       controller_input_digital_button button = DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[b];
+  //       uint8_t digital_value = debounced_read(&state->input.digital_buttons[button]);
+  //       mpc_memory.controller_input_bytes[index++] = (digital_value == 1) ? 0xFF : 0x00;
+  //     }
+  //   }
+  // }
+
+  // // Keep track of how many controller input bytes will be sent to the console
+  // mpc_memory.controller_input_length = index;
 }
 
 command_result mpc_initialize(controller_state *state) {

@@ -73,11 +73,14 @@ void arduino_setup_spi_playstation() {
   }
 
   // Enable the correct pin directions
-  pinMode(MOSI, INPUT_PULLUP);
+  pinMode(MOSI, INPUT);
   pinMode(MISO, OUTPUT);
-  pinMode(SCK, INPUT_PULLUP);
-  pinMode(PIN_ATT, INPUT_PULLUP);
+  pinMode(SCK, INPUT);
+  pinMode(PIN_ATT, INPUT);
   pinMode(PIN_ACK, OUTPUT);
+
+  // Set active-low outputs
+  DIGITAL_FAST_HIGH(PORT_ACK, PORT_ACK_PIN);
 }
 
 void platform_spi_playstation_ack() {
