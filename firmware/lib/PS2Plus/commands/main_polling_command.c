@@ -4,7 +4,7 @@
 const uint8_t CONFIG_MODE_RESPONSE_BYTES[6] = { 0x00 };
 
 struct {
-  uint8_t *response_data;
+  const uint8_t *response_data;
   size_t response_length;
 } mpc_memory;
 

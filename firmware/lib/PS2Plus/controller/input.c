@@ -1,4 +1,4 @@
-#include "controller_input.h"
+#include "input.h"
 
 #define DEBOUNCE_DIGITAL_BUTTON_MS 2
 

@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_STATE_H
 #define CONTROLLER_STATE_H
 
-#include "controller_input.h"
+#include "input.h"
 
 typedef enum controller_analog_mode {
   CMDigital,    // digital buttons only (2 bytes of data)

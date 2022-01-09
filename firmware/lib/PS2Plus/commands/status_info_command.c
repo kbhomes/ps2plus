@@ -10,7 +10,7 @@ command_result si_initialize(command_packet *packet, controller_state *state) {
 command_result si_process(command_packet *packet, controller_state *state) {
   if (packet->data_index == 2) {
     // Third byte is the status of the analog LED
-    packet->write(state->analog_mode == CMDigital ? 0x01 : 0x01);
+    packet->write(state->analog_mode == CMDigital ? 0x00 : 0x01);
   } else {
     packet->write(SI_RESPONSE_BYTES[packet->data_index]);
   }

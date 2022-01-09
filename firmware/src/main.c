@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 #include <commands/command.h>
-#include <controller_state.h>
+#include <controller/state.h>
 #include <platforms/platform.h>
 
 volatile controller_state state = { 

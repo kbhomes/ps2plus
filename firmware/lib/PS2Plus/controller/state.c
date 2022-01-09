@@ -1,4 +1,4 @@
-#include "controller_state.h"
+#include "state.h"
 
 void controller_state_initialize(controller_state *state) {
   controller_input_initialize(&state->input);

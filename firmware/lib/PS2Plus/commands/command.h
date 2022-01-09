@@ -2,7 +2,7 @@
 #define COMMANDS_COMMAND_H
 
 #include <platforms/platform.h>
-#include <controller_state.h>
+#include <controller/state.h>
 
 typedef enum {
   CRInitialized,
