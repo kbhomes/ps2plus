@@ -2,7 +2,7 @@
 
 const uint8_t SI_RESPONSE_BYTES[6] = { 0x03, 0x02, 0x01, 0x02, 0x01, 0x00 };
 
-command_result si_initialize(controller_state *state) {
+command_result si_initialize(command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }

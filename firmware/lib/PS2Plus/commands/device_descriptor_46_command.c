@@ -9,7 +9,7 @@ struct {
   const uint8_t *constant_bytes;
 } dd46_memory;
 
-command_result dd46_initialize(controller_state *state) {
+command_result dd46_initialize(command_packet *packet, controller_state *state) {
   dd46_memory.constant_bytes = DD46_CONSTANT_BYTES[0];
 
   return CRInitialized;

@@ -9,7 +9,7 @@ struct {
   const uint8_t *constant_bytes;
 } dd4c_memory;
 
-command_result dd4c_initialize(controller_state *state) {
+command_result dd4c_initialize(command_packet *packet, controller_state *state) {
   dd4c_memory.constant_bytes = DD4C_CONSTANT_BYTES[0];
 
   return CRInitialized;

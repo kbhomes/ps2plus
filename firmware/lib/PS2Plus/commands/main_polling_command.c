@@ -8,7 +8,7 @@ struct {
   size_t response_length;
 } mpc_memory;
 
-command_result mpc_initialize(controller_state *state) {
+command_result mpc_initialize(command_packet *packet, controller_state *state) {
   // Determines how much data will be sent back to the console depending on controller mode
   if (state->config_mode) {
     // In config mode, all zeroes are written

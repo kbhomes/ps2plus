@@ -2,7 +2,7 @@
 
 const uint8_t IPS_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x02, 0x00, 0x00, 0x5A };
 
-command_result ips_initialize(controller_state *state) {
+command_result ips_initialize(command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }

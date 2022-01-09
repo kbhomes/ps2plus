@@ -1,6 +1,6 @@
 #include "command.h"
 
-command_result mm_initialize(controller_state *state) {
+command_result mm_initialize(command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }

@@ -4,9 +4,9 @@
 #include "controller_input.h"
 
 typedef enum controller_analog_mode {
-  CMDigital    = 0x41, // digital buttons only (2 bytes of data)
-  CMAnalog     = 0x73, // digital buttons, analog joysticks (6 bytes of data)
-  CMAnalogFull = 0x79, // digital buttons, analog joysticks, button pressures (18 bytes of data)
+  CMDigital,    // digital buttons only (2 bytes of data)
+  CMAnalog,     // digital buttons, analog joysticks (6 bytes of data)
+  CMAnalogFull, // digital buttons, analog joysticks, button pressures (18 bytes of data)
 } controller_analog_mode;
 
 typedef struct {
@@ -36,11 +36,16 @@ typedef struct {
    */
   bool config_mode;
 
+  /**
+   * @brief Mode identifier combining analog and config statuses
+   */
+  uint8_t mode;
+
   controller_rumble_motor rumble_motor_small;
   controller_rumble_motor rumble_motor_large;
 } controller_state;
 
 void controller_state_initialize(controller_state *);
-uint8_t controller_state_get_mode(controller_state *);
+void controller_state_update_mode(controller_state *);
 
 #endif /* CONTROLLER_STATE_H */

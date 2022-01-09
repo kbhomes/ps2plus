@@ -11,10 +11,14 @@ void controller_state_initialize(controller_state *state) {
   state->rumble_motor_large.value = 0x00;
 }
 
-uint8_t controller_state_get_mode(controller_state *state) {
+void controller_state_update_mode(controller_state *state) {
   if (state->config_mode) {
-    return 0xF3;
+    state->mode = 0xF3;
+  } else if (state->analog_mode == CMDigital) {
+    state->mode = 0x41;
+  } else if (state->analog_mode == CMAnalog) {
+    state->mode = 0x73;
+  } else if (state->analog_mode == CMAnalogFull) {
+    state->mode = 0x79;
   }
-
-  return state->analog_mode;
 }

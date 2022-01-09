@@ -2,7 +2,7 @@
 
 const uint8_t DD47_CONSTANT_BYTES[5] = { 0x00, 0x02, 0x00, 0x01, 0x00 };
 
-command_result dd47_initialize(controller_state *state) {
+command_result dd47_initialize(command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }

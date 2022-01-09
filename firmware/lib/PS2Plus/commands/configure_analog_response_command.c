@@ -2,7 +2,7 @@
 
 const uint8_t CAR_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x5A };
 
-command_result car_initialize(controller_state *state) {
+command_result car_initialize(command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }

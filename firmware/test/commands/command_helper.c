@@ -63,7 +63,7 @@ uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const u
   }
 
   // Initialize the command processor with the controller state
-  processor->initialize(state);
+  processor->initialize(&packet, state);
 
   for (size_t i = 0; i < command_length; i++) {
     // All results should be `CRProcessing` (ongoing command), while the last should be `CRCompleted`

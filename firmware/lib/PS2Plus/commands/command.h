@@ -36,11 +36,13 @@ typedef struct {
    * @brief Write function to send a byte back to the console
    */
   void (*write)(uint8_t data);
+
+  bool ignore;
 } command_packet;
 
 typedef struct {
   uint8_t id;
-  command_result (*initialize)(controller_state *);
+  command_result (*initialize)(command_packet *, controller_state *);
   command_result (*process)(command_packet *, controller_state *);
 
   // TODO: Add a `finalize` method that can receive the final command byte of the transmission
