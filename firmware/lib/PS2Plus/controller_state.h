@@ -42,8 +42,5 @@ typedef struct {
 
 void controller_state_initialize(controller_state *);
 uint8_t controller_state_get_mode(controller_state *);
-bool controller_state_is_digital(controller_state *);
-bool controller_state_is_analog(controller_state *);
-bool controller_state_include_button_pressure(controller_state *);
 
 #endif /* CONTROLLER_STATE_H */

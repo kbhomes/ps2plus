@@ -9,7 +9,7 @@ command_result bic_initialize(controller_state *state) {
 
 command_result bic_process(command_packet *packet, controller_state *state) {
   // Select the correct response based on digital/analog status
-  if (controller_state_is_digital(state)) {
+  if (state->analog_mode == CMDigital) {
     packet->write(0);
   } else {
     packet->write(BIC_ANALOG_INCLUSION_BYTES[packet->data_index]);

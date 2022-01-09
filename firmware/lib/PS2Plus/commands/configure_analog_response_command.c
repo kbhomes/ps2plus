@@ -13,7 +13,7 @@ command_result car_process(command_packet *packet, controller_state *state) {
   // Apparently there is no indication that any software actually does configuration
   // of individual pressure-sensitive buttons; so we'll just set the controller into
   // full analog mode for all buttons regardless of the command data.
-  if (controller_state_is_analog(state)) {
+  if (state->analog_mode == CMAnalog) {
     state->analog_mode = CMAnalogFull;
   }
 

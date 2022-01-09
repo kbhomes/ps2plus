@@ -47,9 +47,11 @@ extern controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_
 typedef struct {
   debounced_bool digital_buttons[NUM_DIGITAL_BUTTONS];
   uint8_t joysticks[NUM_JOYSTICK_AXES];
+  uint8_t button_data[NUM_DIGITAL_BUTTONS/8 + NUM_JOYSTICK_AXES + NUM_PRESSURE_SENSITIVE_BUTTONS];
 } controller_input;
 
 void controller_input_initialize(controller_input *input);
 uint16_t controller_input_as_digital(controller_input *input);
+void controller_input_recompute(controller_input *input);
 
 #endif /* CONTROLLER_INPUT_H */

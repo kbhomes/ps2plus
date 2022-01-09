@@ -18,15 +18,3 @@ uint8_t controller_state_get_mode(controller_state *state) {
 
   return state->analog_mode;
 }
-
-bool controller_state_is_digital(controller_state *state) {
-  return state->analog_mode == CMDigital;
-}
-
-bool controller_state_is_analog(controller_state *state) {
-  return state->analog_mode != CMDigital;
-}
-
-bool controller_state_include_button_pressure(controller_state *state) {
-  return state->analog_mode == CMAnalogFull;
-}

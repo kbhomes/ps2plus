@@ -11,14 +11,18 @@
 #define PINMODE_FAST_INPUT(ddr, pin) ddr &= ~(1 << pin)
 
 // Acknowledge pin, along with identifiers for fast port manipulation
+#ifdef PLATFORM_ARDUINO_UNO 
 #define PIN_ACK 4
 #define PORT_ACK PORTD
 #define PORT_ACK_PIN PORTD4
+#elif PLATFORM_ARDUINO_MEGA
+#define PIN_ACK 48
+#define PORT_ACK PORTL
+#define PORT_ACK_PIN PORTL1
+#endif
 
 // Attention pin (i.e.: the active low SPI chip select pin)
 #define PIN_ATT PIN_SPI_SS
-#define PORT_ATT PORTB
-#define PORT_ATT_PIN PORTB2
 
 // Suppressing "unused" warnings for register clear variables
 #define UNUSED(X) ((void)(X))
@@ -85,13 +89,12 @@ void arduino_setup_spi_playstation() {
 
 void platform_spi_playstation_ack() {
   DIGITAL_FAST_LOW(PORT_ACK, PORT_ACK_PIN);
-  delayMicroseconds(2);
+  delayMicroseconds(3);
   DIGITAL_FAST_HIGH(PORT_ACK, PORT_ACK_PIN);
 }
 
 bool platform_spi_playstation_selected() {
   return digitalRead(PIN_ATT) == LOW;
-  // return !DIGITAL_FAST_READ(PORT_ATT, PORT_ATT_PIN);
 }
 
 bool platform_spi_playstation_data_available() {

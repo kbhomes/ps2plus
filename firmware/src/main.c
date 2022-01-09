@@ -19,22 +19,8 @@ volatile controller_state state = {
 volatile command_packet packet;
 command_processor *processor = NULL;
 
-
-volatile uint8_t tx_buf[64] = {};
-volatile size_t tx_buf_ptr = 0;
-
-volatile uint8_t rx_buf[64] = {};
-volatile size_t rx_buf_ptr = 0;
-
-void intercept_write(uint8_t value) {
-  // rx_buf[rx_buf_ptr++] = value;
-  platform_spi_playstation_write(value);
-}
-
 void interrupt_handler() {
   uint8_t command_byte = platform_spi_playstation_read();
-  
-  // tx_buf[tx_buf_ptr++] = command_byte;
   packet.command_byte = command_byte;
 
   if (packet.command_index == -3) {
@@ -58,10 +44,10 @@ void interrupt_handler() {
     }
   } else {
     // Let the current command processor take over from here
-    if (processor) {  
+    if (processor) {
       platform_spi_playstation_ack();
       command_result result = processor->process(&packet, &state);
-      
+
       if (result == CRCompleted) {
         processor = NULL;
       } 
@@ -82,30 +68,48 @@ int main(void) {
   platform_init(&interrupt_handler);
   controller_input_initialize(&state.input);
 
-  while (true) {
-    if (!platform_spi_playstation_selected()) {
-      if (packet.id) {
-        printf("Most recent data: command=%02X mode=%02X index=%02X\n", packet.id, controller_state_get_mode(&state), packet.command_index);
-        // printf("TX [%d]: ", tx_buf_ptr);
-        // helper_print_hex_array(tx_buf, tx_buf_ptr);
-        // printf("\n");
-        // printf("RX [%d]: ", rx_buf_ptr);
-        // helper_print_hex_array(rx_buf, rx_buf_ptr);
-        // printf("\n");
-      }
+  // Reset the packet
+  packet.id = 0x0;
+  packet.command_byte = 0x0;
+  packet.command_index = -3;
+  packet.data_index = -2;
+  packet.write = &platform_spi_playstation_write;
 
-      // tx_buf_ptr = 0;
-      // rx_buf_ptr = 0;
+  pinMode(40, INPUT_PULLUP); // Triangle
+  pinMode(38, INPUT_PULLUP); // Circle
+  pinMode(36, INPUT_PULLUP); // Cross
+  pinMode(34, INPUT_PULLUP); // Square
+  pinMode(41, INPUT_PULLUP); // Up
+  pinMode(39, INPUT_PULLUP); // Down
+  pinMode(37, INPUT_PULLUP); // Left
+  pinMode(35, INPUT_PULLUP); // Right
+  pinMode(33, INPUT_PULLUP); // Select
+  pinMode(31, INPUT_PULLUP); // Start
+
+  while (true) {
+    debounced_update(&state.input.digital_buttons[DBTriangle], digitalRead(40));
+    debounced_update(&state.input.digital_buttons[DBCircle], digitalRead(38));
+    debounced_update(&state.input.digital_buttons[DBCross], digitalRead(36));
+    debounced_update(&state.input.digital_buttons[DBSquare], digitalRead(34));
+    debounced_update(&state.input.digital_buttons[DDUp], digitalRead(41));
+    debounced_update(&state.input.digital_buttons[DDDown], digitalRead(39));
+    debounced_update(&state.input.digital_buttons[DDLeft], digitalRead(37));
+    debounced_update(&state.input.digital_buttons[DDRight], digitalRead(35));
+    debounced_update(&state.input.digital_buttons[DBSelect], digitalRead(33));
+    debounced_update(&state.input.digital_buttons[DBStart], digitalRead(31));
+    controller_input_recompute(&state.input);
+
+    // helper_print_hex_array(state.input.button_data, sizeof(state.input.button_data));
+    // printf("\n");
+
+    if (!platform_spi_playstation_selected()) {
+      platform_spi_playstation_write(0xFF);
 
       // Reset the packet
       packet.id = 0x0;
       packet.command_byte = 0x0;
       packet.command_index = -3;
       packet.data_index = -2;
-      packet.write = &intercept_write;
-      // packet.write = &platform_spi_playstation_write;
-
-      intercept_write(0xFF);
     }
   }
 
