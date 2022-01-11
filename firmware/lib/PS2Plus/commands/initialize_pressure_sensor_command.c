@@ -1,4 +1,4 @@
-#include "command.h"
+#include "packet.h"
 
 const uint8_t IPS_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x02, 0x00, 0x00, 0x5A };
 

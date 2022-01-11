@@ -1,4 +1,4 @@
-#include "command.h"
+#include "packet.h"
 #include <stdio.h>
 
 const uint8_t CONFIG_MODE_RESPONSE_BYTES[6] = { 0x00 };

@@ -11,39 +11,10 @@ typedef enum {
   CRError,
 } command_result;
 
-typedef struct {
-  /**
-   * @brief Command ID for this packet (e.g.: 42h for the main polling command)
-   */
+typedef struct command_processor {
   uint8_t id;
-
-  /**
-   * @brief Most recently read byte from the console
-   */
-  uint8_t command_byte;
-
-  /**
-   * @brief Index of the most recently read COMMAND byte in the command packet, not including the 3-byte header
-   */
-  int command_index;
-
-  /**
-   * @brief Index of the to-be-written DATA byte in the command packet, not including the 3-byte header
-   */
-  int data_index;
-
-  /**
-   * @brief Write function to send a byte back to the console
-   */
-  void (*write)(uint8_t data);
-
-  bool ignore;
-} command_packet;
-
-typedef struct {
-  uint8_t id;
-  command_result (*initialize)(command_packet *, controller_state *);
-  command_result (*process)(command_packet *, controller_state *);
+  command_result (*initialize)(void *packet, controller_state *);
+  command_result (*process)(void *packet, controller_state *);
 
   // TODO: Add a `finalize` method that can receive the final command byte of the transmission
   //       (will help to correcltly implement the map motors command with all 6 actuator channels)

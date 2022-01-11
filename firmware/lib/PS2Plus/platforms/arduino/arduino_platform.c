@@ -11,6 +11,7 @@ void platform_init(platform_interrupt_callback callback) {
   interrupt_callback = callback;
   arduino_setup_spi_playstation();
   arduino_setup_uart_serial();
+  arduino_setup_wired_controller();
 
 #ifdef UNIT_TEST
   // Unit tests on an Arduino board require a delay during startup

@@ -1,4 +1,4 @@
-#include "command.h"
+#include "packet.h"
 
 command_result sdam_initialize(command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed

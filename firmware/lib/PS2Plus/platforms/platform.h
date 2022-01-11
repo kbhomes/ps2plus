@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "controller.h"
 #include "memory.h"
 #include "timing.h"
 #include "spi_playstation.h"

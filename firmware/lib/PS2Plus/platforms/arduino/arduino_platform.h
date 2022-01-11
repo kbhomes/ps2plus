@@ -14,5 +14,6 @@ extern platform_interrupt_callback interrupt_callback;
 
 void arduino_setup_spi_playstation();
 void arduino_setup_uart_serial();
+void arduino_setup_wired_controller();
 
 #endif

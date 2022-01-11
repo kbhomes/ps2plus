@@ -1,137 +1,38 @@
-#ifdef PLATFORM_ARDUINO
-
-#include <Arduino.h>
-#include <commands/command.h>
+#include <commands/packet.h>
 #include <controller/state.h>
 #include <platforms/platform.h>
 
-volatile controller_state state = { 
-  .input = {
-    .digital_buttons = { 0 },
-    .joysticks = { 0 },
-  },
-  .analog_mode = CMDigital,
-  .analog_mode_locked = false,
-  .config_mode = false,
-  .rumble_motor_small = { .mapping = 0xFF, .value = 0x00 },
-  .rumble_motor_large = { .mapping = 0xFF, .value = 0x00 },
-};
+volatile controller_state state;
 volatile command_packet packet;
-command_processor *processor = NULL;
-
 void write_with_ack(uint8_t value) {
   platform_spi_playstation_ack();
   platform_spi_playstation_write(value);
 }
 
 void interrupt_handler() {
-  uint8_t command_byte = platform_spi_playstation_read();
-  packet.command_byte = command_byte;
-
-  if (packet.ignore) {
-    return;
-  }
-
-  if (packet.command_index == -3) {
-    packet.write(state.mode);
-
-    // Assuming that we will always be sent a 01h from the console
-    if (command_byte != 0x01) {
-      packet.ignore = true;
-    }
-  } else if (packet.command_index == -2) {
-    packet.write(0x5A);
-
-    // Second header byte is the command ID
-    packet.id = command_byte;
-    processor = command_find_processor(command_byte);
-
-    if (processor) {
-      processor->initialize(&packet, &state);
-    } else {
-      packet.ignore = true;
-    }
-  } else {
-    command_result result = processor->process(&packet, &state);
-
-    if (result == CRCompleted) {
-      processor = NULL;
-      packet.ignore = true;
-    } 
-  }
-  
-  packet.command_index++;
-  packet.data_index++;
-}
-
-void helper_print_hex_array(const uint8_t *array, size_t length) {
-  for (size_t i = 0; i < length; i++) {
-    printf("%02X ", array[i]);
-  }
+  command_packet_step(&packet, &state, platform_spi_playstation_read());
 }
 
 int main(void) {
   platform_init(&interrupt_handler);
-  controller_input_initialize(&state.input);
-
-  // Reset the packet
-  packet.id = 0x0;
-  packet.command_byte = 0x0;
-  packet.command_index = -3;
-  packet.data_index = -2;
-  packet.write = &write_with_ack;
-  packet.ignore = false;
-
-  pinMode(40, INPUT_PULLUP); // Triangle
-  pinMode(38, INPUT_PULLUP); // Circle
-  pinMode(36, INPUT_PULLUP); // Cross
-  pinMode(34, INPUT_PULLUP); // Square
-  pinMode(41, INPUT_PULLUP); // Up
-  pinMode(39, INPUT_PULLUP); // Down
-  pinMode(37, INPUT_PULLUP); // Left
-  pinMode(35, INPUT_PULLUP); // Right
-  pinMode(33, INPUT_PULLUP); // Select
-  pinMode(31, INPUT_PULLUP); // Start
+  controller_state_initialize(&state);
+  command_packet_initialize(&packet, &write_with_ack);
 
   while (true) {
-    bool dpad_up_state = digitalRead(41);
-    bool dpad_down_state = digitalRead(39);
-    bool dpad_left_state = digitalRead(37);
-    bool dpad_right_state = digitalRead(35);
-
-    debounced_update(&state.input.digital_buttons[DBTriangle], digitalRead(40));
-    debounced_update(&state.input.digital_buttons[DBCircle], digitalRead(38));
-    debounced_update(&state.input.digital_buttons[DBCross], digitalRead(36));
-    debounced_update(&state.input.digital_buttons[DBSquare], digitalRead(34));
-    debounced_update(&state.input.digital_buttons[DDUp], dpad_up_state);
-    debounced_update(&state.input.digital_buttons[DDDown], dpad_down_state);
-    debounced_update(&state.input.digital_buttons[DDLeft], dpad_left_state);
-    debounced_update(&state.input.digital_buttons[DDRight], dpad_right_state);
-    debounced_update(&state.input.digital_buttons[DBSelect], digitalRead(33));
-    debounced_update(&state.input.digital_buttons[DBStart], digitalRead(31));
-    
-    state.input.joysticks[JSLeftX] = (!dpad_left_state ? 0x00 : (!dpad_right_state ? 0xFF : 0x7F));
-    state.input.joysticks[JSLeftY] = (!dpad_up_state ? 0x00 : (!dpad_down_state ? 0xFF : 0x7F));
-
+    // Update the controller state
+    for (controller_input_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
+      bool active_low_button_state = !platform_controller_read_digital_button(button);
+      debounced_update(&state.input.digital_buttons[button], active_low_button_state);
+    }
     controller_input_recompute(&state.input);
     controller_state_update_mode(&state);
 
-    // helper_print_hex_array(state.input.button_data, sizeof(state.input.button_data));
-    // printf("\n");
-
     if (!platform_spi_playstation_selected()) {
+      // Prepare for the next packet
       platform_spi_playstation_write(0xFF);
-
-      // Reset the packet
-      packet.id = 0x0;
-      packet.command_byte = 0x0;
-      packet.command_index = -3;
-      packet.data_index = -2;
-      packet.ignore = false;
+      command_packet_initialize(&packet, &write_with_ack);
     }
   }
 
   return 0;
 }
-
-#endif

@@ -1,4 +1,4 @@
-#include "command.h"
+#include "packet.h"
 
 const uint8_t DD4C_CONSTANT_BYTES[2][5] = { 
   { 0x00, 0x00, 0x04, 0x00, 0x00 },

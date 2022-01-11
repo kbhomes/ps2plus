@@ -1,4 +1,4 @@
-#include "command.h"
+#include "packet.h"
 
 const uint8_t SI_RESPONSE_BYTES[6] = { 0x03, 0x02, 0x01, 0x02, 0x01, 0x00 };
 
