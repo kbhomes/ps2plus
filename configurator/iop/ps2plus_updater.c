@@ -1,7 +1,7 @@
 #include "irx_imports.h"
 #include "ps2plus_updater.h"
 
-IRX_ID("PS2+ Firmware Updater Support", 1, 1);
+IRX_ID("ps2plupd", 1, 1);
 
 extern struct irx_export_table _exp_ps2plupd;
 
@@ -11,13 +11,23 @@ static SifRpcDataQueue_t rpc_data_queue;
 static SifRpcServerData_t rpc_server_data;
 static u32 rpc_server_buffer[32];
 
+static void padConnect() {
+    // sio2_pad_transfer_init();
+}
+
 static void *rpcServer(int fno, void *buffer, int length) {
-    u32 *data = (u32 *)buffer;
-    u32 command = data[0];
+    ps2plus_updater_rpc_packet *packet = (ps2plus_updater_rpc_packet *)buffer;
+    ps2plus_updater_rpc_command command = packet->command;
 
     switch (command) {
+        case PS2PlusCommandInit:
+            printf("[ps2plupd] Command: PS2PlusCommandInit\n");
+            padConnect();
+            memcpy(packet->data, "World!", 7);
+            return buffer;
+
         default:
-            printf("Received command: (%03x)\n", (int)data[0]);
+            printf("[ps2plupd] Command: Unknown (%d)\n", command);
             break;
     }
 
@@ -26,7 +36,7 @@ static void *rpcServer(int fno, void *buffer, int length) {
 
 static void rpcThread(void *arg) {
     if (sceSifCheckInit() == 0) {
-        printf("SIF not initialized.\n");
+        printf("[ps2plupd] SIF not initialized\n");
         sceSifInit();
     }
 

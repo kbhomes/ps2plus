@@ -16,9 +16,18 @@ I_sceSifDmaStat
 I_sceSifCheckInit
 sifman_IMPORTS_end
 
+sio2man_IMPORTS_start
+I_sio2_pad_transfer_init
+I_sio2_transfer
+sio2man_IMPORTS_end
+
 stdio_IMPORTS_start
 I_printf
 stdio_IMPORTS_end
+
+sysclib_IMPORTS_start
+I_memcpy
+sysclib_IMPORTS_end
 
 thbase_IMPORTS_start
 I_CreateThread

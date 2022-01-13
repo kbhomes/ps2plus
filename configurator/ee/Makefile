@@ -1,9 +1,10 @@
 EE_BIN = ps2plus_updater.elf
 EE_OBJS = ps2plus_updater.o
 EE_INCS += -I../include
+EE_LIBS += -ldebug -lc -lpatches
 
 # Add all required IRX files into the compilation
-EE_LDFLAGS += ps2plupd_irx.o
+EE_LDFLAGS += ps2plupd_irx.o sio2man_irx.o
 
 ifeq ($(DEBUG),1)
 EE_CFLAGS += -DDEBUG -g

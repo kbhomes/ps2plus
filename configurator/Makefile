@@ -1,5 +1,5 @@
 # Set this to 1 to enable debug mode
-DEBUG = 0
+DEBUG = 1
 
 SHELL=/usr/bin/env bash
 BIN2C=bin2c
@@ -8,7 +8,7 @@ RM=rm -f
 include $(PS2SDK)/Defs.make
 
 EEFILES=ee/ps2plus_updater.elf
-IRXFILES=ps2plupd.irx
+IRXFILES=ps2plupd.irx sio2man.irx
 EE_IRX_OBJS = $(addprefix ee/, $(addsuffix _irx.o, $(basename $(IRXFILES))))
 
 # Where to find the IRX files

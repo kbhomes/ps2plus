@@ -12,6 +12,6 @@ typedef enum {
 typedef struct {
     ps2plus_updater_rpc_command command;
     char data[8];
-} ps2plus_updater_rpc_packet;
+} ps2plus_updater_rpc_packet __attribute__((aligned(16)));
 
 #endif
