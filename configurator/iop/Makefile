@@ -1,5 +1,5 @@
 IOP_BIN = ps2plus_updater.irx
-IOP_OBJS = ps2plus_updater_main.o ps2plus_updater_exports.o imports.o exports.o
+IOP_OBJS = ps2plus_updater.o imports.o exports.o
 
 all: $(IOP_BIN)
 
