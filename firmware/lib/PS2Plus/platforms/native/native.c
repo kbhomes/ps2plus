@@ -6,7 +6,7 @@
 
 #include <platforms/platform.h>
 
-void platform_init(platform_interrupt_callback interrupt_callback) {
+void platform_init(platform_interrupt_callback main_loop_callback) {
   
 }
 

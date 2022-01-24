@@ -4,13 +4,15 @@
 
 volatile controller_state state;
 volatile command_packet packet;
+
 void write_with_ack(uint8_t value) {
   platform_spi_playstation_ack();
   platform_spi_playstation_write(value);
 }
 
 void interrupt_handler() {
-  command_packet_step(&packet, &state, platform_spi_playstation_read());
+  platform_spi_playstation_ack();
+//  command_packet_step(&packet, &state, platform_spi_playstation_read());
 }
 
 int main(void) {
@@ -29,7 +31,7 @@ int main(void) {
 
     if (!platform_spi_playstation_selected()) {
       // Prepare for the next packet
-      platform_spi_playstation_write(0xFF);
+      platform_spi_playstation_write(0x11);
       command_packet_initialize(&packet, &write_with_ack);
     }
   }

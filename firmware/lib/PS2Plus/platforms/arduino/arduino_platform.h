@@ -10,7 +10,7 @@
  * @brief Interrupt callback provided by the main program, to be called by the platform's SPI
  *        interrupt when data is available to read from the console
  */
-extern platform_interrupt_callback interrupt_callback;
+extern platform_interrupt_callback main_loop_callback;
 
 void arduino_setup_spi_playstation();
 void arduino_setup_uart_serial();

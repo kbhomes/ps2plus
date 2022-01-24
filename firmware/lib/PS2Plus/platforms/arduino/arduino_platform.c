@@ -3,12 +3,12 @@
 #include "arduino_platform.h"
 
 // Interrupt callback 
-platform_interrupt_callback interrupt_callback = NULL;
+platform_interrupt_callback main_loop_callback = NULL;
 
 void platform_init(platform_interrupt_callback callback) {
   init();
 
-  interrupt_callback = callback;
+  main_loop_callback = callback;
   arduino_setup_spi_playstation();
   arduino_setup_uart_serial();
   arduino_setup_wired_controller();

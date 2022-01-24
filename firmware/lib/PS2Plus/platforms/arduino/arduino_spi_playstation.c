@@ -54,7 +54,7 @@
  */
 ISR(SPI_STC_vect) {
   // Call the main program's data handler
-  interrupt_callback();
+  main_loop_callback();
 }
 
 void arduino_setup_spi_playstation() {
