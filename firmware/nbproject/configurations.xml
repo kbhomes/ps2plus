@@ -12,6 +12,17 @@
         <itemPath>lib/PS2Plus/controller/input.h</itemPath>
         <itemPath>lib/PS2Plus/controller/state.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <itemPath>mcc_generated_files/pin_manager.h</itemPath>
+        <itemPath>mcc_generated_files/adcc.h</itemPath>
+        <itemPath>mcc_generated_files/device_config.h</itemPath>
+        <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
+        <itemPath>mcc_generated_files/mcc.h</itemPath>
+        <itemPath>mcc_generated_files/tmr0.h</itemPath>
+        <itemPath>mcc_generated_files/spi1.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="platforms" displayName="platforms" projectFiles="true">
         <logicalFolder name="arduino" displayName="arduino" projectFiles="true">
           <itemPath>lib/PS2Plus/platforms/arduino/arduino_platform.h</itemPath>

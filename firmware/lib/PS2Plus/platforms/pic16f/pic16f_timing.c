@@ -9,7 +9,7 @@ void pic16f_timing_interrupt_callback() {
   current_micros += 10;
 }
 
-void __interrupt(irq(IRQ_TMR0),base(8),high_priority) pic16f_interrupt_timer() {
+void __interrupt(irq(IRQ_TMR0)) pic16f_interrupt_timer() {
   TMR0IF = 0;
 }
 
