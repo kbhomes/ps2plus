@@ -1,11 +1,11 @@
-#include "packet.h"
+#include "command.h"
 
-command_result sdam_initialize(command_packet *packet, controller_state *state) {
+command_result sdam_initialize(volatile command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }
 
-command_result sdam_process(command_packet *packet, controller_state *state) {
+command_result sdam_process(volatile command_packet *packet, controller_state *state) {
   // Response appears to always be a 0x00
   packet->write(0);
 

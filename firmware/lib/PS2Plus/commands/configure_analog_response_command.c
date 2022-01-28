@@ -1,13 +1,13 @@
-#include "packet.h"
+#include "command.h"
 
 const uint8_t CAR_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x5A };
 
-command_result car_initialize(command_packet *packet, controller_state *state) {
+command_result car_initialize(volatile command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }
 
-command_result car_process(command_packet *packet, controller_state *state) {
+command_result car_process(volatile command_packet *packet, controller_state *state) {
   packet->write(CAR_RESPONSE_BYTES[packet->data_index]);
   
   // Apparently there is no indication that any software actually does configuration

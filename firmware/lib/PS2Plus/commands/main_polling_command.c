@@ -1,5 +1,4 @@
-#include "packet.h"
-#include <stdio.h>
+#include "command.h"
 
 const uint8_t CONFIG_MODE_RESPONSE_BYTES[6] = { 0x00 };
 
@@ -8,7 +7,7 @@ struct {
   size_t response_length;
 } mpc_memory;
 
-command_result mpc_initialize(command_packet *packet, controller_state *state) {
+command_result mpc_initialize(volatile command_packet *packet, controller_state *state) {
   // Determines how much data will be sent back to the console depending on controller mode
   if (state->config_mode) {
     // In config mode, all zeroes are written
@@ -32,7 +31,7 @@ command_result mpc_initialize(command_packet *packet, controller_state *state) {
   return CRInitialized;
 }
 
-command_result mpc_process(command_packet *packet, controller_state *state) {
+command_result mpc_process(volatile command_packet *packet, controller_state *state) {
   packet->write(mpc_memory.response_data[packet->data_index]);
   
   if (packet->id == 0x42) {

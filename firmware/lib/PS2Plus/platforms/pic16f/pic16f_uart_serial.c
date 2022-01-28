@@ -2,52 +2,47 @@
 
 #include "pic16f_platform.h"
 
-//void uart_putchar(char c, FILE *stream) {
-//    if (c == '\n') {
-//        uart_putchar('\r', stream);
-//    }
-//    
-//    // Wait for transmit availability
-//    while(!TRMT);
-//    
-//    TXREG = c;
-//}
-//
-//char uart_getchar(FILE *stream) {
-//    // Wait for available data
-//    while (!RCIF);
-//
-//    // Clear overrun error bit
-//    if (OERR) {  
-//      CREN = 0;
-//      CREN = 1;
-//    }
-//    
-//    return RCREG;
-//}
+#define PIC_UART_PPS_RX_REGISTER U1RXPPS // Table 17-1 in PIC18F46K42 data sheet
+#define PIC_UART_PPS_TX_CHANNEL 0b010011 // Table 17-2 in PIC18F46K42 data sheet
 
-//FILE uart_output = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
-//FILE uart_input = FDEV_SETUP_STREAM(NULL, uart_getchar, _FDEV_SETUP_READ);
+const pic_digital_io_pin PIN_UART_TX = PIC_DIGITAL_IO_PIN(B, 6);
+const pic_digital_io_pin PIN_UART_RX = PIC_DIGITAL_IO_PIN(B, 7);
+
+// See the "How Do I Use Printf to Send Text to a Peripheral?" section of the XC8 user guide
+// https://onlinedocs.microchip.com/pr/GUID-BB433107-FD4E-4D28-BB58-9D4A58955B1A-en-US-3/index.html
+
+/**
+ * Implements the XC8 getch function to bridge stdin to the UART RX port
+ */
+char getch(void) {
+  while(!PIR3bits.U1RXIF);
+  return U1RXB;
+}
+
+/**
+ * Implements the XC8 putch function to brdige stdout to the UART TX port
+ * @param value
+ */
+void putch(char value) {
+  while(!PIR3bits.U1TXIF);
+  U1TXB = value;
+}
 
 void pic16f_setup_uart_serial() {
-//  // https://appelsiini.net/2011/simple-usart-with-avr-libc/
-//
-//  // Enable UART in the hardware
-//  UBRR0H = UBRRH_VALUE;
-//  UBRR0L = UBRRL_VALUE;
-//
-//#if USE_2X
-//  UCSR0A |= _BV(U2X0);
-//#else
-//  UCSR0A &= ~(_BV(U2X0));
-//#endif
-//
-//  UCSR0C = _BV(UCSZ01) | _BV(UCSZ00); /* 8-bit data */
-//  UCSR0B = _BV(RXEN0) | _BV(TXEN0);   /* Enable RX and TX */
-//
-//  // Redirect stdin and stdout through the UART communication headers
-//  stdout = &uart_output;
-//  stdin = &uart_input;
+  // Set pin modes for the UART TX and RX pins
+  pic_digital_io_pin_mode(&PIN_UART_TX, PICPinMode_Output);
+  pic_digital_io_pin_mode(&PIN_UART_RX, PICPinMode_Input);
+  
+  // Configure PPS (Peripheral Pin Select) to remap the UART1 TX/RX pins
+  pic_digital_io_pin_pps_output(&PIN_UART_TX, PIC_UART_PPS_TX_CHANNEL);
+  pic_digital_io_pin_pps_input(&PIN_UART_RX, &PIC_UART_PPS_RX_REGISTER);
+  
+  // Enable UART serial communication with a baud rate of 9600 
+  // See section 31.17 - UART Baud Rate Generator of the PIC18F46K42 data sheet
+  U1BRG = _XTAL_FREQ / 9600 / 16;
+  U1CON0bits.TXEN = 1;
+  U1CON0bits.RXEN = 1;
+  U1CON1bits.ON = 1;
 }
 
 #endif /* PLATFORM_PIC16F */

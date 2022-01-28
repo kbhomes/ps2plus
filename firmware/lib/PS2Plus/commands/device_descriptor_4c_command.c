@@ -1,4 +1,4 @@
-#include "packet.h"
+#include "command.h"
 
 const uint8_t DD4C_CONSTANT_BYTES[2][5] = { 
   { 0x00, 0x00, 0x04, 0x00, 0x00 },
@@ -9,13 +9,13 @@ struct {
   const uint8_t *constant_bytes;
 } dd4c_memory;
 
-command_result dd4c_initialize(command_packet *packet, controller_state *state) {
+command_result dd4c_initialize(volatile command_packet *packet, controller_state *state) {
   dd4c_memory.constant_bytes = DD4C_CONSTANT_BYTES[0];
 
   return CRInitialized;
 }
 
-command_result dd4c_process(command_packet *packet, controller_state *state) {
+command_result dd4c_process(volatile command_packet *packet, controller_state *state) {
   if (packet->data_index == 0) {
     packet->write(0x00);
   } else {

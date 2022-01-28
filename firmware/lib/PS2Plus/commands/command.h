@@ -1,6 +1,8 @@
 #ifndef COMMANDS_COMMAND_H
 #define COMMANDS_COMMAND_H
 
+#include "packet.h"
+
 #include <platforms/platform.h>
 #include <controller/state.h>
 
@@ -13,8 +15,8 @@ typedef enum {
 
 typedef struct command_processor {
   uint8_t id;
-  command_result (*initialize)(void *packet, controller_state *);
-  command_result (*process)(void *packet, controller_state *);
+  command_result (*initialize)(volatile command_packet *packet, controller_state *);
+  command_result (*process)(volatile command_packet *packet, controller_state *);
 
   // TODO: Add a `finalize` method that can receive the final command byte of the transmission
   //       (will help to correcltly implement the map motors command with all 6 actuator channels)

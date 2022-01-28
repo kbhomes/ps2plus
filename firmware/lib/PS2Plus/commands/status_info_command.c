@@ -1,13 +1,13 @@
-#include "packet.h"
+#include "command.h"
 
 const uint8_t SI_RESPONSE_BYTES[6] = { 0x03, 0x02, 0x01, 0x02, 0x01, 0x00 };
 
-command_result si_initialize(command_packet *packet, controller_state *state) {
+command_result si_initialize(volatile command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }
 
-command_result si_process(command_packet *packet, controller_state *state) {
+command_result si_process(volatile command_packet *packet, controller_state *state) {
   if (packet->data_index == 2) {
     // Third byte is the status of the analog LED
     packet->write(state->analog_mode == CMDigital ? 0x00 : 0x01);

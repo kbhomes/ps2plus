@@ -1,13 +1,13 @@
-#include "packet.h"
+#include "command.h"
 
 const uint8_t DD47_CONSTANT_BYTES[5] = { 0x00, 0x02, 0x00, 0x01, 0x00 };
 
-command_result dd47_initialize(command_packet *packet, controller_state *state) {
+command_result dd47_initialize(volatile command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }
 
-command_result dd47_process(command_packet *packet, controller_state *state) {
+command_result dd47_process(volatile command_packet *packet, controller_state *state) {
   if (packet->data_index == 0) {
     packet->write(0x00);
   } else {

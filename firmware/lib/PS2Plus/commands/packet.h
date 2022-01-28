@@ -1,7 +1,6 @@
 #ifndef COMMANDS_PACKET_H
 #define COMMANDS_PACKET_H
 
-#include <commands/command.h>
 #include <controller/state.h>
 #include <platforms/platform.h>
 
@@ -25,6 +24,8 @@ typedef void (*command_packet_write_function)(uint8_t data);
  *   data_index:    -2  -1   0  |    1   2
  */
 typedef struct command_packet {
+  uint8_t buf[16];
+
   /**
    * @brief Command ID for this packet (e.g.: 42h for the main polling command)
    */
@@ -64,10 +65,10 @@ typedef struct command_packet {
   /**
    * @brief Command processor that will handle this packet
    */
-  command_processor *processor;
+  void *processor;
 } command_packet;
 
-void command_packet_initialize(command_packet *packet, command_packet_write_function write_function);
-void command_packet_step(command_packet *packet, controller_state *state, uint8_t command_byte);
+void command_packet_initialize(volatile command_packet *packet, command_packet_write_function write_function);
+void command_packet_step(volatile command_packet *packet, controller_state *state, uint8_t command_byte);
 
 #endif /* COMMANDS_PACKET_H */

@@ -1,4 +1,4 @@
-#include "packet.h"
+#include "command.h"
 
 const uint8_t DD46_CONSTANT_BYTES[2][5] = { 
   { 0x00, 0x01, 0x02, 0x00, 0x0A },
@@ -9,13 +9,13 @@ struct {
   const uint8_t *constant_bytes;
 } dd46_memory;
 
-command_result dd46_initialize(command_packet *packet, controller_state *state) {
+command_result dd46_initialize(volatile command_packet *packet, controller_state *state) {
   dd46_memory.constant_bytes = DD46_CONSTANT_BYTES[0];
 
   return CRInitialized;
 }
 
-command_result dd46_process(command_packet *packet, controller_state *state) {
+command_result dd46_process(volatile command_packet *packet, controller_state *state) {
   if (packet->data_index == 0) {
     packet->write(0x00);
   } else {

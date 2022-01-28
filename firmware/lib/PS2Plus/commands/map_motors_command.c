@@ -1,11 +1,11 @@
-#include "packet.h"
+#include "command.h"
 
-command_result mm_initialize(command_packet *packet, controller_state *state) {
+command_result mm_initialize(volatile command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
   return CRInitialized;
 }
 
-command_result mm_process(command_packet *packet, controller_state *state) {
+command_result mm_process(volatile command_packet *packet, controller_state *state) {
   // TODO: Documentation about this making an (unfounded?) assumption that
   //       the first/second bytes will always be the small/large motors. As
   //       far as I can see from online documentation, the small/large motor
