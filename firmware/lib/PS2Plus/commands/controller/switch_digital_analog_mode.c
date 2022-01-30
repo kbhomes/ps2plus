@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 command_result sdam_initialize(volatile command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
@@ -27,7 +27,7 @@ command_result sdam_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor switch_digital_analog_mode_command = {
+command_processor command_controller_switch_digital_analog_mode = {
     .id = 0x44,
     .initialize = &sdam_initialize,
     .process = &sdam_process,

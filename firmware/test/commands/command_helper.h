@@ -1,7 +1,7 @@
 #ifndef TEST_COMMAND_HELPER_H
 #define TEST_COMMAND_HELPER_H
 
-#include <commands/packet.h>
+#include <commands/command.h>
 #include <platforms/platform.h>
 #include <stdio.h>
 #include <unity.h>

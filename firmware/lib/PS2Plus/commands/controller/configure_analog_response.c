@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 const uint8_t CAR_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x5A };
 
@@ -25,7 +25,7 @@ command_result car_process(volatile command_packet *packet, controller_state *st
   return CRCompleted;
 }
 
-command_processor configure_analog_response_command = {
+command_processor command_controller_configure_analog_response = {
     .id = 0x4F,
     .initialize = &car_initialize,
     .process = &car_process,

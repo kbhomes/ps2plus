@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 const uint8_t DD46_CONSTANT_BYTES[2][5] = { 
   { 0x00, 0x01, 0x02, 0x00, 0x0A },
@@ -37,7 +37,7 @@ command_result dd46_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor device_descriptor_46_command = {
+command_processor command_controller_device_descriptor_46 = {
     .id = 0x46,
     .initialize = &dd46_initialize,
     .process = &dd46_process,

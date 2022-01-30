@@ -7,7 +7,7 @@ const uint8_t SDAM_PAYLOAD_SET_DIGITAL[SDAM_PAYLOAD_SIZE] = { 0x00, 0x00, 0x00, 
 const uint8_t SDAM_PAYLOAD_SET_ANALOG[SDAM_PAYLOAD_SIZE] = { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00 };
 const uint8_t SDAM_PAYLOAD_SET_ANALOG_WITH_LOCK[SDAM_PAYLOAD_SIZE] = { 0x01, 0x03, 0x00, 0x00, 0x00, 0x00 };
 
-void test_switch_digital_analog_mode_command_set_digital() {
+void test_command_controller_switch_digital_analog_mode_set_digital() {
   state.analog_mode = CMAnalog;
   state.analog_mode_locked = false;
 
@@ -17,7 +17,7 @@ void test_switch_digital_analog_mode_command_set_digital() {
   TEST_ASSERT_FALSE_MESSAGE(state.analog_mode_locked, "Controller should not have analog lock enabled");
 }
 
-void test_switch_digital_analog_mode_command_set_analog() {
+void test_command_controller_switch_digital_analog_mode_set_analog() {
   state.analog_mode = CMDigital;
   state.analog_mode_locked = false;
 
@@ -27,7 +27,7 @@ void test_switch_digital_analog_mode_command_set_analog() {
   TEST_ASSERT_FALSE_MESSAGE(state.analog_mode_locked, "Controller should not have analog lock enabled");
 }
 
-void test_switch_digital_analog_mode_command_set_analog_with_lock() {
+void test_command_controller_switch_digital_analog_mode_set_analog_with_lock() {
   state.analog_mode = CMDigital;
   state.analog_mode_locked = false;
 
@@ -37,7 +37,7 @@ void test_switch_digital_analog_mode_command_set_analog_with_lock() {
   TEST_ASSERT_TRUE_MESSAGE(state.analog_mode_locked, "Controller should have analog lock enabled");
 }
 
-void test_switch_digital_analog_mode_command_toggling_removes_pressures() {
+void test_command_controller_switch_digital_analog_mode_toggling_removes_pressures() {
   // Starting from full analog with pressures, toggling twice should return to 
   // analog mode but with pressure data no longer enabled
   state.analog_mode = CMAnalogFull;

@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 const uint8_t SI_RESPONSE_BYTES[6] = { 0x03, 0x02, 0x01, 0x02, 0x01, 0x00 };
 
@@ -23,7 +23,7 @@ command_result si_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor status_info_command = {
+command_processor command_controller_status_info = {
     .id = 0x45,
     .initialize = &si_initialize,
     .process = &si_process,

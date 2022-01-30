@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 command_result mm_initialize(volatile command_packet *packet, controller_state *state) {
   // No initialization or memory state management needed
@@ -35,7 +35,7 @@ command_result mm_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor map_motors_command = {
+command_processor command_controller_map_motors = {
     .id = 0x4D,
     .initialize = &mm_initialize,
     .process = &mm_process,

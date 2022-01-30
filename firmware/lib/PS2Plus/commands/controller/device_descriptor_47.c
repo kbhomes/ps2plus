@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 const uint8_t DD47_CONSTANT_BYTES[5] = { 0x00, 0x02, 0x00, 0x01, 0x00 };
 
@@ -22,7 +22,7 @@ command_result dd47_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor device_descriptor_47_command = {
+command_processor command_controller_device_descriptor_47 = {
     .id = 0x47,
     .initialize = &dd47_initialize,
     .process = &dd47_process,

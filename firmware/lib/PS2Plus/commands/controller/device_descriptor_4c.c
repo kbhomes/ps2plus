@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 const uint8_t DD4C_CONSTANT_BYTES[2][5] = { 
   { 0x00, 0x00, 0x04, 0x00, 0x00 },
@@ -37,7 +37,7 @@ command_result dd4c_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor device_descriptor_4c_command = {
+command_processor command_controller_device_descriptor_4c = {
     .id = 0x4C,
     .initialize = &dd4c_initialize,
     .process = &dd4c_process,

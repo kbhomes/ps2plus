@@ -1,4 +1,4 @@
-#include "command.h"
+#include "../command.h"
 
 const uint8_t IPS_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x02, 0x00, 0x00, 0x5A };
 
@@ -18,7 +18,7 @@ command_result ips_process(volatile command_packet *packet, controller_state *st
   return CRCompleted;
 }
 
-command_processor initialize_pressure_sensor_command = {
+command_processor command_controller_initialize_pressure_sensor = {
     .id = 0x40,
     .initialize = &ips_initialize,
     .process = &ips_process,
