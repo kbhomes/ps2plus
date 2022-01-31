@@ -14,7 +14,7 @@ void test_command_ps2plus_set_configuration_joystick_axis_range_remapping() {
     uint8_t expected_output[] = { 0x00, 0x00, 0x00, 0x00 };
     uint8_t *actual_output = helper_run_command(&state, PS2PLUS_SC_COMMAND_ID, command_input, sizeof(command_input));
     TEST_ASSERT_EQUAL_HEX8_ARRAY(expected_output, actual_output, sizeof(command_input));
-    TEST_ASSERT_EQUAL_HEX8(axis_mappings[jsar], state.custom_config.values.joystick_axis_range_remapping_values[jsar].data.uint8);
+    TEST_ASSERT_EQUAL_HEX8(axis_mappings[jsar], state.custom_config.values.joystick_axis_range_remapping_values[jsar].uint8);
   }
 }
 
@@ -27,7 +27,7 @@ void test_command_ps2plus_set_configuration_joystick_digital_mode_enabled() {
     uint8_t expected_output[] = { 0x00, 0x00, 0x00, 0x00 };
     uint8_t *actual_output = helper_run_command(&state, PS2PLUS_SC_COMMAND_ID, command_input, sizeof(command_input));
     TEST_ASSERT_EQUAL_HEX8_ARRAY(expected_output, actual_output, sizeof(command_input));
-    TEST_ASSERT_EQUAL(values[i], state.custom_config.values.joystick_digital_mode_enabled.data.boolean);
+    TEST_ASSERT_EQUAL(values[i], state.custom_config.values.joystick_digital_mode_enabled.boolean);
   }
 }
 
@@ -40,7 +40,7 @@ void test_command_ps2plus_set_configuration_global_button_remapping_enabled() {
     uint8_t expected_output[] = { 0x00, 0x00, 0x00, 0x00 };
     uint8_t *actual_output = helper_run_command(&state, PS2PLUS_SC_COMMAND_ID, command_input, sizeof(command_input));
     TEST_ASSERT_EQUAL_HEX8_ARRAY(expected_output, actual_output, sizeof(command_input));
-    TEST_ASSERT_EQUAL(values[i], state.custom_config.values.global_button_remapping_enabled.data.boolean);
+    TEST_ASSERT_EQUAL(values[i], state.custom_config.values.global_button_remapping_enabled.boolean);
   }
 }
 

@@ -21,13 +21,13 @@ typedef struct primitive_data_array {
 
 typedef struct primitive_data {
   uint8_t type; // `primitive_data_type` enum
-  union data {
+  union {
     bool boolean;
     uint8_t uint8;
     uint16_t uint16;
     uint32_t uint32;
     primitive_data_array array;
-  } data;
+  };
 } primitive_data;
 
 void primitive_data_initialize_boolean(primitive_data *pd, bool value);

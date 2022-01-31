@@ -25,17 +25,17 @@ void controller_custom_config_load(controller_custom_config *config) {
   config->configuration_version = platform_memory_read_short(CONFIGURATION_ADDRESS_VERSION);
 
   for (size_t a = 0; a < NUM_JOYSTICK_AXIS_RANGES; a++) {
-    config->values.joystick_axis_range_remapping_values[a].data.uint8 = platform_memory_read(CONFIGURATION_ADDRESS(joystick_axis_range_remapping_values) + a);
+    config->values.joystick_axis_range_remapping_values[a].uint8 = platform_memory_read(CONFIGURATION_ADDRESS(joystick_axis_range_remapping_values) + a);
   }
-  config->values.joystick_digital_mode_enabled.data.boolean = platform_memory_read(CONFIGURATION_ADDRESS(joystick_digital_mode_enabled));
-  config->values.global_button_remapping_enabled.data.boolean = platform_memory_read(CONFIGURATION_ADDRESS(global_button_remapping_enabled));
+  config->values.joystick_digital_mode_enabled.boolean = platform_memory_read(CONFIGURATION_ADDRESS(joystick_digital_mode_enabled));
+  config->values.global_button_remapping_enabled.boolean = platform_memory_read(CONFIGURATION_ADDRESS(global_button_remapping_enabled));
 }
 
 void controller_custom_config_save(controller_custom_config *config) {
   platform_memory_write_short(CONFIGURATION_ADDRESS_VERSION, config->configuration_version);
   for (size_t a = 0; a < NUM_JOYSTICK_AXIS_RANGES; a++) {
-    platform_memory_write(CONFIGURATION_ADDRESS(joystick_axis_range_remapping_values), config->values.joystick_axis_range_remapping_values[a].data.uint8);
+    platform_memory_write(CONFIGURATION_ADDRESS(joystick_axis_range_remapping_values), config->values.joystick_axis_range_remapping_values[a].uint8);
   }
-  platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_mode_enabled), config->values.joystick_digital_mode_enabled.data.boolean);
-  platform_memory_write(CONFIGURATION_ADDRESS(global_button_remapping_enabled), config->values.global_button_remapping_enabled.data.boolean);
+  platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_mode_enabled), config->values.joystick_digital_mode_enabled.boolean);
+  platform_memory_write(CONFIGURATION_ADDRESS(global_button_remapping_enabled), config->values.global_button_remapping_enabled.boolean);
 }

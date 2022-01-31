@@ -51,7 +51,7 @@ command_result sc_process(volatile command_packet *packet, controller_state *sta
 
       // Array primitives require the extra byte to determine the length
       if (packet->command_index == 4 && sc_memory.target_value->type == PDT_Array) {
-        sc_memory.target_value->data.array.length = packet->command_byte;
+        sc_memory.target_value->array.length = packet->command_byte;
         sc_memory.value_raw_length = primitive_data_length(sc_memory.target_value);
       }
     }
