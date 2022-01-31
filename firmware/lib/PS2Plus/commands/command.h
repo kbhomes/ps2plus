@@ -35,6 +35,10 @@ extern command_processor command_controller_device_descriptor_4c;
 extern command_processor command_controller_map_motors;
 extern command_processor command_controller_configure_analog_response;
 
+// PS2+ configuration command processors
+extern command_processor command_ps2plus_get_version;
+extern command_processor command_ps2plus_get_configuration;
+
 /**
  * @brief Returns the command processor for the given command ID, or NULL if the 
  *        command ID is not supported.

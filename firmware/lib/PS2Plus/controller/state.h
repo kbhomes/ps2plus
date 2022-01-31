@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_STATE_H
 #define CONTROLLER_STATE_H
 
+#include "custom_config.h"
 #include "input.h"
 
 typedef enum controller_analog_mode {
@@ -41,8 +42,20 @@ typedef struct {
    */
   uint8_t mode;
 
+  /**
+   * @brief Rumble motor information for the small motor (FFh = on)
+   */
   controller_rumble_motor rumble_motor_small;
+
+  /**
+   * @brief Rumble motor information for the large motor (40h+ = on)
+   */
   controller_rumble_motor rumble_motor_large;
+
+  /**
+   * @brief Custom configuration information, persisted in internal storage
+   */
+  controller_custom_config custom_config;
 } controller_state;
 
 void controller_state_initialize(controller_state *);

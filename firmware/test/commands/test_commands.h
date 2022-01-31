@@ -42,3 +42,10 @@ void test_command_controller_map_motors_retains_mappings();
 void test_command_controller_configure_analog_response_digital_mode();
 void test_command_controller_configure_analog_response_analog_mode();
 void test_command_controller_configure_analog_response_analog_full_mode();
+
+void test_command_ps2plus_get_version_firmware();
+void test_command_ps2plus_get_version_microcontroller();
+void test_command_ps2plus_get_version_configuration();
+void test_command_ps2plus_get_configuration_joystick_axis_range_remapping();
+void test_command_ps2plus_get_configuration_joystick_digital_mode_enabled();
+void test_command_ps2plus_get_configuration_global_button_remapping_enabled();

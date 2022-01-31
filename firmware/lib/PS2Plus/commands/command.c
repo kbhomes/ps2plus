@@ -24,15 +24,34 @@ command_processor *command_controller_processors[] = {
 };
 
 /**
+ * @brief Processors for PS2+ configuration commands
+ * 
+ * PS2+ supports custom commands that are sent by the PS2+ configurator console application.
+ * These commands get PS2+ status information, get/set configuration values, and enable
+ * firmware updates. These commands have a 7 as the higher nibble.
+ */
+command_processor *command_ps2plus_processors[] = {
+  &command_ps2plus_get_version,                    // 70h
+  &command_ps2plus_get_configuration,              // 71h
+  NULL, /* &command_ps2plus_set_configuration, */              // 72h
+  NULL, /* &command_ps2plus_disable_enable_configuration, */   // 73h
+  NULL, /* &command_ps2plus_restore_configuration_defaults, */ // 74h
+  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+  NULL, /* &command_ps2plus_reboot_controller, */              // 7Dh
+  NULL, /* &command_ps2plus_update_firmware_data, */           // 7Eh
+  NULL, /* &command_ps2plus_query_firmware_update_status, */   // 7Fh
+};
+
+/**
  * @brief Two-dimensional table of polling commands indexed first by the upper nibble and
  *        then by the lower nibble of the command ID.
  */
 command_processor **command_processors[] = {
   NULL, NULL, NULL, NULL,
-  &command_controller_processors,                    // 40h - 4Fh
-  NULL, NULL, NULL, NULL, 
-  NULL, NULL, NULL, NULL, 
-  NULL, NULL, NULL,
+  &command_controller_processors,                               // 40h - 4Fh
+  NULL, NULL,
+  &command_ps2plus_processors,                                  // 70h - 7Fh
+  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 };
 
 command_processor *command_find_processor(uint8_t id) {

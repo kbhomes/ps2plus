@@ -2,6 +2,7 @@
 
 void controller_state_initialize(controller_state *state) {
   controller_input_initialize(&state->input);
+  controller_custom_config_initialize(&state->custom_config);
   state->analog_mode = CMDigital;
   state->analog_mode_locked = false;
   state->config_mode = false;
