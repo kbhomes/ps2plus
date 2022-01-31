@@ -38,6 +38,7 @@ extern command_processor command_ps2plus_get_version;
 extern command_processor command_ps2plus_get_configuration;
 extern command_processor command_ps2plus_set_configuration;
 extern command_processor command_ps2plus_disable_enable_configuration;
+extern command_processor command_ps2plus_restore_configuration_defaults;
 
 /**
  * @brief Returns the command processor for the given command ID, or NULL if the 

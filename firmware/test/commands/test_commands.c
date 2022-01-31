@@ -71,5 +71,6 @@ int main(void) {
   RUN_TEST(test_command_ps2plus_set_configuration_global_button_remapping_enabled);
   RUN_TEST(test_command_ps2plus_set_configuration_unknown);
   RUN_TEST(test_command_ps2plus_disable_enable_configuration);
+  RUN_TEST(test_command_ps2plus_disable_reset_configuration_defaults);
   UNITY_END();
 }
