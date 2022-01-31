@@ -2,6 +2,8 @@
 
 #include <string.h>
 
+const primitive_data primitive_data_unknown = { .type = PDT_Unknown };
+
 void primitive_data_initialize_boolean(primitive_data *pd, bool value) {
   pd->type = PDT_Boolean;
   pd->data.boolean = value;

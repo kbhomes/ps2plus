@@ -39,4 +39,6 @@ size_t primitive_data_length(primitive_data *pd);
 void primitive_data_serialize(primitive_data *pd, uint8_t *out);
 void primitive_data_deserialize(primitive_data *pd, uint8_t *in);
 
+extern const primitive_data primitive_data_unknown;
+
 #endif /* UTILITIES_PRIMITIVE_DATA_H */

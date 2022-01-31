@@ -65,5 +65,10 @@ int main(void) {
   RUN_TEST(test_command_ps2plus_get_configuration_joystick_axis_range_remapping);
   RUN_TEST(test_command_ps2plus_get_configuration_joystick_digital_mode_enabled);
   RUN_TEST(test_command_ps2plus_get_configuration_global_button_remapping_enabled);
+  RUN_TEST(test_command_ps2plus_get_configuration_unknown);
+  RUN_TEST(test_command_ps2plus_set_configuration_joystick_axis_range_remapping);
+  RUN_TEST(test_command_ps2plus_set_configuration_joystick_digital_mode_enabled);
+  RUN_TEST(test_command_ps2plus_set_configuration_global_button_remapping_enabled);
+  RUN_TEST(test_command_ps2plus_set_configuration_unknown);
   UNITY_END();
 }

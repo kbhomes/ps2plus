@@ -4,6 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <utilities/primitive_data.h>
+
 typedef enum {
   JSAxisRange_LeftXMin,
   JSAxisRange_LeftXCenter,
@@ -20,9 +22,33 @@ typedef enum {
   NUM_JOYSTICK_AXIS_RANGES,
 } controller_joystick_axis_range_remapping;
 
-// NOTE: All configuration values below are stored in internal storage in the order
-// in which they appear below. Do not change the order of these configurations
-// without bumping the configuration version of this firmware!
+/**
+ * @brief Collection of all configuration values, each being a `primitive_data` which 
+ *        will be serialized for transfer between the firmware and the PS2+ configurator.
+ * 
+ * NOTE: All configuration values below are stored in internal storage in the order
+ *       in which they appear. Do not change the order of these configurations
+ *       without bumping the configuration version!
+ */
+typedef struct {
+  /**
+   * @brief Min, center, and max remapping values for each joystick axis
+   */
+  primitive_data /* uint8 */ joystick_axis_range_remapping_values[NUM_JOYSTICK_AXIS_RANGES];
+
+  /**
+   * @brief When enabled and the controller is in digital mode, the left and right joysticks
+   *        simulate the D-pad and face buttons respectively
+   */
+  primitive_data /* boolean */ joystick_digital_mode_enabled;
+
+  /**
+   * @brief When enabled, the cross and circle buttons are swapped
+   */
+  primitive_data /* boolean */ global_button_remapping_enabled;
+} controller_custom_config_values;
+
+#define NUM_CUSTOM_CONFIGURATIONS (sizeof(controller_custom_config_values) / sizeof(primitive_data))
 
 typedef struct {
   /**
@@ -38,20 +64,13 @@ typedef struct {
   uint16_t configuration_version;
 
   /**
-   * @brief Min, center, and max remapping values for each joystick axis
+   * @brief Configuration values that can be serialized for transfer between the firmware
+   *        and the PS2+ configurator application
    */
-  uint8_t joystick_axis_range_remapping_values[NUM_JOYSTICK_AXIS_RANGES];
-
-  /**
-   * @brief When enabled and the controller is in digital mode, the left and right joysticks
-   *        simulate the D-pad and face buttons respectively
-   */
-  bool joystick_digital_mode_enabled;
-
-  /**
-   * @brief When enabled, the cross and circle buttons are swapped
-   */
-  bool global_button_remapping_enabled;
+  union {
+    controller_custom_config_values values;
+    primitive_data all[NUM_CUSTOM_CONFIGURATIONS];
+  };
 } controller_custom_config;
 
 void controller_custom_config_initialize(controller_custom_config *config);

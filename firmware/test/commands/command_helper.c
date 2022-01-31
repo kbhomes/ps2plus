@@ -77,6 +77,11 @@ uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const u
     packet.data_index++;
   }
 
+  // If the processor has a finalize method, call it on the final byte
+  if (processor->finalize != NULL) {
+    processor->finalize(&packet, state);
+  }
+
   if (helper_debug_enabled) {
     // Debug!
     printf("TX: ");

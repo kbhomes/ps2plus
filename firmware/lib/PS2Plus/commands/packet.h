@@ -57,10 +57,14 @@ typedef struct command_packet {
   command_packet_write_function write;
 
   /**
-   * @brief True if this packet should be ignored for the remainder of its lifetime, whether due to invalid
-   *        data or if the packet has been fully processed
+   * @brief True if this packet should be ignored for the remainder of its lifetime due to invalid data
    */
   bool ignore;
+
+  /**
+   * @brief True if this packet has written its final byte (though it may still read the final incoming byte)
+   */
+  bool completed;
 
   /**
    * @brief Command processor that will handle this packet

@@ -9,12 +9,14 @@ void command_packet_initialize(volatile command_packet *packet, command_packet_w
   packet->data_index = -2;
   packet->write = write_function;
   packet->ignore = false;
+  packet->completed = false;
   packet->processor = NULL;
 }
 
 void command_packet_step(volatile command_packet *packet, controller_state *state, uint8_t command_byte) {
+  packet->command_byte = command_byte;
+
   if (!packet->ignore) {
-    packet->command_byte = command_byte;
 
     if (packet->packet_index == 0) {
       packet->write(state->mode);
@@ -40,8 +42,14 @@ void command_packet_step(volatile command_packet *packet, controller_state *stat
     } else {
       command_result result = ((command_processor *)packet->processor)->process(packet, state);
       if (result == CRCompleted) {
-        packet->ignore = true;
+        packet->completed = true;
       } 
+    }
+  } else if (packet->completed) {
+    command_processor *processor = (command_processor *)packet->processor;
+
+    if (processor != NULL && processor->finalize != NULL) {
+      processor->finalize(packet, state);
     }
   }
   
