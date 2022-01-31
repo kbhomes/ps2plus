@@ -34,7 +34,7 @@ command_processor *command_ps2plus_processors[] = {
   &command_ps2plus_get_version,                    // 70h
   &command_ps2plus_get_configuration,              // 71h
   &command_ps2plus_set_configuration,              // 72h
-  NULL, /* &command_ps2plus_disable_enable_configuration, */   // 73h
+  &command_ps2plus_disable_enable_configuration,   // 73h
   NULL, /* &command_ps2plus_restore_configuration_defaults, */ // 74h
   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
   NULL, /* &command_ps2plus_reboot_controller, */              // 7Dh

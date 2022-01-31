@@ -54,3 +54,4 @@ void test_command_ps2plus_set_configuration_joystick_axis_range_remapping();
 void test_command_ps2plus_set_configuration_joystick_digital_mode_enabled();
 void test_command_ps2plus_set_configuration_global_button_remapping_enabled();
 void test_command_ps2plus_set_configuration_unknown();
+void test_command_ps2plus_disable_enable_configuration();

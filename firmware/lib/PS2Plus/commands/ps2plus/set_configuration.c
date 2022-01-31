@@ -72,7 +72,7 @@ command_result sc_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_result sc_finalize(volatile command_packet *packet, controller_state *state) {
+void sc_finalize(volatile command_packet *packet, controller_state *state) {
   if (sc_memory.target_value != NULL) {
     // Read the final incoming byte
     sc_memory.value_raw[sc_memory.value_raw_length - 1] = packet->command_byte;

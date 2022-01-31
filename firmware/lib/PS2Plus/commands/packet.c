@@ -17,7 +17,6 @@ void command_packet_step(volatile command_packet *packet, controller_state *stat
   packet->command_byte = command_byte;
 
   if (!packet->ignore) {
-
     if (packet->packet_index == 0) {
       packet->write(state->mode);
 

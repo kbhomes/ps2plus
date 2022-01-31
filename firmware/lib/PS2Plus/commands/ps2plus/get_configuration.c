@@ -13,7 +13,7 @@ command_result gc_initialize(volatile command_packet *packet, controller_state *
   gc_memory.requested_configuration = 0;
   gc_memory.value = &primitive_data_unknown;
   gc_memory.value_serialized_length = primitive_data_length(gc_memory.value);
-  primitive_data_serialize(gc_memory.value, &gc_memory.value_serialized);
+  primitive_data_serialize(gc_memory.value, gc_memory.value_serialized);
   
   return CRInitialized;
 }
@@ -35,7 +35,7 @@ command_result gc_process(volatile command_packet *packet, controller_state *sta
     
     // Convert the requested configuration to a deliverable payload
     gc_memory.value_serialized_length = primitive_data_length(gc_memory.value);
-    primitive_data_serialize(gc_memory.value, &gc_memory.value_serialized);
+    primitive_data_serialize(gc_memory.value, gc_memory.value_serialized);
   }
 
   if (packet->data_index < 2) {

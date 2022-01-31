@@ -17,7 +17,7 @@ typedef struct command_processor {
   uint8_t id;
   command_result (*initialize)(volatile command_packet *packet, controller_state *);
   command_result (*process)(volatile command_packet *packet, controller_state *);
-  command_result (*finalize)(volatile command_packet *packet, controller_state *);
+  void (*finalize)(volatile command_packet *packet, controller_state *);
 } command_processor;
 
 // Controller command processors
@@ -37,6 +37,7 @@ extern command_processor command_controller_configure_analog_response;
 extern command_processor command_ps2plus_get_version;
 extern command_processor command_ps2plus_get_configuration;
 extern command_processor command_ps2plus_set_configuration;
+extern command_processor command_ps2plus_disable_enable_configuration;
 
 /**
  * @brief Returns the command processor for the given command ID, or NULL if the 
