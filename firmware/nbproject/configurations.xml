@@ -5,6 +5,10 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="commands" displayName="commands" projectFiles="true">
+        <logicalFolder name="controller" displayName="controller" projectFiles="true">
+        </logicalFolder>
+        <logicalFolder name="ps2plus" displayName="ps2plus" projectFiles="true">
+        </logicalFolder>
         <itemPath>lib/PS2Plus/commands/command.h</itemPath>
         <itemPath>lib/PS2Plus/commands/packet.h</itemPath>
       </logicalFolder>
@@ -31,6 +35,7 @@
       <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
         <itemPath>lib/PS2Plus/utilities/debounced_bool.h</itemPath>
         <itemPath>lib/PS2Plus/utilities/latching_bool.h</itemPath>
+        <itemPath>lib/PS2Plus/utilities/primitive_data.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -43,20 +48,30 @@
       <logicalFolder name="lib" displayName="lib" projectFiles="true">
         <logicalFolder name="PS2Plus" displayName="PS2Plus" projectFiles="true">
           <logicalFolder name="commands" displayName="commands" projectFiles="true">
-            <itemPath>lib/PS2Plus/commands/button_inclusions_command.c</itemPath>
+            <logicalFolder name="controller" displayName="controller" projectFiles="true">
+              <itemPath>lib/PS2Plus/commands/controller/button_inclusions.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/configure_analog_response.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/device_descriptor_46.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/device_descriptor_47.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/device_descriptor_4c.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/initialize_pressure_sensor.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/main_polling_enter_exit_config.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/map_motors.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/status_info.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/controller/switch_digital_analog_mode.c</itemPath>
+            </logicalFolder>
+            <logicalFolder name="ps2plus" displayName="ps2plus" projectFiles="true">
+              <itemPath>lib/PS2Plus/commands/ps2plus/disable_enable_configuration.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/ps2plus/get_configuration.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/ps2plus/get_version.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/ps2plus/restore_configuration_defaults.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/ps2plus/set_configuration.c</itemPath>
+            </logicalFolder>
             <itemPath>lib/PS2Plus/commands/command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/configure_analog_response_command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/device_descriptor_46_command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/device_descriptor_47_command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/device_descriptor_4c_command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/initialize_pressure_sensor_command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/main_polling_command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/map_motors_command.c</itemPath>
             <itemPath>lib/PS2Plus/commands/packet.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/status_info_command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/switch_digital_analog_mode_command.c</itemPath>
           </logicalFolder>
           <logicalFolder name="controller" displayName="controller" projectFiles="true">
+            <itemPath>lib/PS2Plus/controller/custom_config.c</itemPath>
             <itemPath>lib/PS2Plus/controller/input.c</itemPath>
             <itemPath>lib/PS2Plus/controller/state.c</itemPath>
           </logicalFolder>
@@ -70,20 +85,26 @@
               <itemPath>lib/PS2Plus/platforms/arduino/arduino_uart_serial.c</itemPath>
             </logicalFolder>
             <logicalFolder name="native" displayName="native" projectFiles="true">
-              <itemPath>lib/PS2Plus/platforms/native/native.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/native/native_controller.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/native/native_memory.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/native/native_platform.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/native/native_spi_playstation.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/native/native_timing.c</itemPath>
             </logicalFolder>
             <logicalFolder name="pic16f" displayName="pic16f" projectFiles="true">
-              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_platform.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_controller.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_memory.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_platform.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_spi_playstation.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_timing.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_uart_serial.c</itemPath>
             </logicalFolder>
+            <itemPath>lib/PS2Plus/platforms/platform.c</itemPath>
           </logicalFolder>
           <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
             <itemPath>lib/PS2Plus/utilities/debounced_bool.c</itemPath>
             <itemPath>lib/PS2Plus/utilities/latching_bool.c</itemPath>
+            <itemPath>lib/PS2Plus/utilities/primitive_data.c</itemPath>
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>

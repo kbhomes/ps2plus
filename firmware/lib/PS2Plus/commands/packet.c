@@ -13,7 +13,7 @@ void command_packet_initialize(volatile command_packet *packet, command_packet_w
   packet->processor = NULL;
 }
 
-void command_packet_step(volatile command_packet *packet, controller_state *state, uint8_t command_byte) {
+void command_packet_step(volatile command_packet *packet, volatile controller_state *state, uint8_t command_byte) {
   packet->command_byte = command_byte;
 
   if (!packet->ignore) {

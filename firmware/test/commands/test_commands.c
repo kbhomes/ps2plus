@@ -4,17 +4,7 @@
 #include <stdio.h>
 #include <unity.h>
 
-controller_state state = { 
-  .input = {
-    .digital_buttons = { 0 },
-    .joysticks = { 0 },
-  },
-  .analog_mode = CMDigital,
-  .analog_mode_locked = false,
-  .config_mode = false,
-  .rumble_motor_small = { .mapping = 0xFF, .value = 0x00 },
-  .rumble_motor_large = { .mapping = 0xFF, .value = 0x00 },
-};
+controller_state state;
 
 void setUp() {
   helper_initialize();

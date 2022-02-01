@@ -73,6 +73,6 @@ typedef struct command_packet {
 } command_packet;
 
 void command_packet_initialize(volatile command_packet *packet, command_packet_write_function write_function);
-void command_packet_step(volatile command_packet *packet, controller_state *state, uint8_t command_byte);
+void command_packet_step(volatile command_packet *packet, volatile controller_state *state, uint8_t command_byte);
 
 #endif /* COMMANDS_PACKET_H */

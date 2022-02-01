@@ -13,10 +13,10 @@ void platform_memory_write_short(size_t address, uint16_t value) {
 
 uint32_t platform_memory_read_int(size_t address) {
   return (
-    (platform_memory_read(address)) | 
-    (platform_memory_read(address + 1) << 8) |
-    (platform_memory_read(address + 2) << 16) | 
-    (platform_memory_read(address + 3) << 24)
+    ((uint32_t)platform_memory_read(address)) | 
+    ((uint32_t)platform_memory_read(address + 1) << 8) |
+    ((uint32_t)platform_memory_read(address + 2) << 16) | 
+    ((uint32_t)platform_memory_read(address + 3) << 24)
   );
 }
 

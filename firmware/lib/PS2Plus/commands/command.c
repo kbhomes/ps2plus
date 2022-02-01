@@ -48,9 +48,9 @@ command_processor *command_ps2plus_processors[] = {
  */
 command_processor **command_processors[] = {
   NULL, NULL, NULL, NULL,
-  &command_controller_processors,                               // 40h - 4Fh
+  command_controller_processors,                               // 40h - 4Fh
   NULL, NULL,
-  &command_ps2plus_processors,                                  // 70h - 7Fh
+  command_ps2plus_processors,                                  // 70h - 7Fh
   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 };
 

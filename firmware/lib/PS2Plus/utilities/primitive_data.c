@@ -90,11 +90,11 @@ void primitive_data_deserialize(primitive_data *pd, uint8_t *in) {
       return;
       
     case PDT_Uint16:
-      pd->uint16 = in[1] | (in[2] << 8);
+      pd->uint16 = in[1] | ((uint16_t)in[2] << 8);
       return;
       
     case PDT_Uint32:
-      pd->uint32 = in[1] | (in[2] << 8) | (in[3] << 16) | (in[4] << 24);
+      pd->uint32 = in[1] | ((uint32_t)in[2] << 8) | ((uint32_t)in[3] << 16) | ((uint32_t)in[4] << 24);
       return;     
 
     case PDT_Array:
