@@ -42,6 +42,8 @@ clean:
 	$(MAKE) -C iop clean
 	@rm -f ee/*_irx.o bin/*.ELF bin/*.IRX
 
+rebuild: clean all
+
 builtins: $(EE_IRX_OBJS)
 
 .PHONY: iop ee

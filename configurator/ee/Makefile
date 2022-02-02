@@ -1,5 +1,5 @@
 EE_BIN = ps2plus_updater.elf
-EE_OBJS = ps2plus_updater.o
+EE_OBJS = ps2plus_updater.o ../common/primitive_data.o
 EE_INCS += -I../include
 EE_LIBS += -ldebug -lc -lpatches
 

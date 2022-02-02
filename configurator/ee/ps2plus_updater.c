@@ -58,13 +58,26 @@ int main(int argc, char *argv[]) {
 
     // Make a function call to the RPC server
     printf("Making RPC call to ps2plupd\n");
-    rpc_packet.command = PS2PlusCommandInit;
-    memcpy(&rpc_packet.data, "Hello", 6);
+
+    rpc_packet.command = PS2Plus_Init;
     ret = SifCallRpc(&rpc_client_data, 0, 0, &rpc_packet, sizeof(ps2plus_updater_rpc_packet), &rpc_packet, sizeof(ps2plus_updater_rpc_packet), NULL, NULL);
-    
     if (ret >= 0) {
         printf("Result: %d\n", ret);
-        printf("Response: %s\n", rpc_packet.data);
+        printf("Response: %ld\n", rpc_packet.command_get_version.version_response.uint32);
+    } else {
+        printf("Result: %d\n", ret);
+    }
+    
+    rpc_packet.command = PS2Plus_GetVersion;
+    rpc_packet.command_get_version.version_id = 0x02;
+    ret = SifCallRpc(&rpc_client_data, 0, 0, &rpc_packet, sizeof(ps2plus_updater_rpc_packet), &rpc_packet, sizeof(ps2plus_updater_rpc_packet), NULL, NULL);
+    if (ret >= 0) {
+        printf("Result: %d\n", ret);
+        if (rpc_packet.command_get_version.version_response.type == PDT_Array) {
+            printf("Response: %s\n", rpc_packet.command_get_version.version_buffer);
+        } else {
+            printf("Response: %08lx\n", rpc_packet.command_get_version.version_response.uint32);
+        }
     } else {
         printf("Result: %d\n", ret);
     }

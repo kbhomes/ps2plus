@@ -1,5 +1,5 @@
 IOP_BIN = ps2plupd.irx
-IOP_OBJS = ps2plus_updater.o imports.o exports.o
+IOP_OBJS = ps2plus_updater.o imports.o exports.o ../common/primitive_data.o
 IOP_INCS += -I../include
 
 all: $(IOP_BIN)
