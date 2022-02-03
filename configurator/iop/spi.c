@@ -89,7 +89,7 @@ static void _transfer_tx_rx(u8 *tx, size_t tx_length, u8 *rx, size_t rx_length) 
   }
 }
 
-bool ps2plus_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size) {
+bool ps2plman_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size) {
   // Generate the TX buffer, including the SIO2 header
   tx_buffer[0] = 0x01;
   tx_buffer[1] = command;
@@ -119,7 +119,7 @@ bool ps2plus_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size
   return rx_buffer[0] == 0xFF && rx_buffer[2] == 0x5A;
 }
 
-bool ps2plus_spi_transmit_mock(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size, u8 *rx_mock_full) {
+bool ps2plman_spi_transmit_mock(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size, u8 *rx_mock_full) {
   if (rx_mock_full) {
     // Generate the TX buffer, including the SIO2 header
     tx_buffer[0] = 0x01;
@@ -144,6 +144,6 @@ bool ps2plus_spi_transmit_mock(u8 command, u8 *tx_in, u8 *rx_out, size_t payload
 
     return rx_mock_full[0] == 0xFF & rx_mock_full[2] == 0x5A;
   } else {
-    ps2plus_spi_transmit(command, tx_in, rx_out, payload_size);
+    ps2plman_spi_transmit(command, tx_in, rx_out, payload_size);
   }
 }

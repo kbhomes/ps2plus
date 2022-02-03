@@ -4,8 +4,8 @@
 
 static uint8_t rx_mock_set_configuration[] = { 0xFF, 0x41, 0x5A, 0x00, 0x00, PDT_Boolean, 0xFF };
 
-void command_set_configuration(ps2plus_rpc_packet *packet) {
-    ps2plus_rpc_command_set_configuration *command = &packet->set_configuration;
+void command_set_configuration(ps2plman_rpc_packet *packet) {
+    ps2plman_rpc_command_set_configuration *command = &packet->set_configuration;
 
     // The largest possible payload from this command is about 36 bytes, in the case
     // of setting any string configuration which has a max length of 32.
@@ -34,5 +34,5 @@ void command_set_configuration(ps2plus_rpc_packet *packet) {
     primitive_data_serialize(&command->configuration_value, tx_ + 2);
 
     // Transmit the value
-    packet->ok = ps2plus_spi_transmit_mock(0x72, tx_, rx_, 2 + primitive_size, rx_mock_set_configuration);
+    packet->ok = ps2plman_spi_transmit_mock(0x72, tx_, rx_, 2 + primitive_size, rx_mock_set_configuration);
 }

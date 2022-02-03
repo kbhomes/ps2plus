@@ -4,8 +4,8 @@
 
 static uint8_t rx_mock_get_configuration[] = { 0xFF, 0x41, 0x5A, 0x00, 0x00, PDT_Boolean, 0xFF };
 
-void command_get_configuration(ps2plus_rpc_packet *packet) {
-    ps2plus_rpc_command_get_configuration *command = &packet->get_configuration;
+void command_get_configuration(ps2plman_rpc_packet *packet) {
+    ps2plman_rpc_command_get_configuration *command = &packet->get_configuration;
 
     // The largest possible payload from this command is about 36 bytes, in the case
     // of requesting any string configuration which has a max length of 32.
@@ -27,7 +27,7 @@ void command_get_configuration(ps2plus_rpc_packet *packet) {
     {
         // The first 4 bytes (and specifically RX indices 2 and 3) are required to 
         // calculate the size of the primitive data that the PS2+ wants to return.
-        packet->ok = ps2plus_spi_transmit_mock(0x71, tx_, rx_, 4, rx_mock_get_configuration);
+        packet->ok = ps2plman_spi_transmit_mock(0x71, tx_, rx_, 4, rx_mock_get_configuration);
 
         // "Pre-load" the primitive type and possible array length into the response buffer
         command->configuration_response.type = rx_[2];
@@ -37,7 +37,7 @@ void command_get_configuration(ps2plus_rpc_packet *packet) {
     // Second pass to get the real payload, based on the data length calculated from the first pass
     if (packet->ok) {
         size_t primitive_size = primitive_data_length(&command->configuration_response);
-        ps2plus_spi_transmit_mock(0x71, tx_, rx_, 2 + primitive_size, rx_mock_get_configuration);
+        ps2plman_spi_transmit_mock(0x71, tx_, rx_, 2 + primitive_size, rx_mock_get_configuration);
 
         // Deserialize the primitive data from the payload response
         primitive_data_deserialize(&command->configuration_response, rx_ + 2);

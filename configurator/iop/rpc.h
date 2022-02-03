@@ -5,8 +5,8 @@
 
 #include <ps2plus_common.h>
 
-typedef void (*ps2plus_rpc_command_handler)(ps2plus_rpc_packet *packet);
+typedef void (*ps2plman_rpc_command_handler)(ps2plman_rpc_packet *packet);
 
-void ps2plus_rpc_init(ps2plus_rpc_command_handler *handlers);
+void ps2plman_rpc_init(ps2plman_rpc_command_handler *handlers);
 
 #endif

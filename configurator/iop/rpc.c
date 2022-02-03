@@ -6,11 +6,11 @@ static SifRpcDataQueue_t rpc_data_queue;
 static SifRpcServerData_t rpc_server_data;
 static u32 rpc_server_buffer[32];
 
-ps2plus_rpc_command_handler *command_handlers;
+ps2plman_rpc_command_handler *command_handlers;
 
 static void *_rpc_server(int fno, void *buffer, int length) {
-    ps2plus_rpc_packet *packet = (ps2plus_rpc_packet *)buffer;
-    ps2plus_rpc_command command = packet->command;
+    ps2plman_rpc_packet *packet = (ps2plman_rpc_packet *)buffer;
+    ps2plman_rpc_command command = packet->command;
 
     if (command_handlers && command_handlers[command]) {
         command_handlers[command](packet);
@@ -19,40 +19,6 @@ static void *_rpc_server(int fno, void *buffer, int length) {
     }
 
     return buffer; 
-
-    // switch (command) {
-    //     case PS2Plus_Init:
-    //         printf("[ps2plman] Command: PS2Plus_Init\n");
-    //         padConnect();
-    //         return buffer;
-
-    //     case PS2Plus_GetVersion:
-    //         printf("[ps2plman] Command: PS2Plus_GetVersion\n");
-    //         ps2plus_get_version(packet);
-    //         return buffer;
-
-    //     case PS2Plus_GetConfiguration:
-    //         printf("[ps2plman] Command: PS2Plus_GetConfiguration\n");
-    //         return buffer;
-
-    //     case PS2Plus_SetConfiguration:
-    //         printf("[ps2plman] Command: PS2Plus_SetConfiguration\n");
-    //         return buffer;
-
-    //     case PS2Plus_DisableEnableConfiguration:
-    //         printf("[ps2plman] Command: PS2Plus_DisableEnableConfiguration\n");
-    //         return buffer;
-
-    //     case PS2Plus_RestoreConfigurationDefaults:
-    //         printf("[ps2plman] Command: PS2Plus_RestoreConfigurationDefaults\n");
-    //         return buffer;
-
-    //     default:
-    //         printf("[ps2plman] Command: Unknown (%d)\n", command);
-    //         break;
-    // }
-
-    // return buffer;
 }
 
 static void _rpc_thread(void *arg) {
@@ -67,7 +33,7 @@ static void _rpc_thread(void *arg) {
     sceSifRpcLoop(&rpc_data_queue);
 }
 
-void ps2plus_rpc_init(ps2plus_rpc_command_handler *handlers) {
+void ps2plman_rpc_init(ps2plman_rpc_command_handler *handlers) {
     command_handlers = handlers;
 
     // RPC Server
