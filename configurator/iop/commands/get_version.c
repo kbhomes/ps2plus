@@ -1,5 +1,6 @@
 #include "../irx_imports.h"
-#include "../ps2plus_updater.h"
+#include "../ps2plman.h"
+#include "../spi.h"
 
 static uint8_t rx_mock_get_version[] = { 0xFF, 0x41, 0x5A, 0x00, PDT_Array, 0x06, 'H', 'e', 'l', 'l', 'o', '!' };
 

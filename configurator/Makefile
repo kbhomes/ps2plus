@@ -7,8 +7,8 @@ RM=rm -f
 
 include $(PS2SDK)/Defs.make
 
-EEFILES=ee/ps2plus_updater.elf
-IRXFILES=ps2plupd.irx sio2man.irx
+EEFILES=ee/ps2plman.elf
+IRXFILES=ps2plman.irx sio2man.irx
 EE_IRX_OBJS = $(addprefix ee/, $(addsuffix _irx.o, $(basename $(IRXFILES))))
 
 # Where to find the IRX files

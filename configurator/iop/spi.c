@@ -94,14 +94,18 @@ bool ps2plus_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size
   tx_buffer[0] = 0x01;
   tx_buffer[1] = command;
   tx_buffer[2] = 0x00;
-  memcpy(tx_buffer + 3, tx_in, payload_size);
+    if (payload_size) {
+      memcpy(tx_buffer + 3, tx_in, payload_size);
+    }
 
   // Complete the transmission
   _transfer_init();
   _transfer_tx_rx(tx_buffer, payload_size + 3, rx_buffer, payload_size + 3);
 
   // Copy the RX payload from the response buffer
-  memcpy(rx_out, rx_buffer + 3, payload_size);
+  if (payload_size) {
+      memcpy(rx_out, rx_buffer + 3, payload_size);
+  }
 
   printf("[ps2plman] TX: ");
   print_hex_array(tx_buffer, payload_size + 3);
@@ -121,10 +125,14 @@ bool ps2plus_spi_transmit_mock(u8 command, u8 *tx_in, u8 *rx_out, size_t payload
     tx_buffer[0] = 0x01;
     tx_buffer[1] = command;
     tx_buffer[2] = 0x00;
-    memcpy(tx_buffer + 3, tx_in, payload_size);
+    if (payload_size) {
+      memcpy(tx_buffer + 3, tx_in, payload_size);
+    }
 
     // Copy the mock data into the response payload
-    memcpy(rx_out, rx_mock_full + 3, payload_size);
+    if (payload_size) {
+      memcpy(rx_out, rx_mock_full + 3, payload_size);
+    }
 
     printf("[ps2plman] TX: ");
     print_hex_array(tx_buffer, payload_size + 3);

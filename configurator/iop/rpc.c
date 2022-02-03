@@ -22,33 +22,33 @@ static void *_rpc_server(int fno, void *buffer, int length) {
 
     // switch (command) {
     //     case PS2Plus_Init:
-    //         printf("[ps2plupd] Command: PS2Plus_Init\n");
+    //         printf("[ps2plman] Command: PS2Plus_Init\n");
     //         padConnect();
     //         return buffer;
 
     //     case PS2Plus_GetVersion:
-    //         printf("[ps2plupd] Command: PS2Plus_GetVersion\n");
+    //         printf("[ps2plman] Command: PS2Plus_GetVersion\n");
     //         ps2plus_get_version(packet);
     //         return buffer;
 
     //     case PS2Plus_GetConfiguration:
-    //         printf("[ps2plupd] Command: PS2Plus_GetConfiguration\n");
+    //         printf("[ps2plman] Command: PS2Plus_GetConfiguration\n");
     //         return buffer;
 
     //     case PS2Plus_SetConfiguration:
-    //         printf("[ps2plupd] Command: PS2Plus_SetConfiguration\n");
+    //         printf("[ps2plman] Command: PS2Plus_SetConfiguration\n");
     //         return buffer;
 
     //     case PS2Plus_DisableEnableConfiguration:
-    //         printf("[ps2plupd] Command: PS2Plus_DisableEnableConfiguration\n");
+    //         printf("[ps2plman] Command: PS2Plus_DisableEnableConfiguration\n");
     //         return buffer;
 
     //     case PS2Plus_RestoreConfigurationDefaults:
-    //         printf("[ps2plupd] Command: PS2Plus_RestoreConfigurationDefaults\n");
+    //         printf("[ps2plman] Command: PS2Plus_RestoreConfigurationDefaults\n");
     //         return buffer;
 
     //     default:
-    //         printf("[ps2plupd] Command: Unknown (%d)\n", command);
+    //         printf("[ps2plman] Command: Unknown (%d)\n", command);
     //         break;
     // }
 
@@ -57,7 +57,7 @@ static void *_rpc_server(int fno, void *buffer, int length) {
 
 static void _rpc_thread(void *arg) {
     if (sceSifCheckInit() == 0) {
-        printf("[ps2plupd] SIF not initialized\n");
+        printf("[ps2plman] SIF not initialized\n");
         sceSifInit();
     }
 

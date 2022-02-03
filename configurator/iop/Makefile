@@ -1,5 +1,9 @@
-IOP_BIN = ps2plupd.irx
-IOP_OBJS = ps2plus_updater.o rpc.o spi.o imports.o exports.o ../common/primitive_data.o
+IOP_BIN = ps2plman.irx
+IOP_OBJS = \
+		ps2plman.o rpc.o spi.o imports.o exports.o \
+		commands/get_version.o commands/get_configuration.o commands/set_configuration.o \
+		commands/disable_enable_configuration.o commands/restore_configuration_defaults.o commands/reboot_controller.o \
+		../common/primitive_data.o
 IOP_INCS += -I../common
 
 all: $(IOP_BIN)

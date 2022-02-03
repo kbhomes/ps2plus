@@ -1,5 +1,6 @@
 #include "../irx_imports.h"
-#include "../ps2plus_updater.h"
+#include "../ps2plman.h"
+#include "../spi.h"
 
 static uint8_t rx_mock_get_configuration[] = { 0xFF, 0x41, 0x5A, 0x00, 0x00, PDT_Boolean, 0xFF };
 
@@ -36,10 +37,10 @@ void command_get_configuration(ps2plus_rpc_packet *packet) {
     // Second pass to get the real payload, based on the data length calculated from the first pass
     if (packet->ok) {
         size_t primitive_size = primitive_data_length(&command->configuration_response);
-        ps2plus_spi_transmit_mock(0x71, tx_, rx_, 1 + primitive_size, rx_mock_get_configuration);
+        ps2plus_spi_transmit_mock(0x71, tx_, rx_, 2 + primitive_size, rx_mock_get_configuration);
 
         // Deserialize the primitive data from the payload response
-        primitive_data_deserialize(&command->configuration_response, rx_ + 1);
+        primitive_data_deserialize(&command->configuration_response, rx_ + 2);
         
         // Handle string/array responses by copying the array data into the packet's dedicated buffer area.
         // This is required since the original array pointer wouldn't be properly handled when data is 
