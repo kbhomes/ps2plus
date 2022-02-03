@@ -107,13 +107,13 @@ bool ps2plman_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_siz
       memcpy(rx_out, rx_buffer + 3, payload_size);
   }
 
-  printf("[ps2plman] TX: ");
-  print_hex_array(tx_buffer, payload_size + 3);
-  printf("\n");
+  // printf("[ps2plman] TX: ");
+  // print_hex_array(tx_buffer, payload_size + 3);
+  // printf("\n");
 
-  printf("[ps2plman] RX: ");
-  print_hex_array(rx_buffer, payload_size + 3);
-  printf("\n");
+  // printf("[ps2plman] RX: ");
+  // print_hex_array(rx_buffer, payload_size + 3);
+  // printf("\n");
 
   // Minimal check of the RX validity based on its header
   return rx_buffer[0] == 0xFF && rx_buffer[2] == 0x5A;
@@ -134,13 +134,13 @@ bool ps2plman_spi_transmit_mock(u8 command, u8 *tx_in, u8 *rx_out, size_t payloa
       memcpy(rx_out, rx_mock_full + 3, payload_size);
     }
 
-    printf("[ps2plman] TX: ");
-    print_hex_array(tx_buffer, payload_size + 3);
-    printf("\n");
+    // printf("[ps2plman] TX: ");
+    // print_hex_array(tx_buffer, payload_size + 3);
+    // printf("\n");
 
-    printf("[ps2plman] RX: ");
-    print_hex_array(rx_mock_full, payload_size + 3);
-    printf("\n");
+    // printf("[ps2plman] RX: ");
+    // print_hex_array(rx_mock_full, payload_size + 3);
+    // printf("\n");
 
     return rx_mock_full[0] == 0xFF & rx_mock_full[2] == 0x5A;
   } else {

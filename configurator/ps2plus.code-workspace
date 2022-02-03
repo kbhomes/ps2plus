@@ -1,0 +1,41 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "ee"
+		},
+		{
+			"path": "iop"
+		},
+		{
+			"path": "common"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"*.tab": "c",
+			"sifrpc.h": "c",
+			"kernel.h": "c",
+			"sifcmd.h": "c",
+			"irx_imports.h": "c",
+			"tamtypes.h": "c",
+			"ps2plus_updater.h": "c",
+			"sifman.h": "c",
+			"stdio.h": "c",
+			"sysclib.h": "c",
+			"thbase.h": "c",
+			"sio2man.h": "c",
+			"ps2plus_common.h": "c",
+			"string.h": "c",
+			"loadcore.h": "c",
+			"rpc.h": "c",
+			"primitive_data.h": "c",
+			"spi.h": "c",
+			"ps2plman.h": "c",
+			"iopheap.h": "c"
+		},
+		"editor.tabSize": 2
+	}
+}

@@ -29,7 +29,7 @@ static void _rpc_thread(void *arg) {
 
     sceSifInitRpc(0);
     sceSifSetRpcQueue(&rpc_data_queue, GetThreadId());
-    sceSifRegisterRpc(&rpc_server_data, PS2PLUPD_RPC_BIND_ID, &_rpc_server, rpc_server_buffer, NULL, NULL, &rpc_data_queue);
+    sceSifRegisterRpc(&rpc_server_data, PS2PLMAN_RPC_BIND_ID, &_rpc_server, rpc_server_buffer, NULL, NULL, &rpc_data_queue);
     sceSifRpcLoop(&rpc_data_queue);
 }
 
@@ -41,7 +41,7 @@ void ps2plman_rpc_init(ps2plman_rpc_command_handler *handlers) {
     rpc_thread.attr = TH_C;
     rpc_thread.thread = &_rpc_thread;
     rpc_thread.stacksize = 0x800;
-    rpc_thread.priority = PS2PLUPD_THREAD_PRIO;
+    rpc_thread.priority = PS2PLMAN_THREAD_PRIO;
     rpc_thread_id = CreateThread(&rpc_thread);
     StartThread(rpc_thread_id, NULL);
 }

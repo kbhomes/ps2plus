@@ -1,5 +1,5 @@
 EE_BIN = ps2plman.elf
-EE_OBJS = ps2plman.o ../common/primitive_data.o
+EE_OBJS = ps2plman.o libps2plman.o ../common/primitive_data.o
 EE_INCS += -I../common
 EE_LIBS += -ldebug -lc -lpatches
 

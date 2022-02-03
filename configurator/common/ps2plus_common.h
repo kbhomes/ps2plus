@@ -3,8 +3,8 @@
 
 #include <primitive_data.h>
 
-#define PS2PLUPD_RPC_BIND_ID 0x7FFFA100
-#define PS2PLUPD_THREAD_PRIO 46
+#define PS2PLMAN_RPC_BIND_ID 0x7FFFA100
+#define PS2PLMAN_THREAD_PRIO 46
 
 typedef enum {
   PS2Plus_Init,
