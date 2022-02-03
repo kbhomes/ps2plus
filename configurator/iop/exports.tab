@@ -4,7 +4,7 @@ DECLARE_EXPORT_TABLE(ps2plupd, 1, 1)
         DECLARE_EXPORT(_retonly)
         DECLARE_EXPORT(_retonly)
 
-        DECLARE_EXPORT(ps2PlusUpdaterInit)
+        // DECLARE_EXPORT(ps2PlusUpdaterInit)
 END_EXPORT_TABLE
 
 void _retonly() {}

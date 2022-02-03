@@ -1,6 +1,6 @@
 EE_BIN = ps2plus_updater.elf
 EE_OBJS = ps2plus_updater.o ../common/primitive_data.o
-EE_INCS += -I../include
+EE_INCS += -I../common
 EE_LIBS += -ldebug -lc -lpatches
 
 # Add all required IRX files into the compilation
@@ -17,12 +17,6 @@ all: $(EE_BIN)
 
 clean:
 	rm -f $(EE_BIN) $(EE_OBJS)
-
-run: $(EE_BIN)
-	ps2client execee host:$(EE_BIN)
-
-emulate: $(EE_BIN)
-	"/mnt/c/Program Files (x86)/PCSX2/pcsx2.exe" --nodisc --console --elf="./$(EE_BIN)" 
 
 reset:
 	ps2client reset
