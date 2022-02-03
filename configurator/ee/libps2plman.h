@@ -1,6 +1,10 @@
 #ifndef EE_LIBPS2PLMAN_H
 #define EE_LIBPS2PLMAN_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "irx_builtins.h"
 
 #include <ps2plus_common.h>
@@ -45,5 +49,9 @@ int ps2plman_set_configuration_array(uint8_t id, char *in, size_t size);
 int ps2plman_disable_enable_configuration(bool enable, bool *original);
 int ps2plman_restore_configuration_defaults();
 int ps2plman_reboot_controller();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* EE_LIBPS2PLMAN_H */

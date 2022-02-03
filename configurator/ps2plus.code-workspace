@@ -11,6 +11,9 @@
 		},
 		{
 			"path": "common"
+		},
+		{
+			"path": "lib"
 		}
 	],
 	"settings": {
@@ -34,7 +37,8 @@
 			"primitive_data.h": "c",
 			"spi.h": "c",
 			"ps2plman.h": "c",
-			"iopheap.h": "c"
+			"iopheap.h": "c",
+			"debug.h": "c"
 		},
 		"editor.tabSize": 2
 	}
