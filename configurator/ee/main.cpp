@@ -17,64 +17,141 @@
 #include "ui/pad.h"
 #include "ui/widgets/widget.h"
 
+typedef struct {
+    int port;
+    bool connected;
+    struct {
+        uint16_t firmware;
+        char microcontroller[33];
+        uint16_t configuration;
+    } versions;
+    struct {
+        uint8_t joystick_axis_range_remapping_values[12];
+        bool joystick_digital_mode;
+        bool global_button_swap;
+    } configuration;
+} configurator_ps2plus_controller;
 
-void demo_widget_controls_table(const char *id) {
-    ImGui::BeginTable(id, 2,
-                      ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_SizingFixedFit);
-    {
-        ImGui::TableSetupColumn("Controls");
-        ImGui::TableSetupColumn("Function");
-        ImGui::TableHeadersRow();
+struct {
+    configurator_ps2plus_controller controllers[2];
+} configurator_state;
 
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::Text("D-Pad");
-        ImGui::TableNextColumn();
-        ImGui::Text("Navigate / Modify values");
-
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::Text("L-Joystick");
-        ImGui::TableNextColumn();
-        ImGui::Text("Scroll window");
-
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::Text("R-Joystick");
-        ImGui::TableNextColumn();
-        ImGui::Text("Move cursor");
-
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::Text("R2 / R3");
-        ImGui::TableNextColumn();
-        ImGui::Text("Click with cursor");
-
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Triangle);
-        ImGui::SameLine();
-        ImGui::Text("+ D-Pad");
-        ImGui::TableNextColumn();
-        ImGui::Text("Resize window");
-
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Triangle);
-        ImGui::SameLine();
-        ImGui::Text("+ L-Joystick");
-        ImGui::TableNextColumn();
-        ImGui::Text("Move window");
-
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Triangle);
-        ImGui::SameLine();
-        ImGui::Text("+ L1/R1");
-        ImGui::TableNextColumn();
-        ImGui::Text("Focus windows");
+// Helper to display a little (?) mark which shows a tooltip when hovered.
+// In your own code you may want to display an actual icon if you are using a merged icon fonts (see docs/FONTS.md)
+static void HelpMarker(const char* desc)
+{
+    ImGui::PushID(desc);
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4, 0));
+    ImGui::SmallButton("?");
+    ImGui::PopStyleVar();
+    ImGui::PopID();
+    if ((ImGui::GetIO().MouseDrawCursor && ImGui::IsItemHovered()) || (!ImGui::GetIO().MouseDrawCursor && ImGui::IsItemFocused())) {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 25.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
     }
-    ImGui::EndTable();
+}
+
+void app_section_information(const ImGuiIO &io, PadStatus *pad_status) {
+    // Information section
+    if (ImGui::BeginTable("PS2+ Ports", 2)) {
+        ImGui::TableNextRow();
+        for (int i = 0; i < sizeof(configurator_state.controllers) / sizeof(configurator_ps2plus_controller); i++) {
+            configurator_ps2plus_controller *controller = &configurator_state.controllers[i];
+
+            ImGui::TableSetColumnIndex(i);
+            
+            // Draw a custom icon
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+            const float icon_size = ImGui::GetFontSize();
+            const ImVec2 icon_center = ImVec2(p.x + icon_size/2, p.y + icon_size/2);
+            ImDrawList *draw_list = ImGui::GetWindowDrawList();
+            if (controller->connected) {
+                draw_list->AddCircleFilled(icon_center, icon_size/2, IM_COL32(0x00, 0xFF, 0x00, 0x80));
+            } else {
+                draw_list->AddCircle(icon_center, icon_size/2, IM_COL32(0xFF, 0xFF, 0xFF, 0x80));
+            }
+            ImGui::Dummy(ImVec2(icon_size, icon_size));
+            ImGui::SameLine();
+            
+            ImGui::BeginGroup();
+            {
+                if (controller->connected) {
+                    ImGui::TextColored(ImVec4(0, 1, 0, 1.0), "Connected to PS2+");
+                    ImGui::SetWindowFontScale(0.75);
+                    ImGui::Text("Port %d", i + 1);
+                    ImGui::SetWindowFontScale(1.0);
+                } else {
+                    ImGui::TextDisabled("No PS2+ found");
+                    ImGui::SetWindowFontScale(0.75);
+                    ImGui::TextDisabled("Port %d", i + 1);
+                    ImGui::SetWindowFontScale(1.0);
+                }
+            }
+            ImGui::EndGroup();
+        }
+        ImGui::EndTable();
+    }
+    ImGui::Separator();
+
+    // Version data
+    if (configurator_state.controllers[0].connected) {
+        configurator_ps2plus_controller *controller = &configurator_state.controllers[0];
+
+        if (ImGui::BeginTable("PS2+ Version Number", 2, ImGuiTableFlags_Borders)) {
+            ImGui::TableSetupColumn("Version Number", ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableHeadersRow();
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn(); 
+            ImGui::Text("Firmware"); ImGui::SameLine();
+            HelpMarker("Version of the PS2+'s firmware.");
+            ImGui::TableNextColumn(); 
+            ImGui::TextDisabled("%d", controller->versions.firmware);
+            
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn(); 
+            ImGui::Text("Microcontroller"); ImGui::SameLine();
+            HelpMarker(
+                "Name of the the PS2+'s microcontroller. "
+                "Firmware updates must be for this same microcontroller.");
+            ImGui::TableNextColumn(); 
+            ImGui::TextDisabled("%s", controller->versions.microcontroller);
+            
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn(); 
+            ImGui::Text("Configuration"); ImGui::SameLine();
+            HelpMarker(
+                "Version of the PS2+'s internal configuration format. "
+                "Firmware updates that change the configuration version will "
+                "reset the PS2+'s configuration to avoid "
+                "incompatibilities.");
+            ImGui::TableNextColumn(); 
+            ImGui::TextDisabled("%d", controller->versions.configuration);
+
+            ImGui::EndTable();
+        }
+    }
+}
+
+void app_section_configuration(const ImGuiIO &io, PadStatus *pad_status) {
+    // Gamepad section
+    ImGui::Text("Custom drawn widget!");
+    ImGui::Separator();
+    ImGui::Widgets::GamePadVisualizer(&pad_status->pad, ImGui::GetWindowWidth() * 0.95,
+                                        ImGui::GetWindowHeight() * 0.50);
+}
+
+void app_section_update(const ImGuiIO &io, PadStatus *pad_status) {
+    // Style editor section (using ImGui's built-in editor window)
+    ImGui::ShowStyleEditor();
+}
+
+void app_section_about(const ImGuiIO &io, PadStatus *pad_status) {
+    
 }
 
 void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset) {
@@ -88,28 +165,32 @@ void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset)
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(io.DisplaySize);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 10));
-    ImGui::Begin("PS2 + ImGui", NULL,
+    ImGui::Begin("PS2+ Configurator", NULL,
                  ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     {
         // PushStyleVar in previous lines was used to increase the title-bar height
         ImGui::PopStyleVar();
 
-        if (is_selecting_section && !ImGui::IsPopupOpen("Change Display Settings")) {
+        if (is_selecting_section) {
             // Only allow the left pane to have focus while the user selects
             ImGui::SetNextWindowFocus();
         }
         ImGui::BeginChild("List", ImVec2(150, 0), true);
         {
-            if (ImGui::Selectable("Introduction", !is_selecting_section && selected_content == 0, 0, ImVec2(0, 25))) {
+            if (ImGui::Selectable("Information", !is_selecting_section && selected_content == 0, 0, ImVec2(0, 25))) {
                 selected_content = 0;
                 is_selecting_section = false;
             }
-            if (ImGui::Selectable("Gamepad", !is_selecting_section && selected_content == 1, 0, ImVec2(0, 25))) {
+            if (ImGui::Selectable("Configuration", !is_selecting_section && selected_content == 1, 0, ImVec2(0, 25))) {
                 selected_content = 1;
                 is_selecting_section = false;
             }
-            if (ImGui::Selectable("Style Editor", !is_selecting_section && selected_content == 2, 0, ImVec2(0, 25))) {
+            if (ImGui::Selectable("Firmware", !is_selecting_section && selected_content == 2, 0, ImVec2(0, 25))) {
                 selected_content = 2;
+                is_selecting_section = false;
+            }
+            if (ImGui::Selectable("About", !is_selecting_section && selected_content == 3, 0, ImVec2(0, 25))) {
+                selected_content = 3;
                 is_selecting_section = false;
             }
         }
@@ -119,7 +200,7 @@ void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset)
         ImGui::BeginGroup();
         {
             // Content pane will retain focus if it is selected
-            if (selected_content >= 0 && !is_selecting_section && !ImGui::IsPopupOpen("Change Display Settings")) {
+            if (selected_content >= 0 && !is_selecting_section) {
                 ImGui::SetNextWindowFocus();
             }
 
@@ -128,76 +209,19 @@ void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset)
             ImGui::BeginChild("ChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true);
             {
                 if (selected_content == 0) {
-                    // Introduction section
-                    ImGui::TextColored(ImVec4(0.4, 0.6, 1.0, 1.0), "Welcome to the PS2 ImGui demo!");
-                    ImGui::Separator();
-
-                    ImGui::Text("Press");
-                    ImGui::SameLine();
-                    ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Triangle);
-                    ImGui::SameLine();
-                    ImGui::TextWrapped("and use the D-pad to change demo sections.");
-                    ImGui::Separator();
-
-                    ImGui::Text("Press");
-                    ImGui::SameLine();
-                    ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Start);
-                    ImGui::SameLine();
-                    ImGui::TextWrapped("START to switch to the windowed demo.");
-                    ImGui::Separator();
-
-                    demo_widget_controls_table("PanedControlsTable");
-                    ImGui::Separator();
-
-                    if (ImGui::Button("Change display settings")) {
-                        ImGui::OpenPopup("Change Display Settings");
-                    }
-                    
-                    // Always center this window when appearing
-                    ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-                    ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-                    if (ImGui::BeginPopupModal("Change Display Settings", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-                        const char* resolutions[] = { "NTSC", "PAL", "1080i (hi-res)" };
-                        static int resolution_current_idx = 0; // Here we store our selection data as an index.
-                        const char* combo_preview_value = resolutions[resolution_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
-                        if (ImGui::BeginCombo("Resolution", combo_preview_value))
-                        {
-                            for (int n = 0; n < IM_ARRAYSIZE(resolutions); n++)
-                            {
-                                const bool is_selected = (resolution_current_idx == n);
-                                if (ImGui::Selectable(resolutions[n], is_selected))
-                                    resolution_current_idx = n;
-
-                                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                                if (is_selected)
-                                    ImGui::SetItemDefaultFocus();
-                            }
-                            ImGui::EndCombo();
-                        }
-
-                        if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-                        ImGui::SetItemDefaultFocus();
-                        ImGui::SameLine();
-                        if (ImGui::Button("Apply", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-                        ImGui::SetItemDefaultFocus();
-                        ImGui::SameLine();
-                        if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-                        ImGui::EndPopup();
-                    }
+                    app_section_information(io, pad_status);
                 }
 
                 if (selected_content == 1) {
-                    // Gamepad section
-                    ImGui::Text("Custom drawn widget!");
-                    ImGui::Separator();
-                    ImGui::Widgets::GamePadVisualizer(&pad_status->pad, ImGui::GetWindowWidth() * 0.95,
-                                                      ImGui::GetWindowHeight() * 0.50);
+                    app_section_configuration(io, pad_status);
                 }
 
                 if (selected_content == 2) {
-                    // Style editor section (using ImGui's built-in editor window)
-                    ImGui::ShowStyleEditor();
+                    app_section_update(io, pad_status);
+                }
+                
+                if (selected_content == 3) {
+                    app_section_about(io, pad_status);
                 }
 
                 // Allow the user to change sections using the triangle button
@@ -219,11 +243,6 @@ void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset)
                 ImGui::Text("Change Section");
                 ImGui::SameLine();
 
-                ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Start);
-                ImGui::SameLine();
-                ImGui::Text("Change Demo");
-                ImGui::SameLine();
-
                 ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Select);
                 ImGui::SameLine();
                 ImGui::Text(use_pixel_offset ? "Disable Pixel Offset" : "Enable Pixel Offset");
@@ -232,87 +251,6 @@ void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset)
         }
         ImGui::EndGroup();
     }
-    ImGui::End();
-}
-
-void demo_windowed(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset) {
-    int spacing = 10;
-
-    ImGui::SetNextWindowPos(ImVec2(spacing, spacing), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x / 2 - 1.5 * spacing, io.DisplaySize.y / 2 - 1.5 * spacing),
-                             ImGuiCond_FirstUseEver);
-    ImGui::Begin("PS2 + ImGui (Windowed)", NULL, ImGuiWindowFlags_NoCollapse);
-    {
-        ImGui::SetWindowFontScale(0.9f);
-        ImGui::Text("Press");
-        ImGui::SameLine();
-        ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Start);
-        ImGui::SameLine();
-        ImGui::Text("START to change demo types.");
-        ImGui::Separator();
-        demo_widget_controls_table("WindowedControlsTable");
-        ImGui::Separator();
-
-        if (ImGui::Button("Change display settings")) {
-            ImGui::OpenPopup("Change Display Settings");
-        }
-        
-        // Always center this window when appearing
-        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
-        ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-        if (ImGui::BeginPopupModal("Change Display Settings", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-            const char* resolutions[] = { "NTSC", "PAL", "1080i (hi-res)" };
-            static int resolution_current_idx = 0; // Here we store our selection data as an index.
-            const char* combo_preview_value = resolutions[resolution_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
-            if (ImGui::BeginCombo("Resolution", combo_preview_value))
-            {
-                for (int n = 0; n < IM_ARRAYSIZE(resolutions); n++)
-                {
-                    const bool is_selected = (resolution_current_idx == n);
-                    if (ImGui::Selectable(resolutions[n], is_selected))
-                        resolution_current_idx = n;
-
-                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                    if (is_selected)
-                        ImGui::SetItemDefaultFocus();
-                }
-                ImGui::EndCombo();
-            }
-
-            if (ImGui::Button("OK", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-            ImGui::SetItemDefaultFocus();
-            ImGui::SameLine();
-            if (ImGui::Button("Apply", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-            ImGui::SetItemDefaultFocus();
-            ImGui::SameLine();
-            if (ImGui::Button("Cancel", ImVec2(120, 0))) { ImGui::CloseCurrentPopup(); }
-            ImGui::EndPopup();
-        }
-
-        ImGui::SetWindowFontScale(1.0f);
-    }
-    ImGui::End();
-
-    // Draw the controller
-    ImGui::SetNextWindowPos(ImVec2(spacing, io.DisplaySize.y / 2 + spacing / 2), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x / 2 - 1.5 * spacing, io.DisplaySize.y / 2 - 1.5 * spacing),
-                             ImGuiCond_FirstUseEver);
-    ImGui::Begin("Gamepad", NULL, ImGuiWindowFlags_NoCollapse);
-    {
-        ImGui::Text("Custom drawn widget!");
-        ImGui::Separator();
-        ImGui::Widgets::GamePadVisualizer(&pad_status->pad, ImGui::GetWindowWidth() * 0.95,
-                                          ImGui::GetWindowHeight() * 0.45);
-    }
-    ImGui::End();
-
-    // Draw the style editor
-    ImGui::SetNextWindowPos(ImVec2(io.DisplaySize.x / 2 + 0.5 * spacing, spacing), ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x / 2 - 1.5 * spacing, io.DisplaySize.y - 2 * spacing),
-                             ImGuiCond_FirstUseEver);
-    ImGui::Begin("Style Editor", NULL, ImGuiWindowFlags_NoCollapse);
-    ImGui::ShowStyleEditor();
     ImGui::End();
 }
 
@@ -345,6 +283,27 @@ static void load_modules(void) {
     printf("[%d] returned\n", ret);
 }
 
+void update_controllers() {
+    int ret;
+    bool connected = true;
+
+    if ((ret = ps2plman_get_firmware_version(&configurator_state.controllers[0].versions.firmware)) != PS2PLMAN_RET_OK) {
+        printf("Error retrieving PS2+ firmware version: %d\n", ret);
+        connected = false;
+    }
+
+    if ((ret = ps2plman_get_microcontroller_version(configurator_state.controllers[0].versions.microcontroller, NULL, sizeof(configurator_state.controllers[0].versions.microcontroller) - 1)) != PS2PLMAN_RET_OK) {
+        printf("Error retrieving PS2+ microcontroller version: %d\n", ret);
+        connected = false;
+    }
+
+    if ((ret = ps2plman_get_configuration_version(&configurator_state.controllers[0].versions.configuration)) != PS2PLMAN_RET_OK) {
+        printf("Error retrieving PS2+ configuration version: %d\n", ret);
+    }
+    
+    configurator_state.controllers[0].connected = connected;
+}
+
 int main(int argc, char **argv) {
     int ret;
     
@@ -352,27 +311,7 @@ int main(int argc, char **argv) {
     pad_init();
     ps2plman_init();
 
-    uint16_t firmware_version;
-    if ((ret = ps2plman_get_firmware_version(&firmware_version)) != PS2PLMAN_RET_OK) {
-        printf("Error: %d\n", ret);
-    } else {
-        printf("Firmware version: 0x%04x\n", firmware_version);
-    }
-
-    char microcontroller_version[33];
-    size_t microcontroller_version_size = sizeof(microcontroller_version) - 1;
-    if ((ret = ps2plman_get_microcontroller_version(microcontroller_version, NULL, microcontroller_version_size)) != PS2PLMAN_RET_OK) {
-        printf("Error: %d\n", ret);
-    } else {
-        printf("Microcontroller version: %s\n", microcontroller_version);
-    }
-
-    uint16_t configuration_version;
-    if ((ret = ps2plman_get_configuration_version(&configuration_version)) != PS2PLMAN_RET_OK) {
-        printf("Error: %d\n", ret);
-    } else {
-        printf("Configuration version: 0x%04x\n", configuration_version);
-    }
+    update_controllers();
 
     // Setup the graphics and ImGui systems
     bool hires = false;
@@ -383,7 +322,6 @@ int main(int argc, char **argv) {
 
     // Rendering data!
     PadStatus pad_status;
-    bool use_paned_sample = true;
     bool use_pixel_offset = true;
 
     while (1) {
@@ -391,16 +329,7 @@ int main(int argc, char **argv) {
         gfx_render_clear(global, GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
         pad_get_status(&pad_status);
 
-        if (use_paned_sample) {
-            demo_paned(io, &pad_status, use_pixel_offset);
-        } else {
-            demo_windowed(io, &pad_status, use_pixel_offset);
-        }
-
-        // Switch between demo modes if the user clicks the start button
-        if (pad_status.buttonsNew & PAD_START) {
-            use_paned_sample = !use_paned_sample;
-        }
+        demo_paned(io, &pad_status, use_pixel_offset);
 
         // Switch between pixel offsets modes if the user clicks the select button
         if (pad_status.buttonsNew & PAD_SELECT) {

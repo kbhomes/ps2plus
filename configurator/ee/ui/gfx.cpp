@@ -62,7 +62,8 @@ void gfx_imgui_init(GSGLOBAL *gsGlobal) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGui::StyleColorsClassic();
+    // ImGui::StyleColorsClassic();
+    ImGui::StyleColorsDark();
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = NULL;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -71,7 +72,7 @@ void gfx_imgui_init(GSGLOBAL *gsGlobal) {
 
     ImGuiStyle& style = ImGui::GetStyle();
     style.AntiAliasedLinesUseTex = false;
-    style.CellPadding = ImVec2(4, 2);
+    style.CellPadding = ImVec2(6, 6);
     style.ItemSpacing = ImVec2(6, 6);
     style.ItemInnerSpacing = ImVec2(4, 4);
     style.FrameRounding = 4;
