@@ -54,9 +54,9 @@ static void HelpMarker(const char* desc)
     }
 }
 
-void app_section_information(const ImGuiIO &io, PadStatus *pad_status) {
+void app_ps2plus_ports_display() {
     // Information section
-    if (ImGui::BeginTable("PS2+ Ports", 2)) {
+    if (ImGui::BeginTable("PS2+ Ports#Table", 2)) {
         ImGui::TableNextRow();
         for (int i = 0; i < sizeof(configurator_state.controllers) / sizeof(configurator_ps2plus_controller); i++) {
             configurator_ps2plus_controller *controller = &configurator_state.controllers[i];
@@ -94,8 +94,9 @@ void app_section_information(const ImGuiIO &io, PadStatus *pad_status) {
         }
         ImGui::EndTable();
     }
-    ImGui::Separator();
+}
 
+void app_section_information(const ImGuiIO &io, PadStatus *pad_status) {
     // Version data
     if (configurator_state.controllers[0].connected) {
         configurator_ps2plus_controller *controller = &configurator_state.controllers[0];
@@ -135,17 +136,173 @@ void app_section_information(const ImGuiIO &io, PadStatus *pad_status) {
             ImGui::EndTable();
         }
     }
-}
-
-void app_section_configuration(const ImGuiIO &io, PadStatus *pad_status) {
-    // Gamepad section
-    ImGui::Text("Custom drawn widget!");
     ImGui::Separator();
-    ImGui::Widgets::GamePadVisualizer(&pad_status->pad, ImGui::GetWindowWidth() * 0.95,
-                                        ImGui::GetWindowHeight() * 0.50);
+    
+    // Gamepad tester
+    ImGui::Indent(50);
+    ImGui::Widgets::GamePadVisualizer(&pad_status->pad, ImGui::GetWindowWidth() * 0.73, ImGui::GetWindowHeight() * 0.40);
 }
 
-void app_section_update(const ImGuiIO &io, PadStatus *pad_status) {
+void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
+    configurator_ps2plus_controller *controller = &configurator_state.controllers[0];
+
+    static bool global_button_swap = controller->configuration.global_button_swap;
+    static bool joystick_digital_mode = controller->configuration.joystick_digital_mode;
+    static int joystick_axis_range_remappings[12] = { 0, 127, 255, 0, 127, 255, 0, 127, 255, 0, 127, 255 };
+
+    if (ImGui::TreeNodeEx("General", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::Checkbox("##global_button_swap", &global_button_swap); 
+        ImGui::SameLine(); ImGui::Text("Globally swap the");
+        ImGui::SameLine(); ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Cross);
+        ImGui::SameLine(); ImGui::Text("and");
+        ImGui::SameLine(); ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Circle);
+        ImGui::SameLine(); ImGui::Text("buttons");        
+
+        ImGui::TreePop();
+        ImGui::Separator();
+    }
+
+    if (ImGui::TreeNodeEx("Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::TreeNodeEx("General##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::Checkbox("##joystick_digital_mode", &joystick_digital_mode); 
+            ImGui::SameLine(); ImGui::TextWrapped(
+                "Use the left and right joysticks to simulate the D-pad "
+                "and the face buttons when in digital mode");
+
+            ImGui::TreePop();
+            ImGui::Separator();
+        }
+
+        if (ImGui::TreeNodeEx("Axis Range Remapping##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ImGui::BeginGroup();
+            {
+                const ImVec2 p = ImGui::GetCursorScreenPos();
+                const float joystick_size = 90.f;
+                ImDrawList *draw_list = ImGui::GetWindowDrawList();
+                draw_controller_joystick(
+                    draw_list, 
+                    ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
+                    joystick_size / 2, false, pad_status->pad.ljoy_h, pad_status->pad.ljoy_v);
+                ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+            }
+            ImGui::EndGroup();
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            {
+                const ImVec2 p = ImGui::GetCursorScreenPos();
+                const float joystick_size = 90.f;
+                ImDrawList *draw_list = ImGui::GetWindowDrawList();
+                draw_controller_joystick(
+                    draw_list, 
+                    ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
+                    joystick_size / 2, false, pad_status->pad.rjoy_h, pad_status->pad.rjoy_v);
+                ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+            }
+            ImGui::EndGroup();
+
+            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(2, 2));
+            if (ImGui::BeginTable("Joystick Axis Range Remapping", 8)) {
+
+                ImGui::TableSetupColumn("##LX-Label", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("##LX-Value", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("##LY-Label", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("##LY-Value", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("##RX-Label", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("##RX-Value", ImGuiTableColumnFlags_WidthStretch);
+                ImGui::TableSetupColumn("##RY-Label", ImGuiTableColumnFlags_WidthFixed);
+                ImGui::TableSetupColumn("##RY-Value", ImGuiTableColumnFlags_WidthStretch);
+
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn(); ImGui::Text("LX-");
+                ImGui::TableNextColumn(); ImGui::DragInt("##LX-", &joystick_axis_range_remappings[0], 1.0F, 0, 127);
+                ImGui::TableNextColumn(); ImGui::Text("LY-");
+                ImGui::TableNextColumn(); ImGui::DragInt("##LY-", &joystick_axis_range_remappings[3], 1.0F, 0, 127);
+                ImGui::TableNextColumn(); ImGui::Text("RX-");
+                ImGui::TableNextColumn(); ImGui::DragInt("##RX-", &joystick_axis_range_remappings[6], 1.0F, 0, 127);
+                ImGui::TableNextColumn(); ImGui::Text("RY-");
+                ImGui::TableNextColumn(); ImGui::DragInt("##RY-", &joystick_axis_range_remappings[9], 1.0F, 0, 127);
+                
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn(); ImGui::Text("LX");
+                ImGui::TableNextColumn(); ImGui::DragInt("##LX", &joystick_axis_range_remappings[1], 1.0F, joystick_axis_range_remappings[0], joystick_axis_range_remappings[2]);
+                ImGui::TableNextColumn(); ImGui::Text("LY");
+                ImGui::TableNextColumn(); ImGui::DragInt("##LY", &joystick_axis_range_remappings[4], 1.0F, joystick_axis_range_remappings[3], joystick_axis_range_remappings[5]);
+                ImGui::TableNextColumn(); ImGui::Text("RX");
+                ImGui::TableNextColumn(); ImGui::DragInt("##RX", &joystick_axis_range_remappings[7], 1.0F, joystick_axis_range_remappings[6], joystick_axis_range_remappings[8]);
+                ImGui::TableNextColumn(); ImGui::Text("RY");
+                ImGui::TableNextColumn(); ImGui::DragInt("##RY", &joystick_axis_range_remappings[10], 1.0F, joystick_axis_range_remappings[9], joystick_axis_range_remappings[11]);
+                
+                ImGui::TableNextRow();
+                ImGui::TableNextColumn(); ImGui::Text("LX+");
+                ImGui::TableNextColumn(); ImGui::DragInt("##LX+", &joystick_axis_range_remappings[2], 1.0F, 128, 255);
+                ImGui::TableNextColumn(); ImGui::Text("LY+");
+                ImGui::TableNextColumn(); ImGui::DragInt("##LY+", &joystick_axis_range_remappings[5], 1.0F, 128, 255);
+                ImGui::TableNextColumn(); ImGui::Text("RX+");
+                ImGui::TableNextColumn(); ImGui::DragInt("##RX+", &joystick_axis_range_remappings[8], 1.0F, 128, 255);
+                ImGui::TableNextColumn(); ImGui::Text("RY+");
+                ImGui::TableNextColumn(); ImGui::DragInt("##RY+", &joystick_axis_range_remappings[11], 1.0F, 128, 255);
+
+                ImGui::EndTable();
+            }
+            ImGui::PopStyleVar();
+
+            // ImGui::BeginGroup();
+            // {
+            //     const ImVec2 p = ImGui::GetCursorScreenPos();
+            //     const float joystick_size = 90.f;
+            //     ImDrawList *draw_list = ImGui::GetWindowDrawList();
+            //     draw_controller_joystick(
+            //         draw_list, 
+            //         ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
+            //         joystick_size / 2, false, 128, 128);
+            //     ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+            // }
+            // ImGui::EndGroup();
+            // ImGui::SameLine();
+            // ImGui::BeginGroup();
+            // {
+            //     ImGui::Text("Left Joystick");
+            //     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(2, 2));
+            //     if (ImGui::BeginTable("Left Joystick Axis Range Remapping", 4)) {
+
+            //         ImGui::TableSetupColumn("##X-Label", ImGuiTableColumnFlags_WidthFixed);
+            //         ImGui::TableSetupColumn("##X-Value", ImGuiTableColumnFlags_WidthStretch);
+            //         ImGui::TableSetupColumn("##Y-Label", ImGuiTableColumnFlags_WidthFixed);
+            //         ImGui::TableSetupColumn("##Y-Value", ImGuiTableColumnFlags_WidthStretch);
+
+            //         ImGui::TableNextRow();
+            //         ImGui::TableNextColumn(); ImGui::Text("X-");
+            //         ImGui::TableNextColumn(); ImGui::DragInt("##X-", &joystick_axis_range_remappings[0], 1.0F, 0, 127);
+            //         ImGui::TableNextColumn(); ImGui::Text("Y-");
+            //         ImGui::TableNextColumn(); ImGui::DragInt("##Y-", &joystick_axis_range_remappings[3], 1.0F, 0, 127);
+                    
+            //         ImGui::TableNextRow();
+            //         ImGui::TableNextColumn(); ImGui::Text("X");
+            //         ImGui::TableNextColumn(); ImGui::DragInt("##X", &joystick_axis_range_remappings[1], 1.0F, joystick_axis_range_remappings[0], joystick_axis_range_remappings[2]);
+            //         ImGui::TableNextColumn(); ImGui::Text("Y");
+            //         ImGui::TableNextColumn(); ImGui::DragInt("##Y", &joystick_axis_range_remappings[4], 1.0F, joystick_axis_range_remappings[3], joystick_axis_range_remappings[5]);
+                    
+            //         ImGui::TableNextRow();
+            //         ImGui::TableNextColumn(); ImGui::Text("X+");
+            //         ImGui::TableNextColumn(); ImGui::DragInt("##X+", &joystick_axis_range_remappings[2], 1.0F, 128, 255);
+            //         ImGui::TableNextColumn(); ImGui::Text("Y+");
+            //         ImGui::TableNextColumn(); ImGui::DragInt("##Y+", &joystick_axis_range_remappings[5], 1.0F, 128, 255);
+
+            //         ImGui::EndTable();
+            //     }
+            //     ImGui::PopStyleVar();
+            // }
+            // ImGui::EndGroup();
+
+            ImGui::TreePop();
+            ImGui::Separator();
+        }
+
+        ImGui::TreePop();
+    }
+}
+
+void app_section_update(ImGuiIO &io, PadStatus *pad_status) {
     // Style editor section (using ImGui's built-in editor window)
     ImGui::ShowStyleEditor();
 }
@@ -154,7 +311,7 @@ void app_section_about(const ImGuiIO &io, PadStatus *pad_status) {
     
 }
 
-void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset) {
+void demo_paned(ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset) {
     // Whether the user is selecting a section in the left pane
     static bool is_selecting_section = false;
 
@@ -203,6 +360,8 @@ void demo_paned(const ImGuiIO &io, PadStatus *pad_status, bool use_pixel_offset)
             if (selected_content >= 0 && !is_selecting_section) {
                 ImGui::SetNextWindowFocus();
             }
+
+            app_ps2plus_ports_display();
 
             // Content pane has full height, less the height of a single frame which will be used to
             // display contextual button controls
