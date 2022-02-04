@@ -106,14 +106,14 @@ void gfx_render_begin(GSGLOBAL *gsGlobal, bool hires, bool textureManager) {
     ImGui::NewFrame();
 }
 
-void gfx_render_end(GSGLOBAL *gsGlobal, bool hires, bool textureManager, bool pixelOffset) {
+void gfx_render_end(GSGLOBAL *gsGlobal, bool hires, bool textureManager) {
     // Draw our custom mouse cursor for this frame; see `widgets/widget_cursor.cpp` for 
     // examples on how to draw a custom cursor depending on the cursor type. Must be 
     // called at the end of the frame so ImGui has time to update the cursor type.
     ImGui::Widgets::MouseCursor();
     ImGui::Render();
 
-    ImGui_ImplPs2GsKit_RenderDrawData(ImGui::GetDrawData(), pixelOffset ? ImVec2(-0.5f, -0.5f) : ImVec2(0, 0));
+    ImGui_ImplPs2GsKit_RenderDrawData(ImGui::GetDrawData(), ImVec2(-0.5f, -0.5f));
 
     if (hires) {
         gsKit_hires_sync(gsGlobal);
