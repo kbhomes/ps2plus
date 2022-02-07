@@ -16,6 +16,12 @@ typedef struct {
 } controller_rumble_motor;
 
 typedef struct {
+  struct {
+    uint16_t firmware;
+    char microcontroller[32];
+    uint16_t configuration;
+  } versions;
+  
   /**
    * @brief Current button and joystick input
    */
@@ -60,5 +66,6 @@ typedef struct {
 
 void controller_state_initialize(controller_state *);
 void controller_state_update_mode(controller_state *);
+void controller_state_set_versions(controller_state *, uint16_t firmware, char microcontroller[32], uint16_t configuration);
 
 #endif /* CONTROLLER_STATE_H */

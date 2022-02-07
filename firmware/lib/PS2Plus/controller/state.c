@@ -1,5 +1,7 @@
 #include "state.h"
 
+#include <string.h>
+
 void controller_state_initialize(controller_state *state) {
   controller_input_initialize(&state->input);
   controller_custom_config_initialize(&state->custom_config);
@@ -22,4 +24,10 @@ void controller_state_update_mode(controller_state *state) {
   } else if (state->analog_mode == CMAnalogFull) {
     state->mode = 0x79;
   }
+}
+
+void controller_state_set_versions(controller_state *state, uint16_t firmware, char microcontroller[32], uint16_t configuration) {
+  state->versions.firmware = firmware;
+  state->versions.configuration = configuration;
+  memcpy(state->versions.microcontroller, microcontroller, sizeof(state->versions.microcontroller));
 }

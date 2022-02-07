@@ -72,13 +72,13 @@ void pic16f_setup_spi_playstation() {
 }
 
 void platform_spi_playstation_ack() {
-//  LATAbits.LA4 = 0;
-//  __delay_us(2);
-//  LATAbits.LA4 = 1;
-  
-  pic_digital_io_pin_write(&PIN_SPI_ACK, PIC_DIGITAL_LOW);
+  LATAbits.LA4 = 0;
   __delay_us(2);
-  pic_digital_io_pin_write(&PIN_SPI_ACK, PIC_DIGITAL_HIGH);
+  LATAbits.LA4 = 1;
+  
+//  pic_digital_io_pin_write(&PIN_SPI_ACK, PIC_DIGITAL_LOW);
+//  __delay_us(2);
+//  pic_digital_io_pin_write(&PIN_SPI_ACK, PIC_DIGITAL_HIGH);
 }
 
 bool platform_spi_playstation_selected() {
