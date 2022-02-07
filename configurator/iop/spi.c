@@ -1,6 +1,7 @@
 #include "spi.h"
 
 #include "irx_imports.h"
+#include "utils.h"
 
 static sio2_transfer_data_t sio_transfer_data;
 static u8 tx_buffer[256];
@@ -115,35 +116,39 @@ bool ps2plman_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_siz
   // print_hex_array(rx_buffer, payload_size + 3);
   // printf("\n");
 
+  // Automatic 16ms delay after a transmission to allow the controller to register that the packet has completed.
+  // This seems to generally match the rate at which the console issues commands (approximately 60 Hz)
+  util_delay(16);
+
   // Minimal check of the RX validity based on its header
   return rx_buffer[0] == 0xFF && rx_buffer[2] == 0x5A;
 }
 
 bool ps2plman_spi_transmit_mock(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size, u8 *rx_mock_full) {
-  if (rx_mock_full) {
-    // Generate the TX buffer, including the SIO2 header
-    tx_buffer[0] = 0x01;
-    tx_buffer[1] = command;
-    tx_buffer[2] = 0x00;
-    if (payload_size) {
-      memcpy(tx_buffer + 3, tx_in, payload_size);
-    }
+  // if (rx_mock_full) {
+  //   // Generate the TX buffer, including the SIO2 header
+  //   tx_buffer[0] = 0x01;
+  //   tx_buffer[1] = command;
+  //   tx_buffer[2] = 0x00;
+  //   if (payload_size) {
+  //     memcpy(tx_buffer + 3, tx_in, payload_size);
+  //   }
 
-    // Copy the mock data into the response payload
-    if (payload_size) {
-      memcpy(rx_out, rx_mock_full + 3, payload_size);
-    }
+  //   // Copy the mock data into the response payload
+  //   if (payload_size) {
+  //     memcpy(rx_out, rx_mock_full + 3, payload_size);
+  //   }
 
-    // printf("[ps2plman] TX: ");
-    // print_hex_array(tx_buffer, payload_size + 3);
-    // printf("\n");
+  //   // printf("[ps2plman] TX: ");
+  //   // print_hex_array(tx_buffer, payload_size + 3);
+  //   // printf("\n");
 
-    // printf("[ps2plman] RX: ");
-    // print_hex_array(rx_mock_full, payload_size + 3);
-    // printf("\n");
+  //   // printf("[ps2plman] RX: ");
+  //   // print_hex_array(rx_mock_full, payload_size + 3);
+  //   // printf("\n");
 
-    return rx_mock_full[0] == 0xFF & rx_mock_full[2] == 0x5A;
-  } else {
-    ps2plman_spi_transmit(command, tx_in, rx_out, payload_size);
-  }
+  //   return rx_mock_full[0] == 0xFF & rx_mock_full[2] == 0x5A;
+  // } else {
+    return ps2plman_spi_transmit(command, tx_in, rx_out, payload_size);
+  // }
 }

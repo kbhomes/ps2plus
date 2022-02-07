@@ -36,6 +36,8 @@ struct {
     configurator_ps2plus_controller controllers[2];
 } configurator_state;
 
+bool is_reading_ps2_state = false;
+
 bool IsGamepadCaptured() {
     return !(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NavEnableGamepad);
 }
@@ -273,6 +275,13 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
 
                     ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Circle); ImGui::SameLine();
                         ImGui::Text("Finish calibration");
+                }
+
+                if (is_calibrating && pad_status->buttonsNew & PAD_SQUARE) {
+                    joystick_axis_range_remappings[1] = pad_status->pad.ljoy_h;
+                    joystick_axis_range_remappings[4] = pad_status->pad.ljoy_v;
+                    joystick_axis_range_remappings[7] = pad_status->pad.rjoy_h;
+                    joystick_axis_range_remappings[10] = pad_status->pad.rjoy_v;
                 }
 
                 if (is_calibrating && pad_status->buttonsNew & PAD_CIRCLE) {
@@ -513,6 +522,7 @@ void update_controllers() {
 
     if ((ret = ps2plman_get_configuration_version(&configurator_state.controllers[0].versions.configuration)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ configuration version: %d\n", ret);
+        connected = false;
     }
     
     configurator_state.controllers[0].connected = connected;
@@ -524,8 +534,7 @@ int main(int argc, char **argv) {
     load_modules();
     pad_init();
     ps2plman_init();
-
-    update_controllers();
+    // update_controllers();
 
     // Setup the graphics and ImGui systems
     bool hires = false;
@@ -540,7 +549,9 @@ int main(int argc, char **argv) {
     while (1) {
         gfx_render_begin(global, hires, use_texture_manager);
         gfx_render_clear(global, GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
+
         pad_get_status(&pad_status);
+        
         demo_paned(io, &pad_status);
         gfx_render_end(global, hires, use_texture_manager);
     }

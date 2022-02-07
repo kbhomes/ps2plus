@@ -38,7 +38,8 @@
 			"spi.h": "c",
 			"ps2plman.h": "c",
 			"iopheap.h": "c",
-			"debug.h": "c"
+			"debug.h": "c",
+			"ranges": "cpp"
 		},
 		"editor.tabSize": 2
 	}

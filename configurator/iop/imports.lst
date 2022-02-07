@@ -33,11 +33,16 @@ sysclib_IMPORTS_end
 thbase_IMPORTS_start
 I_CreateThread
 I_DeleteThread
+I_DelayThread
 I_StartThread
 I_ExitThread
 I_GetThreadId
 I_ReferThreadStatus
 I_iReferThreadStatus
+I_SleepThread
+I_SetAlarm
+I_iWakeupThread
+I_USec2SysClock
 thbase_IMPORTS_end
 
 thevent_IMPORTS_start
