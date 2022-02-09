@@ -1,6 +1,6 @@
 #include "../command.h"
 
-#include <utilities/primitive_data.h>
+#include <shared/primitive_data.h>
 
 struct {
   uint16_t requested_configuration;

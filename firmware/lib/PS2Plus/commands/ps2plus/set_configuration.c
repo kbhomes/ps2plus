@@ -1,6 +1,6 @@
 #include "../command.h"
 
-#include <utilities/primitive_data.h>
+#include <shared/primitive_data.h>
 
 #define SC_TARGET_CONFIGURATION_VALID 0x00
 #define SC_TARGET_CONFIGURATION_INVALID 0xFF

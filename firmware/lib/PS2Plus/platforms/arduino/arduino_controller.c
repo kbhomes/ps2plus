@@ -2,7 +2,7 @@
 
 #include "arduino_platform.h"
 
-// Mapping from `controller_input_digital_button` to an Arduino Mega pin number
+// Mapping from `ps2plus_controller_digital_button` to an Arduino Mega pin number
 const int DIGITAL_BUTTON_PINS[NUM_DIGITAL_BUTTONS] = {
   33, // Select
   46, // L3
@@ -29,7 +29,7 @@ void arduino_setup_wired_controller() {
   }
 }
 
-bool platform_controller_read_digital_button(controller_input_digital_button button) {
+bool platform_controller_read_digital_button(ps2plus_controller_digital_button button) {
 #ifdef PLATFORM_ARDUINO_MEGA
   return digitalRead(DIGITAL_BUTTON_PINS[button]) == LOW;
 #else
@@ -37,7 +37,7 @@ bool platform_controller_read_digital_button(controller_input_digital_button but
 #endif
 }
 
-uint8_t platform_controller_read_joystick(controller_input_joystick_axis joystick_axis) {
+uint8_t platform_controller_read_joystick(ps2plus_controller_joystick_axis joystick_axis) {
   return 0x7F;
 }
 

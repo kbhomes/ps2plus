@@ -4,7 +4,7 @@
 
 #define CONFIGURATION_ADDRESS_VERSION 0x00
 #define CONFIGURATION_ADDRESS_START sizeof(uint16_t)
-#define CONFIGURATION_ADDRESS(FIELD) (CONFIGURATION_ADDRESS_START + offsetof(controller_custom_config_values, FIELD))
+#define CONFIGURATION_ADDRESS(FIELD) (CONFIGURATION_ADDRESS_START + CONFIGURATION_ID(FIELD))
 
 void controller_custom_config_initialize(controller_custom_config *config) {
   config->enabled = true;

@@ -31,10 +31,15 @@
         <itemPath>lib/PS2Plus/platforms/spi_playstation.h</itemPath>
         <itemPath>lib/PS2Plus/platforms/timing.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="shared" displayName="shared" projectFiles="true">
+        <itemPath>../shared/config.h</itemPath>
+        <itemPath>../shared/controller.h</itemPath>
+        <itemPath>../shared/versions.h</itemPath>
+        <itemPath>../shared/primitive_data.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
         <itemPath>lib/PS2Plus/utilities/debounced_bool.h</itemPath>
         <itemPath>lib/PS2Plus/utilities/latching_bool.h</itemPath>
-        <itemPath>lib/PS2Plus/utilities/primitive_data.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -103,9 +108,11 @@
           <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
             <itemPath>lib/PS2Plus/utilities/debounced_bool.c</itemPath>
             <itemPath>lib/PS2Plus/utilities/latching_bool.c</itemPath>
-            <itemPath>lib/PS2Plus/utilities/primitive_data.c</itemPath>
           </logicalFolder>
         </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="shared" displayName="shared" projectFiles="true">
+        <itemPath>../shared/primitive_data.c</itemPath>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>src/main.c</itemPath>
@@ -121,6 +128,7 @@
   <sourceRootList>
     <Elem>src</Elem>
     <Elem>lib</Elem>
+    <Elem>../shared</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -173,7 +181,7 @@
         <property key="default-char-type" value="true"/>
         <property key="define-macros" value="PLATFORM_PIC16F"/>
         <property key="disable-optimizations" value="false"/>
-        <property key="extra-include-directories" value="lib\PS2Plus"/>
+        <property key="extra-include-directories" value="lib\PS2Plus;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>

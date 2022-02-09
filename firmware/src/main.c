@@ -2,7 +2,7 @@
 #include <controller/state.h>
 #include <platforms/platform.h>
 
-#include "versions.h"
+#include <shared/versions.h>
 
 volatile controller_state state;
 volatile command_packet packet;
@@ -47,7 +47,7 @@ int main(void) {
   
   while (true) {
 //    // Update the controller state
-//    for (controller_input_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
+//    for (ps2plus_controller_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
 //      bool active_low_button_state = !platform_controller_read_digital_button(button);
 //      debounced_update(&state.input.digital_buttons[button], active_low_button_state);
 //    }

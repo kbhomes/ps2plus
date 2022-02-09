@@ -10,7 +10,7 @@
  * @return true if the button is currently being pressed
  * @return false otherwise
  */
-bool platform_controller_read_digital_button(controller_input_digital_button button);
+bool platform_controller_read_digital_button(ps2plus_controller_digital_button button);
 
 /**
  * @brief Read the raw analog joystick value for the given joystick's axis
@@ -18,7 +18,7 @@ bool platform_controller_read_digital_button(controller_input_digital_button but
  * @param joystick_axis Left/right joystick's X/Y axis
  * @return uint8_t Analog value between 0x00 (-1.0) and 0xFF (1.0)
  */
-uint8_t platform_controller_read_joystick(controller_input_joystick_axis joystick_axis);
+uint8_t platform_controller_read_joystick(ps2plus_controller_joystick_axis joystick_axis);
 
 /**
  * @brief Enable or disable the controller's analog LED

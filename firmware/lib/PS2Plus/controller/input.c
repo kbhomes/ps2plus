@@ -2,7 +2,7 @@
 
 #define DEBOUNCE_DIGITAL_BUTTON_MS 2
 
-controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS] = {
+ps2plus_controller_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS] = {
   DDRight, DDLeft, DDUp, DDDown,
   DBTriangle, DBCircle, DBCross, DBSquare,
   DBL1, DBR1, DBL2, DBR2,
@@ -52,8 +52,8 @@ void controller_input_recompute(controller_input *input) {
   }
 
   // Store button pressure information (which will be converted to pure 00h or FFh)
-  for (unsigned int b = 0; b < (sizeof(DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP) / sizeof(controller_input_digital_button)); b++) {
-    controller_input_digital_button button = DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[b];
+  for (unsigned int b = 0; b < (sizeof(DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP) / sizeof(ps2plus_controller_digital_button)); b++) {
+    ps2plus_controller_digital_button button = DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[b];
     bool digital_value = debounced_read(&input->digital_buttons[button]);
     input->button_data[index++] = (digital_value == false) ? 0xFF : 0x00;
   }

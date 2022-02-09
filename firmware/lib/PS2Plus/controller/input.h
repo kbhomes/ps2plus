@@ -3,43 +3,12 @@
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "utilities/debounced_bool.h"
 
-typedef enum {
-  // First byte
-  DBSelect,
-  DBL3,
-  DBR3,
-  DBStart,
-  DDUp,
-  DDRight,
-  DDDown,
-  DDLeft,
-
-  // Second byte
-  DBL2,
-  DBR2,
-  DBL1,
-  DBR1,
-  DBTriangle,
-  DBCircle,
-  DBCross,
-  DBSquare,
-
-  // Total number of buttons
-  NUM_DIGITAL_BUTTONS
-} controller_input_digital_button;
-
-typedef enum {
-  JSRightX,
-  JSRightY,
-  JSLeftX,
-  JSLeftY,
-  NUM_JOYSTICK_AXES
-} controller_input_joystick_axis;
+#include <shared/controller.h>
+#include <utilities/debounced_bool.h>
 
 #define NUM_PRESSURE_SENSITIVE_BUTTONS 12
-extern controller_input_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS];
+extern ps2plus_controller_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS];
 
 /**
  * @brief Input state of the emulated PS2 controller

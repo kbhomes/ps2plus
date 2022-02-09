@@ -1,5 +1,5 @@
-#ifndef UTILITIES_PRIMITIVE_DATA_H
-#define UTILITIES_PRIMITIVE_DATA_H
+#ifndef SHARED_PRIMITIVE_DATA_H
+#define SHARED_PRIMITIVE_DATA_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -41,4 +41,4 @@ void primitive_data_deserialize(primitive_data *pd, uint8_t *in);
 
 extern const primitive_data primitive_data_unknown;
 
-#endif /* UTILITIES_PRIMITIVE_DATA_H */
+#endif /* SHARED_PRIMITIVE_DATA_H */

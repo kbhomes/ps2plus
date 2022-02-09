@@ -2,7 +2,7 @@
 
 #include "pic16f_platform.h"
 
-// Mapping from `controller_input_digital_button` to a digital pin
+// Mapping from `ps2plus_controller_digital_button` to a digital pin
 const pic_digital_io_pin DIGITAL_BUTTON_PINS[NUM_DIGITAL_BUTTONS] = {
   PIC_DIGITAL_IO_PIN(B, 3), // Select
   PIC_DIGITAL_IO_PIN(B, 2), // L3
@@ -50,11 +50,11 @@ void pic16f_setup_wired_controller() {
   }
 }
 
-bool platform_controller_read_digital_button(controller_input_digital_button button) {
+bool platform_controller_read_digital_button(ps2plus_controller_digital_button button) {
   return pic_digital_io_pin_read(&DIGITAL_BUTTON_PINS[button]) == PIC_DIGITAL_LOW;
 }
 
-uint8_t platform_controller_read_joystick(controller_input_joystick_axis joystick_axis) {
+uint8_t platform_controller_read_joystick(ps2plus_controller_joystick_axis joystick_axis) {
   ADPCH = ANALOG_JOYSTICK_PINS[joystick_axis].channel;
   ADPRE = 0x00;
   ADACQ = 0x3F;
