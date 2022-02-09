@@ -1,7 +1,6 @@
 # Set this to 1 to enable debug mode
 DEBUG = 1
 
-SHELL=/usr/bin/env bash
 BIN2C=bin2c
 RM=rm -f
 

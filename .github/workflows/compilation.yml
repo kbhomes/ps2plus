@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  repository_dispatch:
+    types: [run_build]
+
+jobs:
+  configurator:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2dev:latest
+    steps:
+      - name: Install dependencies
+        run: |
+          apk add build-base git zip nodejs
+
+      - uses: actions/checkout@v2
+
+      - name: Compile ps2plus-configurator
+        run: |
+          cd configurator
+          make
+          git ls-files -i --exclude-standard -c
+
+      - name: Get short SHA
+        id: slug
+        run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+
+      - name: Upload output file
+        uses: actions/upload-artifact@v2
+        with:
+          name: ps2plus-configurator.elf
+          path: configurator/bin/PS2PLMAN.ELF
+
+  firmware:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Compile ps2plus-firmware
+        uses: kbhomes/mplabx-xc8-build-action@master
+        with:
+          project: firmware
+          configuration: default
+
+      - name: Get short SHA
+        id: slug
+        run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+
+      - name: Upload output file
+        uses: actions/upload-artifact@v2
+        with:
+          name: ps2plus-firmware.hex
+          path: firmware/dist/default/production/firmware.production.hex
