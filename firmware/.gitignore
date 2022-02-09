@@ -1,4 +1,13 @@
+# PlatformIO
 .pio
+
+# VS Code
 .vscode
+
+# General build
 build/
 dist/
+
+# MPLAB X
+nbproject/Makefile*
+nbproject/private
