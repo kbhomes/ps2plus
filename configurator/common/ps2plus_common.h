@@ -1,7 +1,7 @@
 #ifndef PS2PLUS_COMMON_H
 #define PS2PLUS_COMMON_H
 
-#include <primitive_data.h>
+#include <shared/primitive_data.h>
 
 #define PS2PLMAN_RPC_BIND_ID 0x7FFFA100
 #define PS2PLMAN_THREAD_PRIO 46

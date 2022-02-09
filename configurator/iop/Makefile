@@ -3,8 +3,8 @@ IOP_OBJS = \
 		ps2plman.o rpc.o spi.o utils.o imports.o exports.o \
 		commands/get_version.o commands/get_configuration.o commands/set_configuration.o \
 		commands/disable_enable_configuration.o commands/restore_configuration_defaults.o commands/reboot_controller.o \
-		../common/primitive_data.o
-IOP_INCS += -I../common
+		../../shared/primitive_data.o
+IOP_INCS += -I../common -I../..
 
 all: $(IOP_BIN)
 

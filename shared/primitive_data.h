@@ -1,6 +1,10 @@
 #ifndef SHARED_PRIMITIVE_DATA_H
 #define SHARED_PRIMITIVE_DATA_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -40,5 +44,9 @@ void primitive_data_serialize(primitive_data *pd, uint8_t *out);
 void primitive_data_deserialize(primitive_data *pd, uint8_t *in);
 
 extern const primitive_data primitive_data_unknown;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* SHARED_PRIMITIVE_DATA_H */

@@ -3,7 +3,7 @@
 DEBUG = 1
 
 EE_BIN = ps2plman.elf
-EE_INCS += -I../common -I../lib
+EE_INCS += -I../common -I../lib -I../..
 EE_LIBS += -lpatches -lpad
 
 EE_OBJS = main.o libps2plman.o \
@@ -12,7 +12,7 @@ EE_OBJS = main.o libps2plman.o \
 	ui/widgets/widget_cursor.o ui/widgets/widget_gamepad.o ui/widgets/widget_icon.o ui/widgets/widget_misc.o
 
 # Add common files
-EE_OBJS += ../common/primitive_data.o
+EE_OBJS += ../../shared/primitive_data.o
 
 # Add all required IRX files into the compilation
 EE_LDFLAGS += ps2plman_irx.o
