@@ -7,6 +7,7 @@
 #include <stdio.h>
 
 #include <ps2plus_common.h>
+#include <shared/config.h>
 
 #include "irx_builtins.h"
 #include "libps2plman.h"
@@ -25,11 +26,7 @@ typedef struct {
         char microcontroller[33];
         uint16_t configuration;
     } versions;
-    struct {
-        uint8_t joystick_axis_range_remapping_values[12];
-        bool joystick_digital_mode;
-        bool global_button_swap;
-    } configuration;
+    ps2plus_configuration configuration;
 } configurator_ps2plus_controller;
 
 struct {
@@ -158,35 +155,111 @@ void app_section_information(const ImGuiIO &io, PadStatus *pad_status) {
     ImGui::Widgets::GamePadVisualizer(&pad_status->pad, ImGui::GetWindowWidth() * 0.73, ImGui::GetWindowHeight() * 0.40);
 }
 
-void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
-    configurator_ps2plus_controller *controller = &configurator_state.controllers[0];
+void app_configuration_button_remapping(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
+    static bool enable_button_remapping = controller->configuration.enable_button_remapping.boolean;
+    
+    ImGui::Checkbox("##enable_button_remapping", &enable_button_remapping); 
+    ImGui::SameLine(); ImGui::TextWrapped("Enable remapping of digital controller buttons");
+}
 
-    static bool global_button_swap = controller->configuration.global_button_swap;
-    static bool joystick_digital_mode = controller->configuration.joystick_digital_mode;
-    static uint8_t joystick_axis_range_remappings[12] = { 0, 127, 255, 0, 127, 255, 0, 127, 255, 0, 127, 255 };
-
-    if (ImGui::TreeNodeEx("General", ImGuiTreeNodeFlags_DefaultOpen)) {
-        ImGui::Checkbox("##global_button_swap", &global_button_swap); 
-        ImGui::SameLine(); ImGui::Text("Globally swap the");
-        ImGui::SameLine(); ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Cross);
-        ImGui::SameLine(); ImGui::Text("and");
-        ImGui::SameLine(); ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Circle);
-        ImGui::SameLine(); ImGui::Text("buttons");        
+void app_configuration_buttons(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
+    if (ImGui::TreeNodeEx("Buttons", ImGuiTreeNodeFlags_DefaultOpen)) {
+        app_configuration_button_remapping(controller, io, pad_status);
 
         ImGui::TreePop();
         ImGui::Separator();
     }
+}
+
+void app_configuration_joysticks_deadzones(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
+    static uint8_t joystick_deadzone_left = controller->configuration.joystick_deadzone_left.uint8;
+    static uint8_t joystick_deadzone_right = controller->configuration.joystick_deadzone_right.uint8;
+    static uint8_t value_min = 0, value_max = 127;
+
+    if (ImGui::TreeNodeEx("Deadzones##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+        ImGui::BeginGroup();
+        {
+            const float joystick_size = 90.f;
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+            const ImVec2 center = ImVec2(p.x + joystick_size/2, p.y + joystick_size/2);
+            ImDrawList *draw_list = ImGui::GetWindowDrawList();
+            draw_controller_joystick(
+                draw_list, 
+                center, 
+                joystick_size / 2, false, pad_status->pad.ljoy_h, pad_status->pad.ljoy_v);
+
+            if (joystick_deadzone_left) {
+                draw_list->AddCircleFilled(center, joystick_size/2 * (joystick_deadzone_left / 128.f), IM_COL32(0xC0, 0x33, 0x33, 0x33));
+            }
+
+            ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+            const float joystick_size = 90.f;
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+            const ImVec2 center = ImVec2(p.x + joystick_size/2, p.y + joystick_size/2);
+            ImDrawList *draw_list = ImGui::GetWindowDrawList();
+            draw_controller_joystick(
+                draw_list, 
+                center, 
+                joystick_size / 2, false, pad_status->pad.rjoy_h, pad_status->pad.rjoy_v);
+
+            if (joystick_deadzone_right) {
+                draw_list->AddCircleFilled(center, joystick_size/2 * (joystick_deadzone_right / 128.f), IM_COL32(0xC0, 0x33, 0x33, 0x33));
+            }
+
+            ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+            ImGui::PushItemWidth(50.f);
+            ImGui::DragScalar("Left", ImGuiDataType_U8, &joystick_deadzone_left, 1.0, &value_min, &value_max);
+            ImGui::DragScalar("Right", ImGuiDataType_U8, &joystick_deadzone_right, 1.0, &value_min, &value_max);
+            ImGui::PopItemWidth();
+
+            // if (ImGui::BeginTable("##Deadzones/Joysticks", 2)) {
+            //     ImGui::TableSetupColumn("##Deadzone-Label", ImGuiTableColumnFlags_WidthFixed);
+            //     ImGui::TableSetupColumn("##Deadzone-Value", ImGuiTableColumnFlags_WidthStretch);
+
+            //     ImGui::TableNextRow();
+            //     ImGui::TableNextColumn(); ImGui::Text("Left");
+            //     ImGui::TableNextColumn(); ImGui::DragScalar("##LDeadzone", ImGuiDataType_U8, &joystick_deadzone_left, 1.0, &value_min, &value_max);
+
+            //     ImGui::TableNextRow();
+            //     ImGui::TableNextColumn(); ImGui::Text("Right");
+            //     ImGui::TableNextColumn(); ImGui::DragScalar("##RDeadzone", ImGuiDataType_U8, &joystick_deadzone_right, 1.0, &value_min, &value_max);
+
+            //     ImGui::EndTable();
+            // }
+        }
+        ImGui::EndGroup();
+
+        ImGui::TreePop();
+        ImGui::Separator();
+    }
+}
+
+void app_configuration_joysticks(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
+    static bool enable_joystick_axis_range_remapping = controller->configuration.enable_joystick_axis_range_remapping.boolean;
+    static uint8_t joystick_axis_range_remappings[12] = { 0, 127, 255, 0, 127, 255, 0, 127, 255, 0, 127, 255 };
 
     if (ImGui::TreeNodeEx("Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
-        if (ImGui::TreeNodeEx("General##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ImGui::Checkbox("##joystick_digital_mode", &joystick_digital_mode); 
-            ImGui::SameLine(); ImGui::TextWrapped(
-                "Use the left and right joysticks to simulate the D-pad "
-                "and the face buttons when in digital mode");
+        // if (ImGui::TreeNodeEx("General##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+        //     ImGui::Checkbox("##joystick_digital_mode", &joystick_digital_mode); 
+        //     ImGui::SameLine(); ImGui::TextWrapped(
+        //         "Use the left and right joysticks to simulate the D-pad "
+        //         "and the face buttons when in digital mode");
 
-            ImGui::TreePop();
-            ImGui::Separator();
-        }
+        //     ImGui::TreePop();
+        //     ImGui::Separator();
+        // }
+
+        app_configuration_joysticks_deadzones(controller, io, pad_status);
 
         if (ImGui::TreeNodeEx("Axis Range Remapping##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
             static bool is_calibrating = false;
@@ -199,11 +272,11 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
                 draw_controller_joystick(
                     draw_list, 
                     ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
-                    joystick_size / 2, is_calibrating, joystick_axis_range_remappings[1], joystick_axis_range_remappings[4]);
+                    joystick_size / 2, is_calibrating, joystick_axis_range_remappings[JSAxisRange_LeftXCenter], joystick_axis_range_remappings[JSAxisRange_LeftYCenter]);
 
                 draw_list->AddRectFilled(
-                    ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[0]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[3]/128)),
-                    ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[2]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[5]/128 - 1)),
+                    ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_LeftXMin]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_LeftYMin]/128)),
+                    ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_LeftXMax]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_LeftYMax]/128 - 1)),
                     IM_COL32(0x55, 0x55, 0xAA, 0x60), 5.0f);
 
                 if (is_calibrating) {
@@ -224,11 +297,11 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
                 draw_controller_joystick(
                     draw_list, 
                     ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
-                    joystick_size / 2, is_calibrating, joystick_axis_range_remappings[7], joystick_axis_range_remappings[10]);
-                
+                    joystick_size / 2, is_calibrating, joystick_axis_range_remappings[JSAxisRange_RightXCenter], joystick_axis_range_remappings[JSAxisRange_RightYCenter]);
+
                 draw_list->AddRectFilled(
-                    ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[6]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[9]/128)),
-                    ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[8]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[11]/128 - 1)),
+                    ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_RightXMin]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_RightYMin]/128)),
+                    ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_RightXMax]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_RightYMax]/128 - 1)),
                     IM_COL32(0x55, 0x55, 0xAA, 0x60), 5.0f);
 
                 if (is_calibrating) {
@@ -249,22 +322,16 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
                     is_calibrating = true;
                     BeginCaptureGamepad();
 
-                    for (int js = 0; js < 2; js++) {
-                        for (int axis = 0; axis < 2; axis++) {
-                            joystick_axis_range_remappings[js*6 + axis*3 + 0] = 111;
-                            joystick_axis_range_remappings[js*6 + axis*3 + 1] = 127;
-                            joystick_axis_range_remappings[js*6 + axis*3 + 2] = 143;
-                        }
+                    for (int i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
+                        joystick_axis_range_remappings[i] = 127;
                     }
                 }
                 ImGui::SameLine();
                 if (ImGui::Button("Reset##JoystickAxisRangeMapping")) {
-                    for (int js = 0; js < 2; js++) {
-                        for (int axis = 0; axis < 2; axis++) {
-                            joystick_axis_range_remappings[js*6 + axis*3 + 0] = 0;
-                            joystick_axis_range_remappings[js*6 + axis*3 + 1] = 127;
-                            joystick_axis_range_remappings[js*6 + axis*3 + 2] = 255;
-                        }
+                    for (int i = 0; i < NUM_JOYSTICK_AXIS_RANGES / 3; i++) {
+                        joystick_axis_range_remappings[i*3 + 0] = 0;
+                        joystick_axis_range_remappings[i*3 + 1] = 127;
+                        joystick_axis_range_remappings[i*3 + 2] = 255;
                     }
                 }
                 ImGui::EndDisabled();
@@ -278,10 +345,10 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
                 }
 
                 if (is_calibrating && pad_status->buttonsNew & PAD_SQUARE) {
-                    joystick_axis_range_remappings[1] = pad_status->pad.ljoy_h;
-                    joystick_axis_range_remappings[4] = pad_status->pad.ljoy_v;
-                    joystick_axis_range_remappings[7] = pad_status->pad.rjoy_h;
-                    joystick_axis_range_remappings[10] = pad_status->pad.rjoy_v;
+                    joystick_axis_range_remappings[JSAxisRange_LeftXCenter] = pad_status->pad.ljoy_h;
+                    joystick_axis_range_remappings[JSAxisRange_LeftYCenter] = pad_status->pad.ljoy_v;
+                    joystick_axis_range_remappings[JSAxisRange_RightXCenter] = pad_status->pad.rjoy_h;
+                    joystick_axis_range_remappings[JSAxisRange_RightYCenter] = pad_status->pad.rjoy_v;
                 }
 
                 if (is_calibrating && pad_status->buttonsNew & PAD_CIRCLE) {
@@ -291,23 +358,23 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
                 }
 
                 if (is_calibrating) {
-                    if (pad_status->pad.ljoy_h < joystick_axis_range_remappings[0])
-                        joystick_axis_range_remappings[0] = pad_status->pad.ljoy_h;
-                    if (pad_status->pad.ljoy_h > joystick_axis_range_remappings[2])
-                        joystick_axis_range_remappings[2] = pad_status->pad.ljoy_h;
-                    if (pad_status->pad.ljoy_v < joystick_axis_range_remappings[3])
-                        joystick_axis_range_remappings[3] = pad_status->pad.ljoy_v;
-                    if (pad_status->pad.ljoy_v > joystick_axis_range_remappings[5])
-                        joystick_axis_range_remappings[5] = pad_status->pad.ljoy_v;
+                    if (pad_status->pad.ljoy_h < joystick_axis_range_remappings[JSAxisRange_LeftXMin])
+                        joystick_axis_range_remappings[JSAxisRange_LeftXMin] = pad_status->pad.ljoy_h;
+                    if (pad_status->pad.ljoy_h > joystick_axis_range_remappings[JSAxisRange_LeftXMax])
+                        joystick_axis_range_remappings[JSAxisRange_LeftXMax] = pad_status->pad.ljoy_h;
+                    if (pad_status->pad.ljoy_v < joystick_axis_range_remappings[JSAxisRange_LeftYMin])
+                        joystick_axis_range_remappings[JSAxisRange_LeftYMin] = pad_status->pad.ljoy_v;
+                    if (pad_status->pad.ljoy_v > joystick_axis_range_remappings[JSAxisRange_LeftYMax])
+                        joystick_axis_range_remappings[JSAxisRange_LeftYMax] = pad_status->pad.ljoy_v;
                         
-                    if (pad_status->pad.rjoy_h < joystick_axis_range_remappings[6])
-                        joystick_axis_range_remappings[6] = pad_status->pad.rjoy_h;
-                    if (pad_status->pad.rjoy_h > joystick_axis_range_remappings[8])
-                        joystick_axis_range_remappings[8] = pad_status->pad.rjoy_h;
-                    if (pad_status->pad.rjoy_v < joystick_axis_range_remappings[9])
-                        joystick_axis_range_remappings[9] = pad_status->pad.rjoy_v;
-                    if (pad_status->pad.rjoy_v > joystick_axis_range_remappings[11])
-                        joystick_axis_range_remappings[11] = pad_status->pad.rjoy_v;
+                    if (pad_status->pad.rjoy_h < joystick_axis_range_remappings[JSAxisRange_RightXMin])
+                        joystick_axis_range_remappings[JSAxisRange_RightXMin] = pad_status->pad.rjoy_h;
+                    if (pad_status->pad.rjoy_h > joystick_axis_range_remappings[JSAxisRange_RightXMax])
+                        joystick_axis_range_remappings[JSAxisRange_RightXMax] = pad_status->pad.rjoy_h;
+                    if (pad_status->pad.rjoy_v < joystick_axis_range_remappings[JSAxisRange_RightYMin])
+                        joystick_axis_range_remappings[JSAxisRange_RightYMin] = pad_status->pad.rjoy_v;
+                    if (pad_status->pad.rjoy_v > joystick_axis_range_remappings[JSAxisRange_RightYMax])
+                        joystick_axis_range_remappings[JSAxisRange_RightYMax] = pad_status->pad.rjoy_v;
                 }
             }
             ImGui::EndGroup();
@@ -328,33 +395,33 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
 
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn(); ImGui::Text("LX-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LX-", ImGuiDataType_U8, &joystick_axis_range_remappings[0], 1.0F, &first_min, &first_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##LX-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXMin], 1.0F, &first_min, &first_max);
                 ImGui::TableNextColumn(); ImGui::Text("LY-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LY-", ImGuiDataType_U8, &joystick_axis_range_remappings[3], 1.0F, &first_min, &first_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##LY-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYMin], 1.0F, &first_min, &first_max);
                 ImGui::TableNextColumn(); ImGui::Text("RX-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RX-", ImGuiDataType_U8, &joystick_axis_range_remappings[6], 1.0F, &first_min, &first_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##RX-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXMin], 1.0F, &first_min, &first_max);
                 ImGui::TableNextColumn(); ImGui::Text("RY-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RY-", ImGuiDataType_U8, &joystick_axis_range_remappings[9], 1.0F, &first_min, &first_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##RY-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYMin], 1.0F, &first_min, &first_max);
                 
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn(); ImGui::Text("LX");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LX", ImGuiDataType_U8, &joystick_axis_range_remappings[1], 1.0F, &joystick_axis_range_remappings[0], &joystick_axis_range_remappings[2]);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##LX", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_LeftXMin], &joystick_axis_range_remappings[JSAxisRange_LeftXMax]);
                 ImGui::TableNextColumn(); ImGui::Text("LY");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LY", ImGuiDataType_U8, &joystick_axis_range_remappings[4], 1.0F, &joystick_axis_range_remappings[3], &joystick_axis_range_remappings[5]);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##LY", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_LeftYMin], &joystick_axis_range_remappings[JSAxisRange_LeftYMax]);
                 ImGui::TableNextColumn(); ImGui::Text("RX");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RX", ImGuiDataType_U8, &joystick_axis_range_remappings[7], 1.0F, &joystick_axis_range_remappings[6], &joystick_axis_range_remappings[8]);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##RX", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_RightXMin], &joystick_axis_range_remappings[JSAxisRange_RightXMax]);
                 ImGui::TableNextColumn(); ImGui::Text("RY");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RY", ImGuiDataType_U8, &joystick_axis_range_remappings[10], 1.0F, &joystick_axis_range_remappings[9], &joystick_axis_range_remappings[11]);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##RY", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_RightYMin], &joystick_axis_range_remappings[JSAxisRange_RightYMax]);
                 
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn(); ImGui::Text("LX+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LX+", ImGuiDataType_U8, &joystick_axis_range_remappings[2], 1.0F, &second_min, &second_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##LX+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXMax], 1.0F, &second_min, &second_max);
                 ImGui::TableNextColumn(); ImGui::Text("LY+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LY+", ImGuiDataType_U8, &joystick_axis_range_remappings[5], 1.0F, &second_min, &second_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##LY+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYMax], 1.0F, &second_min, &second_max);
                 ImGui::TableNextColumn(); ImGui::Text("RX+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RX+", ImGuiDataType_U8, &joystick_axis_range_remappings[8], 1.0F, &second_min, &second_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##RX+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXMax], 1.0F, &second_min, &second_max);
                 ImGui::TableNextColumn(); ImGui::Text("RY+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RY+", ImGuiDataType_U8, &joystick_axis_range_remappings[11], 1.0F, &second_min, &second_max);
+                ImGui::TableNextColumn(); ImGui::DragScalar("##RY+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYMax], 1.0F, &second_min, &second_max);
 
                 ImGui::EndTable();
             }
@@ -367,6 +434,13 @@ void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
 
         ImGui::TreePop();
     }
+}
+
+void app_section_configuration(ImGuiIO &io, PadStatus *pad_status) {
+    configurator_ps2plus_controller *controller = &configurator_state.controllers[0];
+
+    app_configuration_buttons(controller, io, pad_status);
+    app_configuration_joysticks(controller, io, pad_status);
 }
 
 void app_section_update(ImGuiIO &io, PadStatus *pad_status) {
