@@ -19,9 +19,9 @@ vpath %.irx $(PS2SDK)/iop/irx/
 vpath %.irx $(BUILDDIR_IOP)
 
 # Rule to generate them
-$(BUILDDIR_EE)/%_irx.o: $(BUILDDIR_IOP)/%.irx
+$(BUILDDIR_EE)/%_irx.o:
 	mkdir -p $(BUILDDIR_EE)
-	$(BIN2C) $< $(BUILDDIR_IOP)/$*_irx.c $*_irx
+	$(BIN2C) $(BUILDDIR_IOP)/$*.irx $(BUILDDIR_IOP)/$*_irx.c $*_irx
 	$(EE_CC) -c $(BUILDDIR_IOP)/$*_irx.c -o $(BUILDDIR_EE)/$*_irx.o
 	rm $(BUILDDIR_IOP)/$*_irx.c
 
