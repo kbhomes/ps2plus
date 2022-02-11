@@ -6,28 +6,33 @@ RM=rm -f
 
 include $(PS2SDK)/Defs.make
 
-EEFILES=ee/ps2plman.elf
+BUILDDIR=$(ROOTDIR)/build/$(PROJECTDIR)
+BUILDDIR_EE=$(BUILDDIR)/ee
+BUILDDIR_IOP=$(BUILDDIR)/iop
+
+EEFILES=$(BUILDDIR_EE)/ps2plman.elf
 IRXFILES=ps2plman.irx
-EE_IRX_OBJS = $(addprefix ee/, $(addsuffix _irx.o, $(basename $(IRXFILES))))
+EE_IRX_OBJS = $(addprefix $(BUILDDIR_EE)/, $(addsuffix _irx.o, $(basename $(IRXFILES))))
 
 # Where to find the IRX files
 vpath %.irx $(PS2SDK)/iop/irx/
-vpath %.irx iop/
+vpath %.irx $(BUILDDIR_IOP)
 
 # Rule to generate them
-ee/%_irx.o: %.irx
-	$(BIN2C) $< $*_irx.c $*_irx
-	$(EE_CC) -c $*_irx.c -o ee/$*_irx.o
-	rm $*_irx.c
+$(BUILDDIR_EE)/%_irx.o: $(BUILDDIR_IOP)/%.irx
+	mkdir -p $(BUILDDIR_EE)
+	$(BIN2C) $< $(BUILDDIR_IOP)/$*_irx.c $*_irx
+	$(EE_CC) -c $(BUILDDIR_IOP)/$*_irx.c -o $(BUILDDIR_EE)/$*_irx.o
+	rm $(BUILDDIR_IOP)/$*_irx.c
 
 VARIABLES=DEBUG=$(DEBUG)
 TARGETS = iop builtins ee
 
 all: $(TARGETS)
-	mkdir -p bin;
+	mkdir -p $(ROOTDIR)/build/dist;
 	@for file in $(EEFILES); do \
 		new=`echo $${file/*\//}|tr "[:lower:]" "[:upper:]"`; \
-		ps2-packer $$file bin/$$new; \
+		ps2-packer $$file $(ROOTDIR)/build/dist/$$new; \
 	done;
 
 ee:
@@ -35,11 +40,14 @@ ee:
 
 iop:
 	$(VARIABLES) $(MAKE) -C iop ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/iop
+	echo $(EE_IRX_OBJS)
+	echo $(BUILDDIR_EE)/%_irx.o
+	echo $(BUILDDIR_IOP)/%.irx
 
 clean:
 	$(MAKE) -C ee clean ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/ee
 	$(MAKE) -C iop clean ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/iop
-	rm -rf $(ROOTDIR)/build/configurator
+	rm -rf $(BUILDDIR)
 
 rebuild: clean all
 
