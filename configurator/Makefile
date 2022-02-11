@@ -40,9 +40,6 @@ ee:
 
 iop:
 	$(VARIABLES) $(MAKE) -C iop ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/iop
-	echo $(EE_IRX_OBJS)
-	echo $(BUILDDIR_EE)/%_irx.o
-	echo $(BUILDDIR_IOP)/%.irx
 
 clean:
 	$(MAKE) -C ee clean ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/ee

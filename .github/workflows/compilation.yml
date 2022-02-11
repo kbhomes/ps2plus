@@ -19,7 +19,6 @@ jobs:
 
       - name: Compile ps2plus-configurator
         run: |
-          cd configurator
           make
           git ls-files -i --exclude-standard -c
 
@@ -31,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ps2plus-configurator.elf
-          path: configurator/bin/PS2PLMAN.ELF
+          path: build/dist/PS2PLMAN.ELF
 
   firmware:
     runs-on: ubuntu-latest
