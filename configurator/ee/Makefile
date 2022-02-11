@@ -2,20 +2,20 @@
 
 DEBUG = 1
 
+BUILDDIR = $(ROOTDIR)/build/$(PROJECTDIR)
+PROJECTDIR = $(ROOTDIR)/$(PROJECTDIR)
+
+SRCDIRS = ./ ../common ../../shared
+SRCFILES = $(foreach dir, $(SRCDIRS), $(shell find $(dir) -name '*.c' -o -name '*.cpp'))
+
 EE_BIN = ps2plman.elf
-EE_INCS += -I../common -I../lib -I../..
+EE_INCS += -I. -Ilib -I../common -I../..
 EE_LIBS += -lpatches -lpad
-
-EE_OBJS = main.o libps2plman.o \
-	ui/gfx.o ui/pad.o \
-	ui/drawing/drawing.o ui/drawing/drawing_controller.o \
-	ui/widgets/widget_cursor.o ui/widgets/widget_gamepad.o ui/widgets/widget_icon.o ui/widgets/widget_misc.o
-
-# Add common files
-EE_OBJS += ../../shared/primitive_data.o
+EE_OBJS = $(addprefix $(BUILDDIR)/, $(patsubst %.c, %.o, $(patsubst %.cpp, %.o, $(SRCFILES))))
 
 # Add all required IRX files into the compilation
 EE_LDFLAGS += ps2plman_irx.o
+EE_CXXFLAGS += -std=gnu++11
 
 # Add gsKit references
 EE_INCS += -I$(GSKIT)/include
@@ -23,9 +23,6 @@ EE_LIBS += -lgskit_toolkit -lgskit -ldmakit
 EE_LDFLAGS += -L$(GSKIT)/lib
 
 # Add imgui references
-EE_OBJS += ../lib/imgui/imgui.o ../lib/imgui/imgui_demo.o ../lib/imgui/imgui_draw.o ../lib/imgui/imgui_tables.o ../lib/imgui/imgui_widgets.o
-EE_OBJS += ../lib/imgui/backends/imgui_impl_ps2sdk.o ../lib/imgui/backends/imgui_impl_ps2gskit.o
-EE_CXXFLAGS += -std=gnu++11
 
 ifeq ($(DEBUG),1)
 EE_CFLAGS += -DDEBUG -g
@@ -36,13 +33,19 @@ EE_LDFLAGS += -s
 endif
 
 # Use C++ compiler for all files in this compilation
-%.o: %.c
+$(BUILDDIR)/%.o: %.c
+	mkdir -p $(BUILDDIR)/$(dir $<)
+	$(EE_CXX_COMPILE) -c $< -o $@
+
+$(BUILDDIR)/%.o: %.cpp
+	mkdir -p $(BUILDDIR)/$(dir $<)
 	$(EE_CXX_COMPILE) -c $< -o $@
 
 all: $(EE_BIN)
 
 clean:
 	rm -f $(EE_BIN) $(EE_OBJS)
+	rm -rf $(BUILDDIR)
 
 reset:
 	ps2client reset

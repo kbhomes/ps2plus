@@ -3,8 +3,6 @@
 #include <imgui/imgui.h>
 #include <math.h>
 
-#define M_PI		3.14159265358979323846
-
 void imgui_draw_circle(ImDrawList *draw_list, bool filled, const ImVec2& center, float radius, ImU32 col, int num_segments = 0, float thickness = 1.0f);
 void imgui_draw_triangle(ImDrawList *draw_list, bool filled, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness = 1.0f);
 void imgui_draw_rect(ImDrawList *draw_list, bool filled, const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0, float thickness = 1.0f);

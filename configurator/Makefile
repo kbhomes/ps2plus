@@ -31,15 +31,15 @@ all: $(TARGETS)
 	done;
 
 ee:
-	$(VARIABLES) $(MAKE) -C ee
+	$(VARIABLES) $(MAKE) -C ee ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/ee
 
 iop:
-	$(VARIABLES) $(MAKE) -C iop
+	$(VARIABLES) $(MAKE) -C iop ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/iop
 
 clean:
-	$(MAKE) -C ee clean
-	$(MAKE) -C iop clean
-	@rm -f ee/*_irx.o bin/*.ELF bin/*.IRX
+	$(MAKE) -C ee clean ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/ee
+	$(MAKE) -C iop clean ROOTDIR=$(ROOTDIR) PROJECTDIR=$(PROJECTDIR)/iop
+	rm -rf $(ROOTDIR)/build/configurator
 
 rebuild: clean all
 
