@@ -287,194 +287,192 @@ void app_configuration_joysticks_digital_mode(configurator_ps2plus_controller *c
     }
 }
 
-void app_configuration_joysticks(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
+void app_configuration_joysticks_axis_range_remapping(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
     static bool enable_joystick_axis_range_remapping = controller->configuration.enable_joystick_axis_range_remapping.boolean;
     static uint8_t joystick_axis_range_remappings[12] = { 0, 127, 255, 0, 127, 255, 0, 127, 255, 0, 127, 255 };
 
-    if (ImGui::TreeNodeEx("Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
-        // if (ImGui::TreeNodeEx("General##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
-        //     ImGui::Checkbox("##joystick_digital_mode", &joystick_digital_mode); 
-        //     ImGui::SameLine(); ImGui::TextWrapped(
-        //         "Use the left and right joysticks to simulate the D-pad "
-        //         "and the face buttons when in digital mode");
+    if (ImGui::TreeNodeEx("Axis Range Remapping##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+        static bool is_calibrating = false;
 
-        //     ImGui::TreePop();
-        //     ImGui::Separator();
-        // }
+        ImGui::Checkbox("##enable_button_remapping", &enable_joystick_axis_range_remapping); 
+        ImGui::SameLine(); ImGui::TextWrapped("Enable joystick axis range remapping");
 
-        app_configuration_joysticks_deadzones(controller, io, pad_status);
-        app_configuration_joysticks_digital_mode(controller, io, pad_status);
+        ImGui::BeginDisabled(!enable_joystick_axis_range_remapping);
+        ImGui::BeginGroup();
+        {
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+            const float joystick_size = 90.f;
+            ImDrawList *draw_list = ImGui::GetWindowDrawList();
+            draw_controller_joystick(
+                draw_list, 
+                ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
+                joystick_size / 2, is_calibrating, joystick_axis_range_remappings[JSAxisRange_LeftXCenter], joystick_axis_range_remappings[JSAxisRange_LeftYCenter]);
 
-        if (ImGui::TreeNodeEx("Axis Range Remapping##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
-            static bool is_calibrating = false;
+            draw_list->AddRectFilled(
+                ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_LeftXMin]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_LeftYMin]/128)),
+                ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_LeftXMax]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_LeftYMax]/128 - 1)),
+                IM_COL32(0x55, 0x55, 0xAA, 0x60), 5.0f);
 
-            ImGui::BeginGroup();
-            {
-                const ImVec2 p = ImGui::GetCursorScreenPos();
-                const float joystick_size = 90.f;
-                ImDrawList *draw_list = ImGui::GetWindowDrawList();
-                draw_controller_joystick(
-                    draw_list, 
-                    ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
-                    joystick_size / 2, is_calibrating, joystick_axis_range_remappings[JSAxisRange_LeftXCenter], joystick_axis_range_remappings[JSAxisRange_LeftYCenter]);
-
-                draw_list->AddRectFilled(
-                    ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_LeftXMin]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_LeftYMin]/128)),
-                    ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_LeftXMax]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_LeftYMax]/128 - 1)),
-                    IM_COL32(0x55, 0x55, 0xAA, 0x60), 5.0f);
-
-                if (is_calibrating) {
-                    draw_list->AddCircleFilled(
-                        ImVec2(p.x + joystick_size*(pad_status->pad.ljoy_h/255.f), p.y + joystick_size*(pad_status->pad.ljoy_v/255.f)),
-                        2.0f, IM_COL32(0x55, 0x55, 0xAA, 0xC0));
-                }
-
-                ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+            if (is_calibrating) {
+                draw_list->AddCircleFilled(
+                    ImVec2(p.x + joystick_size*(pad_status->pad.ljoy_h/255.f), p.y + joystick_size*(pad_status->pad.ljoy_v/255.f)),
+                    2.0f, IM_COL32(0x55, 0x55, 0xAA, 0xC0));
             }
-            ImGui::EndGroup();
+
+            ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+            const ImVec2 p = ImGui::GetCursorScreenPos();
+            const float joystick_size = 90.f;
+            ImDrawList *draw_list = ImGui::GetWindowDrawList();
+            draw_controller_joystick(
+                draw_list, 
+                ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
+                joystick_size / 2, is_calibrating, joystick_axis_range_remappings[JSAxisRange_RightXCenter], joystick_axis_range_remappings[JSAxisRange_RightYCenter]);
+
+            draw_list->AddRectFilled(
+                ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_RightXMin]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_RightYMin]/128)),
+                ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_RightXMax]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_RightYMax]/128 - 1)),
+                IM_COL32(0x55, 0x55, 0xAA, 0x60), 5.0f);
+
+            if (is_calibrating) {
+                draw_list->AddCircleFilled(
+                    ImVec2(p.x + joystick_size*(pad_status->pad.rjoy_h/255.f), p.y + joystick_size*(pad_status->pad.rjoy_v/255.f)),
+                    2.0f, IM_COL32(0x55, 0x55, 0xAA, 0xC0));
+            }
+
+            ImGui::Dummy(ImVec2(joystick_size, joystick_size));
+        }
+        ImGui::EndGroup();
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        {
+            ImGui::BeginDisabled(is_calibrating);
+            if (ImGui::Button("Calibrate") && !is_calibrating) {
+                ps2plman_disable_enable_configuration(false, NULL);
+                is_calibrating = true;
+                BeginCaptureGamepad();
+
+                for (int i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
+                    joystick_axis_range_remappings[i] = 127;
+                }
+            }
             ImGui::SameLine();
-            ImGui::BeginGroup();
-            {
-                const ImVec2 p = ImGui::GetCursorScreenPos();
-                const float joystick_size = 90.f;
-                ImDrawList *draw_list = ImGui::GetWindowDrawList();
-                draw_controller_joystick(
-                    draw_list, 
-                    ImVec2(p.x + joystick_size/2, p.y + joystick_size/2), 
-                    joystick_size / 2, is_calibrating, joystick_axis_range_remappings[JSAxisRange_RightXCenter], joystick_axis_range_remappings[JSAxisRange_RightYCenter]);
-
-                draw_list->AddRectFilled(
-                    ImVec2(p.x + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_RightXMin]/128), p.y + joystick_size/2 - joystick_size/2*(1 - (float)joystick_axis_range_remappings[JSAxisRange_RightYMin]/128)),
-                    ImVec2(p.x + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_RightXMax]/128 - 1), p.y + joystick_size/2 + joystick_size/2*((float)joystick_axis_range_remappings[JSAxisRange_RightYMax]/128 - 1)),
-                    IM_COL32(0x55, 0x55, 0xAA, 0x60), 5.0f);
-
-                if (is_calibrating) {
-                    draw_list->AddCircleFilled(
-                        ImVec2(p.x + joystick_size*(pad_status->pad.rjoy_h/255.f), p.y + joystick_size*(pad_status->pad.rjoy_v/255.f)),
-                        2.0f, IM_COL32(0x55, 0x55, 0xAA, 0xC0));
+            if (ImGui::Button("Reset##JoystickAxisRangeMapping")) {
+                for (int i = 0; i < NUM_JOYSTICK_AXIS_RANGES / 3; i++) {
+                    joystick_axis_range_remappings[i*3 + 0] = 0;
+                    joystick_axis_range_remappings[i*3 + 1] = 127;
+                    joystick_axis_range_remappings[i*3 + 2] = 255;
                 }
-
-                ImGui::Dummy(ImVec2(joystick_size, joystick_size));
-            }
-            ImGui::EndGroup();
-            ImGui::SameLine();
-            ImGui::BeginGroup();
-            {
-                ImGui::BeginDisabled(is_calibrating);
-                if (ImGui::Button("Calibrate") && !is_calibrating) {
-                    ps2plman_disable_enable_configuration(false, NULL);
-                    is_calibrating = true;
-                    BeginCaptureGamepad();
-
-                    for (int i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
-                        joystick_axis_range_remappings[i] = 127;
-                    }
-                }
-                ImGui::SameLine();
-                if (ImGui::Button("Reset##JoystickAxisRangeMapping")) {
-                    for (int i = 0; i < NUM_JOYSTICK_AXIS_RANGES / 3; i++) {
-                        joystick_axis_range_remappings[i*3 + 0] = 0;
-                        joystick_axis_range_remappings[i*3 + 1] = 127;
-                        joystick_axis_range_remappings[i*3 + 2] = 255;
-                    }
-                }
-                ImGui::EndDisabled();
-
-                if (is_calibrating) {
-                    ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Square); ImGui::SameLine();
-                        ImGui::Text("Update centers");
-
-                    ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Circle); ImGui::SameLine();
-                        ImGui::Text("Finish calibration");
-                }
-
-                if (is_calibrating && pad_status->buttonsNew & PAD_SQUARE) {
-                    joystick_axis_range_remappings[JSAxisRange_LeftXCenter] = pad_status->pad.ljoy_h;
-                    joystick_axis_range_remappings[JSAxisRange_LeftYCenter] = pad_status->pad.ljoy_v;
-                    joystick_axis_range_remappings[JSAxisRange_RightXCenter] = pad_status->pad.rjoy_h;
-                    joystick_axis_range_remappings[JSAxisRange_RightYCenter] = pad_status->pad.rjoy_v;
-                }
-
-                if (is_calibrating && pad_status->buttonsNew & PAD_CIRCLE) {
-                    is_calibrating = false;
-                    EndCaptureGamepad();
-                    ps2plman_disable_enable_configuration(true, NULL);
-                }
-
-                if (is_calibrating) {
-                    if (pad_status->pad.ljoy_h < joystick_axis_range_remappings[JSAxisRange_LeftXMin])
-                        joystick_axis_range_remappings[JSAxisRange_LeftXMin] = pad_status->pad.ljoy_h;
-                    if (pad_status->pad.ljoy_h > joystick_axis_range_remappings[JSAxisRange_LeftXMax])
-                        joystick_axis_range_remappings[JSAxisRange_LeftXMax] = pad_status->pad.ljoy_h;
-                    if (pad_status->pad.ljoy_v < joystick_axis_range_remappings[JSAxisRange_LeftYMin])
-                        joystick_axis_range_remappings[JSAxisRange_LeftYMin] = pad_status->pad.ljoy_v;
-                    if (pad_status->pad.ljoy_v > joystick_axis_range_remappings[JSAxisRange_LeftYMax])
-                        joystick_axis_range_remappings[JSAxisRange_LeftYMax] = pad_status->pad.ljoy_v;
-                        
-                    if (pad_status->pad.rjoy_h < joystick_axis_range_remappings[JSAxisRange_RightXMin])
-                        joystick_axis_range_remappings[JSAxisRange_RightXMin] = pad_status->pad.rjoy_h;
-                    if (pad_status->pad.rjoy_h > joystick_axis_range_remappings[JSAxisRange_RightXMax])
-                        joystick_axis_range_remappings[JSAxisRange_RightXMax] = pad_status->pad.rjoy_h;
-                    if (pad_status->pad.rjoy_v < joystick_axis_range_remappings[JSAxisRange_RightYMin])
-                        joystick_axis_range_remappings[JSAxisRange_RightYMin] = pad_status->pad.rjoy_v;
-                    if (pad_status->pad.rjoy_v > joystick_axis_range_remappings[JSAxisRange_RightYMax])
-                        joystick_axis_range_remappings[JSAxisRange_RightYMax] = pad_status->pad.rjoy_v;
-                }
-            }
-            ImGui::EndGroup();
-
-            ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(2, 2));
-            ImGui::BeginDisabled();
-            if (ImGui::BeginTable("Joystick Axis Range Remapping", 8)) {
-                uint8_t first_min = 0, first_max = 127, second_min = 128, second_max = 255;
-
-                ImGui::TableSetupColumn("##LX-Label", ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("##LX-Value", ImGuiTableColumnFlags_WidthStretch);
-                ImGui::TableSetupColumn("##LY-Label", ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("##LY-Value", ImGuiTableColumnFlags_WidthStretch);
-                ImGui::TableSetupColumn("##RX-Label", ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("##RX-Value", ImGuiTableColumnFlags_WidthStretch);
-                ImGui::TableSetupColumn("##RY-Label", ImGuiTableColumnFlags_WidthFixed);
-                ImGui::TableSetupColumn("##RY-Value", ImGuiTableColumnFlags_WidthStretch);
-
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn(); ImGui::Text("LX-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LX-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXMin], 1.0F, &first_min, &first_max);
-                ImGui::TableNextColumn(); ImGui::Text("LY-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LY-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYMin], 1.0F, &first_min, &first_max);
-                ImGui::TableNextColumn(); ImGui::Text("RX-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RX-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXMin], 1.0F, &first_min, &first_max);
-                ImGui::TableNextColumn(); ImGui::Text("RY-");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RY-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYMin], 1.0F, &first_min, &first_max);
-                
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn(); ImGui::Text("LX");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LX", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_LeftXMin], &joystick_axis_range_remappings[JSAxisRange_LeftXMax]);
-                ImGui::TableNextColumn(); ImGui::Text("LY");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LY", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_LeftYMin], &joystick_axis_range_remappings[JSAxisRange_LeftYMax]);
-                ImGui::TableNextColumn(); ImGui::Text("RX");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RX", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_RightXMin], &joystick_axis_range_remappings[JSAxisRange_RightXMax]);
-                ImGui::TableNextColumn(); ImGui::Text("RY");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RY", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_RightYMin], &joystick_axis_range_remappings[JSAxisRange_RightYMax]);
-                
-                ImGui::TableNextRow();
-                ImGui::TableNextColumn(); ImGui::Text("LX+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LX+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXMax], 1.0F, &second_min, &second_max);
-                ImGui::TableNextColumn(); ImGui::Text("LY+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##LY+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYMax], 1.0F, &second_min, &second_max);
-                ImGui::TableNextColumn(); ImGui::Text("RX+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RX+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXMax], 1.0F, &second_min, &second_max);
-                ImGui::TableNextColumn(); ImGui::Text("RY+");
-                ImGui::TableNextColumn(); ImGui::DragScalar("##RY+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYMax], 1.0F, &second_min, &second_max);
-
-                ImGui::EndTable();
             }
             ImGui::EndDisabled();
-            ImGui::PopStyleVar();
 
-            ImGui::TreePop();
-            ImGui::Separator();
+            if (is_calibrating) {
+                ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Square); ImGui::SameLine();
+                    ImGui::Text("Update centers");
+
+                ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Circle); ImGui::SameLine();
+                    ImGui::Text("Finish calibration");
+            }
+
+            if (is_calibrating && pad_status->buttonsNew & PAD_SQUARE) {
+                joystick_axis_range_remappings[JSAxisRange_LeftXCenter] = pad_status->pad.ljoy_h;
+                joystick_axis_range_remappings[JSAxisRange_LeftYCenter] = pad_status->pad.ljoy_v;
+                joystick_axis_range_remappings[JSAxisRange_RightXCenter] = pad_status->pad.rjoy_h;
+                joystick_axis_range_remappings[JSAxisRange_RightYCenter] = pad_status->pad.rjoy_v;
+            }
+
+            if (is_calibrating && pad_status->buttonsNew & PAD_CIRCLE) {
+                is_calibrating = false;
+                EndCaptureGamepad();
+                ps2plman_disable_enable_configuration(true, NULL);
+            }
+
+            if (is_calibrating) {
+                if (pad_status->pad.ljoy_h < joystick_axis_range_remappings[JSAxisRange_LeftXMin])
+                    joystick_axis_range_remappings[JSAxisRange_LeftXMin] = pad_status->pad.ljoy_h;
+                if (pad_status->pad.ljoy_h > joystick_axis_range_remappings[JSAxisRange_LeftXMax])
+                    joystick_axis_range_remappings[JSAxisRange_LeftXMax] = pad_status->pad.ljoy_h;
+                if (pad_status->pad.ljoy_v < joystick_axis_range_remappings[JSAxisRange_LeftYMin])
+                    joystick_axis_range_remappings[JSAxisRange_LeftYMin] = pad_status->pad.ljoy_v;
+                if (pad_status->pad.ljoy_v > joystick_axis_range_remappings[JSAxisRange_LeftYMax])
+                    joystick_axis_range_remappings[JSAxisRange_LeftYMax] = pad_status->pad.ljoy_v;
+                    
+                if (pad_status->pad.rjoy_h < joystick_axis_range_remappings[JSAxisRange_RightXMin])
+                    joystick_axis_range_remappings[JSAxisRange_RightXMin] = pad_status->pad.rjoy_h;
+                if (pad_status->pad.rjoy_h > joystick_axis_range_remappings[JSAxisRange_RightXMax])
+                    joystick_axis_range_remappings[JSAxisRange_RightXMax] = pad_status->pad.rjoy_h;
+                if (pad_status->pad.rjoy_v < joystick_axis_range_remappings[JSAxisRange_RightYMin])
+                    joystick_axis_range_remappings[JSAxisRange_RightYMin] = pad_status->pad.rjoy_v;
+                if (pad_status->pad.rjoy_v > joystick_axis_range_remappings[JSAxisRange_RightYMax])
+                    joystick_axis_range_remappings[JSAxisRange_RightYMax] = pad_status->pad.rjoy_v;
+            }
         }
+        ImGui::EndGroup();
+
+        ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(2, 2));
+        ImGui::BeginDisabled();
+        if (ImGui::BeginTable("Joystick Axis Range Remapping", 8)) {
+            uint8_t first_min = 0, first_max = 127, second_min = 128, second_max = 255;
+
+            ImGui::TableSetupColumn("##LX-Label", ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("##LX-Value", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("##LY-Label", ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("##LY-Value", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("##RX-Label", ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("##RX-Value", ImGuiTableColumnFlags_WidthStretch);
+            ImGui::TableSetupColumn("##RY-Label", ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupColumn("##RY-Value", ImGuiTableColumnFlags_WidthStretch);
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn(); ImGui::Text("LX-");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##LX-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXMin], 1.0F, &first_min, &first_max);
+            ImGui::TableNextColumn(); ImGui::Text("LY-");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##LY-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYMin], 1.0F, &first_min, &first_max);
+            ImGui::TableNextColumn(); ImGui::Text("RX-");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##RX-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXMin], 1.0F, &first_min, &first_max);
+            ImGui::TableNextColumn(); ImGui::Text("RY-");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##RY-", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYMin], 1.0F, &first_min, &first_max);
+            
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn(); ImGui::Text("LX");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##LX", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_LeftXMin], &joystick_axis_range_remappings[JSAxisRange_LeftXMax]);
+            ImGui::TableNextColumn(); ImGui::Text("LY");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##LY", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_LeftYMin], &joystick_axis_range_remappings[JSAxisRange_LeftYMax]);
+            ImGui::TableNextColumn(); ImGui::Text("RX");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##RX", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_RightXMin], &joystick_axis_range_remappings[JSAxisRange_RightXMax]);
+            ImGui::TableNextColumn(); ImGui::Text("RY");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##RY", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYCenter], 1.0F, &joystick_axis_range_remappings[JSAxisRange_RightYMin], &joystick_axis_range_remappings[JSAxisRange_RightYMax]);
+            
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn(); ImGui::Text("LX+");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##LX+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftXMax], 1.0F, &second_min, &second_max);
+            ImGui::TableNextColumn(); ImGui::Text("LY+");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##LY+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_LeftYMax], 1.0F, &second_min, &second_max);
+            ImGui::TableNextColumn(); ImGui::Text("RX+");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##RX+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightXMax], 1.0F, &second_min, &second_max);
+            ImGui::TableNextColumn(); ImGui::Text("RY+");
+            ImGui::TableNextColumn(); ImGui::DragScalar("##RY+", ImGuiDataType_U8, &joystick_axis_range_remappings[JSAxisRange_RightYMax], 1.0F, &second_min, &second_max);
+
+            ImGui::EndTable();
+        }
+        ImGui::EndDisabled();
+        ImGui::PopStyleVar();
+        ImGui::EndDisabled();
+
+        ImGui::TreePop();
+        ImGui::Separator();
+    }
+}
+
+void app_configuration_joysticks(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
+    if (ImGui::TreeNodeEx("Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+        app_configuration_joysticks_deadzones(controller, io, pad_status);
+        app_configuration_joysticks_digital_mode(controller, io, pad_status);
+        app_configuration_joysticks_axis_range_remapping(controller, io, pad_status);
 
         ImGui::TreePop();
     }
