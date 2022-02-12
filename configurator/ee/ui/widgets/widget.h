@@ -25,4 +25,5 @@ namespace ImGui::Widgets {
     void WindowOverlay(float alpha = 0.75);
     void WindowOverlay(ImU32 color);
     void MouseCursor();
+    void HelpMarker(const char* desc);
 }

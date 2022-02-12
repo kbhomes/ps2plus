@@ -31,7 +31,8 @@
                 "/usr/local/ps2dev/gsKit/include"
             ],
             "defines": [
-                "_EE"
+                "_EE",
+                "IMGUI_DISABLE_SSE"
             ],
             "compilerPath": "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
             "cStandard": "c99",
