@@ -221,24 +221,67 @@ void app_configuration_joysticks_deadzones(configurator_ps2plus_controller *cont
             ImGui::DragScalar("Left", ImGuiDataType_U8, &joystick_deadzone_left, 1.0, &value_min, &value_max);
             ImGui::DragScalar("Right", ImGuiDataType_U8, &joystick_deadzone_right, 1.0, &value_min, &value_max);
             ImGui::PopItemWidth();
-
-            // if (ImGui::BeginTable("##Deadzones/Joysticks", 2)) {
-            //     ImGui::TableSetupColumn("##Deadzone-Label", ImGuiTableColumnFlags_WidthFixed);
-            //     ImGui::TableSetupColumn("##Deadzone-Value", ImGuiTableColumnFlags_WidthStretch);
-
-            //     ImGui::TableNextRow();
-            //     ImGui::TableNextColumn(); ImGui::Text("Left");
-            //     ImGui::TableNextColumn(); ImGui::DragScalar("##LDeadzone", ImGuiDataType_U8, &joystick_deadzone_left, 1.0, &value_min, &value_max);
-
-            //     ImGui::TableNextRow();
-            //     ImGui::TableNextColumn(); ImGui::Text("Right");
-            //     ImGui::TableNextColumn(); ImGui::DragScalar("##RDeadzone", ImGuiDataType_U8, &joystick_deadzone_right, 1.0, &value_min, &value_max);
-
-            //     ImGui::EndTable();
-            // }
         }
         ImGui::EndGroup();
 
+        ImGui::TreePop();
+        ImGui::Separator();
+    }
+}
+
+void app_configuration_joysticks_digital_mode(configurator_ps2plus_controller *controller, ImGuiIO &io, PadStatus *pad_status) {
+    static uint8_t joystick_digital_threshold_left = controller->configuration.joystick_digital_threshold_left.uint8;
+    static uint8_t joystick_digital_threshold_right = controller->configuration.joystick_digital_threshold_right.uint8;
+
+    static int joystick_digital_enable_flags = (
+        (controller->configuration.joystick_digital_enable_left.boolean ? 0b01 : 0b00) | 
+        (controller->configuration.joystick_digital_enable_right.boolean ? 0b10 : 0b00));
+    static uint8_t threshold_min = 0, threshold_max = 0x7F;
+
+    bool joystick_digital_enable_left = joystick_digital_enable_flags & 0b01;
+    bool joystick_digital_enable_right = joystick_digital_enable_flags & 0b10;
+
+    if (ImGui::TreeNodeEx("Digital Mode##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+        ImGui::CheckboxFlags("Enable using the joysticks in digital mode", &joystick_digital_enable_flags, 0b11);
+        ImGui::Indent(); 
+        {
+            ImGui::CheckboxFlags("##Joysticks/joystick_digital_enable_left", &joystick_digital_enable_flags, 0b01);
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            {
+                ImGui::TextWrapped("Left joystick simulates the D-pad");
+                ImGui::BeginDisabled(!joystick_digital_enable_left);
+                {
+                    ImGui::Text("Threshold: ");
+                    ImGui::SameLine();
+                    ImGui::PushItemWidth(50.f);
+                    ImGui::DragScalar("##Joysticks/joystick_digital_threshold_left", ImGuiDataType_U8, &joystick_digital_threshold_left, 1.0, &threshold_min, &threshold_max);
+                    ImGui::PopItemWidth();
+                }
+                ImGui::EndDisabled();
+            }
+            ImGui::EndGroup();
+            
+            ImGui::CheckboxFlags("##Joysticks/joystick_digital_enable_right", &joystick_digital_enable_flags, 0b10);
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            {
+                ImGui::TextWrapped("Right joystick simulates the face buttons");
+                ImGui::BeginDisabled(!joystick_digital_enable_right);
+                {
+                    ImGui::Text("Threshold: ");
+                    ImGui::SameLine();
+                    ImGui::PushItemWidth(50.f);
+                    ImGui::DragScalar("##Joysticks/joystick_digital_threshold_right", ImGuiDataType_U8, &joystick_digital_threshold_right, 1.0, &threshold_min, &threshold_max);
+                    ImGui::PopItemWidth();
+                }
+                ImGui::EndDisabled();
+            }
+            ImGui::EndGroup();
+        }
+        ImGui::Unindent();
+        
         ImGui::TreePop();
         ImGui::Separator();
     }
@@ -260,6 +303,7 @@ void app_configuration_joysticks(configurator_ps2plus_controller *controller, Im
         // }
 
         app_configuration_joysticks_deadzones(controller, io, pad_status);
+        app_configuration_joysticks_digital_mode(controller, io, pad_status);
 
         if (ImGui::TreeNodeEx("Axis Range Remapping##Joysticks", ImGuiTreeNodeFlags_DefaultOpen)) {
             static bool is_calibrating = false;
