@@ -32,23 +32,30 @@ jobs:
           name: ps2plus-configurator.elf
           path: build/dist/PS2PLMAN.ELF
 
-  firmware:
+  firmware-and-bootloader:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
 
-      - name: Compile ps2plus-firmware
+      - name: Compile PS2+ firmware and bootloader
         uses: kbhomes/mplabx-xc8-build-action@master
         with:
           project: firmware
-          configuration: default
+          configurations: Firmware Bootloader
+          post: echo "Finished firmware and bootloader"
 
       - name: Get short SHA
         id: slug
         run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
 
-      - name: Upload output file
+      - name: Upload firmware
         uses: actions/upload-artifact@v2
         with:
           name: ps2plus-firmware.hex
-          path: firmware/dist/default/production/firmware.production.hex
+          path: firmware/dist/Firmware/production/firmware.production.hex
+
+      - name: Upload bootloader
+        uses: actions/upload-artifact@v2
+        with:
+          name: ps2plus-bootloader.hex
+          path: firmware/dist/Bootloader/production/firmware.production.hex
