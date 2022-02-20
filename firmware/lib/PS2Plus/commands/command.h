@@ -35,10 +35,13 @@ extern command_processor command_controller_configure_analog_response;
 
 // PS2+ configuration command processors
 extern command_processor command_ps2plus_get_version;
+
+#ifdef PS2PLUS_FIRMWARE
 extern command_processor command_ps2plus_get_configuration;
 extern command_processor command_ps2plus_set_configuration;
 extern command_processor command_ps2plus_disable_enable_configuration;
 extern command_processor command_ps2plus_restore_configuration_defaults;
+#endif
 
 /**
  * @brief Returns the command processor for the given command ID, or NULL if the 

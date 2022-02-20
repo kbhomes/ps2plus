@@ -34,6 +34,7 @@ command_result gv_process(volatile command_packet *packet, controller_state *sta
       gv_memory.version_id = packet->command_byte;
       
       switch (gv_memory.version_id) {
+#ifdef PS2PLUS_FIRMWARE
         case PS2PlusVersion_Firmware:
           packet->write(0x03);
           gv_memory.version_payload = PAYLOAD_FIRMWARE_VERSION;
@@ -50,6 +51,12 @@ command_result gv_process(volatile command_packet *packet, controller_state *sta
           packet->write(0x03);
           gv_memory.version_payload = PAYLOAD_CONFIGURATION_VERSION;
           gv_memory.version_payload_length = sizeof(PAYLOAD_CONFIGURATION_VERSION);
+          break;
+#endif
+
+        default:
+          packet->write(0xFF);
+          gv_memory.version_payload_length = 0;
           break;
       }
     } else {

@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "custom_config.h"
 
 #include <platforms/platform.h>
@@ -76,3 +78,5 @@ void controller_custom_config_save(controller_custom_config *config) {
   platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_threshold_left), config->values.joystick_digital_threshold_left.uint8);
   platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_threshold_left), config->values.joystick_digital_threshold_left.uint8);
 }
+
+#endif

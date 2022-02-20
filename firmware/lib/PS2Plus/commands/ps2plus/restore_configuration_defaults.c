@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 command_result rcd_initialize(volatile command_packet *packet, controller_state *state) {
@@ -17,3 +19,5 @@ command_processor command_ps2plus_restore_configuration_defaults = {
     .initialize = &rcd_initialize,
     .process = &rcd_process,
 };
+
+#endif

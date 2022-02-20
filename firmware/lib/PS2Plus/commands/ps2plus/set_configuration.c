@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 #include <shared/primitive_data.h>
@@ -88,3 +90,5 @@ command_processor command_ps2plus_set_configuration = {
     .process = &sc_process,
     .finalize = &sc_finalize,
 };
+
+#endif

@@ -1,6 +1,7 @@
 #ifndef CONTROLLER_STATE_H
 #define CONTROLLER_STATE_H
 
+#include "bootloader.h"
 #include "custom_config.h"
 #include "input.h"
 
@@ -17,9 +18,13 @@ typedef struct {
 
 typedef struct {
   struct {
+#if defined(PS2PLUS_FIRMWARE)
     uint16_t firmware;
     char microcontroller[32];
     uint16_t configuration;
+#elif defined(PS2PLUS_BOOTLOADER)
+    uint16_t bootloader;
+#endif
   } versions;
   
   /**
@@ -58,14 +63,23 @@ typedef struct {
    */
   controller_rumble_motor rumble_motor_large;
 
+#ifdef PS2PLUS_FIRMWARE
   /**
    * @brief Custom configuration information, persisted in internal storage
    */
   controller_custom_config custom_config;
+#endif
+  
+#ifdef PS2PLUS_BOOTLOADER
+  /**
+   * @brief State information required for the operation of the bootloader
+   */
+  controller_bootloader bootloader;
+#endif
 } controller_state;
 
 void controller_state_initialize(controller_state *);
 void controller_state_update_mode(controller_state *);
-void controller_state_set_versions(controller_state *, uint16_t firmware, char microcontroller[32], uint16_t configuration);
+void controller_state_set_versions(controller_state *, uint16_t firmware, char microcontroller[32], uint16_t configuration, uint16_t bootloader);
 
 #endif /* CONTROLLER_STATE_H */

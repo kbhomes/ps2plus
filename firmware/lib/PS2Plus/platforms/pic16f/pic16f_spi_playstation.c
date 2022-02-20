@@ -17,7 +17,7 @@ const pic_digital_io_pin PIN_SPI_ATT = PIC_DIGITAL_IO_PIN(A, 5);
  * @brief SPI interrupt handler, executed when a transmission from the console 
  *        is received and a byte is available to read
  */
-void __interrupt(irq(IRQ_SPI1RX)) pic16f_interrupt_spi() {
+void __interrupt(irq(IRQ_SPI1RX), base(PIC_IVT_BASE)) pic16f_interrupt_spi() {
   // Simply call the main program's data handler if we received an SPI transmission
   main_loop_callback();
 }

@@ -4,10 +4,15 @@
 #include <xc.h>
 
 #include <platforms/platform.h>
-#include <conio.h>
 #include <stdint.h>
 #include <string.h>
 #include <stdio.h>
+
+#if defined(PS2PLUS_FIRMWARE)
+#define PIC_IVT_BASE 0x4008
+#elif defined(PS2PLUS_BOOTLOADER)
+#define PIC_IVT_BASE 0x0008
+#endif
 
 #define _XTAL_FREQ 64000000
 

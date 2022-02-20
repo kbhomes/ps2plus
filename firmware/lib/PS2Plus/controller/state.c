@@ -4,7 +4,6 @@
 
 void controller_state_initialize(controller_state *state) {
   controller_input_initialize(&state->input);
-  controller_custom_config_initialize(&state->custom_config);
   state->analog_mode = CMDigital;
   state->analog_mode_locked = false;
   state->config_mode = false;
@@ -12,6 +11,10 @@ void controller_state_initialize(controller_state *state) {
   state->rumble_motor_small.value = 0x00;
   state->rumble_motor_large.mapping = 0xFF;
   state->rumble_motor_large.value = 0x00;
+  
+#ifdef PS2PLUS_FIRMWARE
+  controller_custom_config_initialize(&state->custom_config);
+#endif
 }
 
 void controller_state_update_mode(controller_state *state) {
@@ -26,8 +29,12 @@ void controller_state_update_mode(controller_state *state) {
   }
 }
 
-void controller_state_set_versions(controller_state *state, uint16_t firmware, char microcontroller[32], uint16_t configuration) {
+void controller_state_set_versions(controller_state *state, uint16_t firmware, char microcontroller[32], uint16_t configuration, uint16_t bootloader) {
+#if defined(PS2PLUS_FIRMWARE)
   state->versions.firmware = firmware;
   state->versions.configuration = configuration;
   memcpy(state->versions.microcontroller, microcontroller, sizeof(state->versions.microcontroller));
+#elif defined (PS2PLUS_BOOTLOADER)
+  state->versions.bootloader = bootloader;
+#endif
 }

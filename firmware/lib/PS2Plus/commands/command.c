@@ -31,6 +31,7 @@ command_processor *command_controller_processors[] = {
  * firmware updates. These commands have a 7 as the higher nibble.
  */
 command_processor *command_ps2plus_processors[] = {
+#if defined(PS2PLUS_FIRMWARE)
   &command_ps2plus_get_version,                    // 70h
   &command_ps2plus_get_configuration,              // 71h
   &command_ps2plus_set_configuration,              // 72h
@@ -40,6 +41,17 @@ command_processor *command_ps2plus_processors[] = {
   NULL, /* &command_ps2plus_reboot_controller, */              // 7Dh
   NULL, /* &command_ps2plus_update_firmware_data, */           // 7Eh
   NULL, /* &command_ps2plus_query_firmware_update_status, */   // 7Fh
+#elif defined(PS2PLUS_BOOTLOADER)
+  &command_ps2plus_get_version,                    // 70h
+  NULL,                                            // 71h
+  NULL,                                            // 72h
+  NULL,                                            // 73h
+  NULL,                                            // 74h
+  NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 
+  NULL, /* &command_ps2plus_reboot_controller, */              // 7Dh
+  NULL, /* &command_ps2plus_update_firmware_data, */           // 7Eh
+  NULL, /* &command_ps2plus_query_firmware_update_status, */   // 7Fh
+#endif
 };
 
 /**

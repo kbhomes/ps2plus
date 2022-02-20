@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #ifndef CONTROLLER_CUSTOM_CONFIG_H
 #define CONTROLLER_CUSTOM_CONFIG_H
 
@@ -35,3 +37,5 @@ void controller_custom_config_load(controller_custom_config *config);
 void controller_custom_config_save(controller_custom_config *config);
 
 #endif /* CONTROLLER_CUSTOM_CONFIG_H */
+
+#endif /* PS2PLUS_FIRMWARE */

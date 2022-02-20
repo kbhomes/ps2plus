@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 command_result dec_initialize(volatile command_packet *packet, controller_state *state) {
@@ -21,3 +23,5 @@ command_processor command_ps2plus_disable_enable_configuration = {
     .process = &dec_process,
     .finalize = &dec_finalize,
 };
+
+#endif

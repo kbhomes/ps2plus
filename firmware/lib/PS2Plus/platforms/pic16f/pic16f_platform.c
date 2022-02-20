@@ -1,5 +1,6 @@
 #ifdef PLATFORM_PIC16F
 
+#pragma config SAFEN = OFF      // Storage Area Flash enable bit (SAF disabled)
 #pragma config FEXTOSC = OFF    // External Oscillator Selection->Oscillator not enabled
 #pragma config RSTOSC = HFINTOSC_64MHZ    // Reset Oscillator Selection->HFINTOSC with HFFRQ = 64 MHz and CDIV = 1:1
 #pragma config MCLRE = EXTMCLR    // MCLR Enable bit->If LVP = 0, MCLR pin is MCLR; If LVP = 1, RE3 pin function is MCLR 
