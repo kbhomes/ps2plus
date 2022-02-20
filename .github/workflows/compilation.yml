@@ -42,7 +42,11 @@ jobs:
         with:
           project: firmware
           configurations: Firmware Bootloader
-          post: echo "Finished firmware and bootloader"
+          post: |
+            echo "Combining firmware and bootloader HEX files"
+            /opt/mplabx/mplab_platform/bin/hexmate firmware/dist/Firmware/production/firmware.production.hex firmware/dist/Bootloader/production/firmware.production.hex > firmware/dist/ps2plus-firmware-bootloader-combined.hex
+            mv firmware/dist/Firmware/production/firmware.production.hex firmware/dist/ps2plus-firmware.hex
+            mv firmware/dist/Bootloader/production/firmware.production.hex firmware/dist/ps2plus-bootloader.hex
 
       - name: Get short SHA
         id: slug
@@ -52,10 +56,16 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ps2plus-firmware.hex
-          path: firmware/dist/Firmware/production/firmware.production.hex
+          path: firmware/dist/ps2plus-firmware.hex
 
       - name: Upload bootloader
         uses: actions/upload-artifact@v2
         with:
           name: ps2plus-bootloader.hex
-          path: firmware/dist/Bootloader/production/firmware.production.hex
+          path: firmware/dist/ps2plus-bootloader.hex
+
+      - name: Upload combined firmware/bootloader
+        uses: actions/upload-artifact@v2
+        with:
+          name: ps2plus-firmware-bootloader-combined.hex
+          path: firmware/dist/ps2plus-firmware-bootloader-combined.hex
