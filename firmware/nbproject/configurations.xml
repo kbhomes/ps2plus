@@ -180,7 +180,8 @@
         <property key="call-prologues" value="false"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
-        <property key="define-macros" value="PLATFORM_PIC18F46K42;PS2PLUS_FIRMWARE"/>
+        <property key="define-macros"
+                  value="PLATFORM_PIC18F46K42;PLATFORM_MICROCONTROLLER=PIC18F46K42;PS2PLUS_FIRMWARE"/>
         <property key="disable-optimizations" value="true"/>
         <property key="extra-include-directories" value="lib\PS2Plus;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
@@ -1265,7 +1266,8 @@
         <property key="call-prologues" value="false"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
-        <property key="define-macros" value="PLATFORM_PIC18F46K42;PS2PLUS_BOOTLOADER"/>
+        <property key="define-macros"
+                  value="PLATFORM_PIC18F46K42;PLATFORM_MICROCONTROLLER=PIC18F46K42;PS2PLUS_BOOTLOADER"/>
         <property key="disable-optimizations" value="true"/>
         <property key="extra-include-directories" value="lib\PS2Plus;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
