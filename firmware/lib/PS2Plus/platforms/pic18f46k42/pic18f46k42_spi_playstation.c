@@ -1,6 +1,6 @@
-#ifdef PLATFORM_PIC16F
+#ifdef PLATFORM_PIC18F46K42
 
-#include "pic16f_platform.h"
+#include "pic18f46k42_platform.h"
 
 #define PIC_SPI_PPS_SCK_REGISTER SPI1SCKPPS   // Table 17-1 in PIC18F46K42 data sheet
 #define PIC_SPI_PPS_MOSI_REGISTER SPI1SDIPPS  // Table 17-1 in PIC18F46K42 data sheet
@@ -17,7 +17,7 @@ const pic_digital_io_pin PIN_SPI_ATT = PIC_DIGITAL_IO_PIN(A, 5);
  * @brief SPI interrupt handler, executed when a transmission from the console 
  *        is received and a byte is available to read
  */
-void __interrupt(irq(IRQ_SPI1RX), base(PIC_IVT_BASE)) pic16f_interrupt_spi() {
+void __interrupt(irq(IRQ_SPI1RX), base(PIC_IVT_BASE)) pic18f46k42_interrupt_spi() {
   // Simply call the main program's data handler if we received an SPI transmission
   main_loop_callback();
 }
@@ -34,7 +34,7 @@ void pps_lock() {
   PPSLOCK = 1; //PPS locked   	
 }
 
-void pic16f_setup_spi_playstation() {
+void pic18f46k42_setup_spi_playstation() {
   SPI1TWIDTH = 8;
   SPI1CON0bits.BMODE = 1; // Read 8 bits at a time
   SPI1CON0bits.LSBF = 1; // Read/write each byte with LSB-first
@@ -99,4 +99,4 @@ void platform_spi_playstation_write(uint8_t value) {
   SPI1TXB = value;
 }
 
-#endif /* PLATFORM_PIC16F */
+#endif /* PLATFORM_PIC18F46K42 */

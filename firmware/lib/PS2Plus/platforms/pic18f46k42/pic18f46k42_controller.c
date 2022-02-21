@@ -1,6 +1,6 @@
-#ifdef PLATFORM_PIC16F
+#ifdef PLATFORM_PIC18F46K42
 
-#include "pic16f_platform.h"
+#include "pic18f46k42_platform.h"
 
 // Mapping from `ps2plus_controller_digital_button` to a digital pin
 const pic_digital_io_pin DIGITAL_BUTTON_PINS[NUM_DIGITAL_BUTTONS] = {
@@ -33,7 +33,7 @@ const pic_analog_io_pin ANALOG_JOYSTICK_PINS[NUM_JOYSTICK_AXES] = {
   { .bit = 0, .enable = &ANSELB, .channel = 0b001000 }, // LY
 };
 
-void pic16f_setup_wired_controller() {
+void pic18f46k42_setup_wired_controller() {
   // Setup each digital button as an active-low input button
   for (int i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
     pic_digital_io_pin_mode(&DIGITAL_BUTTON_PINS[i], PICPinMode_InputPullup);

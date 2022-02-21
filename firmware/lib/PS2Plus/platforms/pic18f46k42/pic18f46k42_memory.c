@@ -1,6 +1,6 @@
-#ifdef PLATFORM_PIC16F
+#ifdef PLATFORM_PIC18F46K42
 
-#include "pic16f_platform.h"
+#include "pic18f46k42_platform.h"
 
 size_t platform_memory_total_size() {
     // PIC18F46K42 have 1KB of EEPROM storage.
@@ -50,4 +50,4 @@ void platform_memory_write(size_t address, uint8_t byte) {
     NVMCON1bits.WREN = 0;
 }
 
-#endif /* PLATFORM_PIC16F */
+#endif /* PLATFORM_PIC18F46K42 */

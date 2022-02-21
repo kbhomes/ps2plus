@@ -1,6 +1,6 @@
-#ifdef PLATFORM_PIC16F
+#ifdef PLATFORM_PIC18F46K42
 
-#include "pic16f_platform.h"
+#include "pic18f46k42_platform.h"
 
 #define PIC_UART_PPS_RX_REGISTER U1RXPPS // Table 17-1 in PIC18F46K42 data sheet
 #define PIC_UART_PPS_TX_CHANNEL 0b010011 // Table 17-2 in PIC18F46K42 data sheet
@@ -28,7 +28,7 @@ void putch(char value) {
   U1TXB = value;
 }
 
-void pic16f_setup_uart_serial() {
+void pic18f46k42_setup_uart_serial() {
   // Set pin modes for the UART TX and RX pins
   pic_digital_io_pin_mode(&PIN_UART_TX, PICPinMode_Output);
   pic_digital_io_pin_mode(&PIN_UART_RX, PICPinMode_Input);
@@ -45,4 +45,4 @@ void pic16f_setup_uart_serial() {
   U1CON1bits.ON = 1;
 }
 
-#endif /* PLATFORM_PIC16F */
+#endif /* PLATFORM_PIC18F46K42 */

@@ -2,18 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/controller/bootloader.h</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/commands/command.c</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/commands/ps2plus/get_version.c</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/shared/primitive_data.c</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/platforms/pic16f/pic16f_spi_playstation.c</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/platforms/pic16f/pic16f_controller.c</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/controller/state.h</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/controller/state.c</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/platforms/pic16f/pic16f_timing.c</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/lib/PS2Plus/platforms/pic16f/pic16f_platform.h</file>
-            <file>file:/C:/Users/Sajid/Projects/ps2plus/firmware/nbproject/Makefile-Bootloader.mk</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

@@ -23,8 +23,8 @@
         </logicalFolder>
         <logicalFolder name="native" displayName="native" projectFiles="true">
         </logicalFolder>
-        <logicalFolder name="pic16f" displayName="pic16f" projectFiles="true">
-          <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_platform.h</itemPath>
+        <logicalFolder name="pic18f46k42" displayName="pic18f46k42" projectFiles="true">
+          <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_platform.h</itemPath>
         </logicalFolder>
         <itemPath>lib/PS2Plus/platforms/controller.h</itemPath>
         <itemPath>lib/PS2Plus/platforms/memory.h</itemPath>
@@ -96,13 +96,13 @@
               <itemPath>lib/PS2Plus/platforms/native/native_spi_playstation.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/native/native_timing.c</itemPath>
             </logicalFolder>
-            <logicalFolder name="pic16f" displayName="pic16f" projectFiles="true">
-              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_controller.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_memory.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_platform.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_spi_playstation.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_timing.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic16f/pic16f_uart_serial.c</itemPath>
+            <logicalFolder name="pic18f46k42" displayName="pic18f46k42" projectFiles="true">
+              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_controller.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_memory.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_platform.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_spi_playstation.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_timing.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_uart_serial.c</itemPath>
             </logicalFolder>
             <itemPath>lib/PS2Plus/platforms/platform.c</itemPath>
           </logicalFolder>
@@ -180,7 +180,7 @@
         <property key="call-prologues" value="false"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
-        <property key="define-macros" value="PLATFORM_PIC16F;PS2PLUS_FIRMWARE"/>
+        <property key="define-macros" value="PLATFORM_PIC18F46K42;PS2PLUS_FIRMWARE"/>
         <property key="disable-optimizations" value="true"/>
         <property key="extra-include-directories" value="lib\PS2Plus;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
@@ -1265,7 +1265,7 @@
         <property key="call-prologues" value="false"/>
         <property key="default-bitfield-type" value="true"/>
         <property key="default-char-type" value="true"/>
-        <property key="define-macros" value="PLATFORM_PIC16F;PS2PLUS_BOOTLOADER"/>
+        <property key="define-macros" value="PLATFORM_PIC18F46K42;PS2PLUS_BOOTLOADER"/>
         <property key="disable-optimizations" value="true"/>
         <property key="extra-include-directories" value="lib\PS2Plus;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>

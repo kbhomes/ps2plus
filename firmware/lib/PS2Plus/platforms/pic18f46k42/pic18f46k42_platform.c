@@ -1,4 +1,4 @@
-#ifdef PLATFORM_PIC16F
+#ifdef PLATFORM_PIC18F46K42
 
 #pragma config SAFEN = OFF      // Storage Area Flash enable bit (SAF disabled)
 #pragma config FEXTOSC = OFF    // External Oscillator Selection->Oscillator not enabled
@@ -7,7 +7,7 @@
 #pragma config WDTE = OFF    // WDT operating mode->WDT Disabled; SWDTEN is ignored
 #pragma config LVP = OFF    // Low Voltage Programming Enable bit->HV on MCLR/VPP must be used for programming
 
-#include "pic16f_platform.h"
+#include "pic18f46k42_platform.h"
 
 // Interrupt callback to the main program loop
 platform_interrupt_callback main_loop_callback = NULL;
@@ -26,10 +26,10 @@ void platform_init(platform_interrupt_callback callback) {
   IPR2bits.SPI1RXIP = 1;
   
   // Setup platform internals
-  pic16f_setup_spi_playstation();
-  pic16f_setup_timing();
-  pic16f_setup_uart_serial();
-  pic16f_setup_wired_controller();
+  pic18f46k42_setup_spi_playstation();
+  pic18f46k42_setup_timing();
+  pic18f46k42_setup_uart_serial();
+  pic18f46k42_setup_wired_controller();
 }
 
 void pic_digital_io_pin_mode(const pic_digital_io_pin *pin, PICPinMode mode) {
@@ -73,4 +73,4 @@ inline void pic_digital_io_pin_pps_output(const pic_digital_io_pin *pin, uint8_t
   *(pin->pps_output) = pps_output_channel;
 }
 
-#endif /* PLATFORM_PIC16F */
+#endif /* PLATFORM_PIC18F46K42 */

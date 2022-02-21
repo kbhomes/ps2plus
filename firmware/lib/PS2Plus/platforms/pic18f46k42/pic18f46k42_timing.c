@@ -1,19 +1,19 @@
-#ifdef PLATFORM_PIC16F
+#ifdef PLATFORM_PIC18F46K42
 
-#include "pic16f_platform.h"
+#include "pic18f46k42_platform.h"
 
 uint64_t current_micros;
 
-void pic16f_timing_interrupt_callback() {
+void pic18f46k42_timing_interrupt_callback() {
   // Timer perios is 10us
   current_micros += 10;
 }
 
-void __interrupt(irq(IRQ_TMR0), base(PIC_IVT_BASE)) pic16f_interrupt_timer() {
+void __interrupt(irq(IRQ_TMR0), base(PIC_IVT_BASE)) pic18f46k42_interrupt_timer() {
   TMR0IF = 0;
 }
 
-void pic16f_setup_timing() {
+void pic18f46k42_setup_timing() {
   T0EN = 1;
   
   // Set 8-bit mode
@@ -48,4 +48,4 @@ void platform_timing_sleep(unsigned int millis) {
   }
 }
 
-#endif /* PLATFORM_PIC16F */
+#endif /* PLATFORM_PIC18F46K42 */

@@ -1,5 +1,5 @@
-#ifndef PIC16F_PLATFORM_H
-#define	PIC16F_PLATFORM_H
+#ifndef PIC18F46K42_PLATFORM_H
+#define	PIC18F46K42_PLATFORM_H
 
 #include <xc.h>
 
@@ -79,10 +79,10 @@ inline void pic_digital_io_pin_pps_output(const pic_digital_io_pin *pin, uint8_t
  */
 extern platform_interrupt_callback main_loop_callback;
 
-void pic16f_setup_spi_playstation();
-void pic16f_setup_timing();
-void pic16f_setup_uart_serial();
-void pic16f_setup_wired_controller();
+void pic18f46k42_setup_spi_playstation();
+void pic18f46k42_setup_timing();
+void pic18f46k42_setup_uart_serial();
+void pic18f46k42_setup_wired_controller();
 
-#endif	/* PIC16F_PLATFORM_H */
+#endif	/* PIC18F46K42_PLATFORM_H */
 
