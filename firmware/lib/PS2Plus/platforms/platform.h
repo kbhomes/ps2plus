@@ -39,4 +39,9 @@ typedef void (*platform_interrupt_callback)(void);
  */
 void platform_init(platform_interrupt_callback);
 
+/**
+ * @brief Reset execution of the device
+ */
+void platform_reset(void);
+
 #endif /* PLATFORMS_PLATFORM_H */

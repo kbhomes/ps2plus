@@ -77,6 +77,7 @@
               <itemPath>lib/PS2Plus/commands/ps2plus/set_configuration.c</itemPath>
               <itemPath>lib/PS2Plus/commands/ps2plus/bootloader_query_firmware_update_status.c</itemPath>
               <itemPath>lib/PS2Plus/commands/ps2plus/bootloader_update_firmware_data.c</itemPath>
+              <itemPath>lib/PS2Plus/commands/ps2plus/reboot_controller.c</itemPath>
             </logicalFolder>
             <itemPath>lib/PS2Plus/commands/command.c</itemPath>
             <itemPath>lib/PS2Plus/commands/packet.c</itemPath>
@@ -190,21 +191,21 @@
         <property key="default-char-type" value="true"/>
         <property key="define-macros"
                   value="PLATFORM_PIC18F46K42;PLATFORM_MICROCONTROLLER=PIC18F46K42;PS2PLUS_FIRMWARE"/>
-        <property key="disable-optimizations" value="true"/>
+        <property key="disable-optimizations" value="false"/>
         <property key="extra-include-directories" value="lib\PS2Plus;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
         <property key="identifier-length" value="255"/>
         <property key="local-generation" value="false"/>
-        <property key="operation-mode" value="std"/>
+        <property key="operation-mode" value="pro"/>
         <property key="opt-xc8-compiler-strict_ansi" value="false"/>
         <property key="optimization-assembler" value="true"/>
         <property key="optimization-assembler-files" value="true"/>
         <property key="optimization-debug" value="false"/>
         <property key="optimization-invariant-enable" value="false"/>
         <property key="optimization-invariant-value" value="16"/>
-        <property key="optimization-level" value="-O0"/>
+        <property key="optimization-level" value="-O3"/>
         <property key="optimization-speed" value="true"/>
         <property key="optimization-stable-enable" value="false"/>
         <property key="preprocess-assembler" value="true"/>
@@ -277,7 +278,7 @@
         <property key="oscillator.rcfrequency" value="250"/>
         <property key="oscillator.rcfrequencyunit" value="Kilo"/>
         <property key="periphADC1.altscl" value="false"/>
-        <property key="periphADC1.minTacq" value=""/>
+        <property key="periphADC1.minTacq" value="4"/>
         <property key="periphADC1.tacqunits" value="microseconds"/>
         <property key="periphADC2.altscl" value="false"/>
         <property key="periphADC2.minTacq" value=""/>
@@ -1276,22 +1277,22 @@
         <property key="default-char-type" value="true"/>
         <property key="define-macros"
                   value="PLATFORM_PIC18F46K42;PLATFORM_MICROCONTROLLER=PIC18F46K42;PS2PLUS_BOOTLOADER"/>
-        <property key="disable-optimizations" value="true"/>
+        <property key="disable-optimizations" value="false"/>
         <property key="extra-include-directories" value="lib\PS2Plus;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
         <property key="identifier-length" value="255"/>
         <property key="local-generation" value="false"/>
-        <property key="operation-mode" value="std"/>
+        <property key="operation-mode" value="pro"/>
         <property key="opt-xc8-compiler-strict_ansi" value="false"/>
         <property key="optimization-assembler" value="true"/>
         <property key="optimization-assembler-files" value="true"/>
         <property key="optimization-debug" value="false"/>
         <property key="optimization-invariant-enable" value="false"/>
         <property key="optimization-invariant-value" value="16"/>
-        <property key="optimization-level" value="-O0"/>
-        <property key="optimization-speed" value="true"/>
+        <property key="optimization-level" value="-Os"/>
+        <property key="optimization-speed" value="false"/>
         <property key="optimization-stable-enable" value="false"/>
         <property key="preprocess-assembler" value="true"/>
         <property key="short-enums" value="true"/>

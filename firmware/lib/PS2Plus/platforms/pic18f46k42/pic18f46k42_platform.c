@@ -32,6 +32,10 @@ void platform_init(platform_interrupt_callback callback) {
   pic18f46k42_setup_wired_controller();
 }
 
+void platform_reset(void) {
+  RESET();
+}
+
 void pic_digital_io_pin_mode(const pic_digital_io_pin *pin, PICPinMode mode) {
   switch (mode) {
     case PICPinMode_Input:
