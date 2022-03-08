@@ -27,10 +27,10 @@ const pic_digital_io_pin PIN_MOTOR_SMALL = PIC_DIGITAL_IO_PIN(A, 0);
 const pic_digital_io_pin PIN_MOTOR_LARGE = PIC_DIGITAL_IO_PIN(B, 5);
 
 const pic_analog_io_pin ANALOG_JOYSTICK_PINS[NUM_JOYSTICK_AXES] = {
-  { .bit = 0, .enable = &ANSELE, .channel = 0b100000 }, // RX
-  { .bit = 1, .enable = &ANSELE, .channel = 0b100001 }, // RY
-  { .bit = 1, .enable = &ANSELB, .channel = 0b001001 }, // LX
-  { .bit = 0, .enable = &ANSELB, .channel = 0b001000 }, // LY
+  { .bit = 0, .enable = &ANSELE, .input = &TRISE, .channel = 0b100000 }, // RX
+  { .bit = 1, .enable = &ANSELE, .input = &TRISE, .channel = 0b100001 }, // RY
+  { .bit = 1, .enable = &ANSELB, .input = &TRISB, .channel = 0b001001 }, // LX
+  { .bit = 0, .enable = &ANSELB, .input = &TRISB, .channel = 0b001000 }, // LY
 };
 
 void pic18f46k42_setup_wired_controller() {
@@ -43,9 +43,16 @@ void pic18f46k42_setup_wired_controller() {
   pic_digital_io_pin_mode(&PIN_MOTOR_SMALL, PICPinMode_Output);
   pic_digital_io_pin_mode(&PIN_MOTOR_LARGE, PICPinMode_Output);
 
+  // Enable analog conversion
+  ADCLK = 0x3F;     // F_osc/128
+  ADREF = 0;        // Reference voltages are Vdd and Vss
+  ADFM0 = 1;        // Right justify ADC conversion value; 12-bit result is stored as the
+                    // lower 4 bits of ADRESH and all 8 bits of ADRESL
+  ADON = 1;         // Enable the ADC module
   
   // Setup each joystick axis as an analog input
   for (int i = 0; i < NUM_JOYSTICK_AXES; i++) {
+    *(ANALOG_JOYSTICK_PINS[i].input) |= (PIC_INPUT_ENABLE << ANALOG_JOYSTICK_PINS[i].bit);
     *(ANALOG_JOYSTICK_PINS[i].enable) |= (PIC_ANALOG_ENABLE << ANALOG_JOYSTICK_PINS[i].bit);
   }
 }
@@ -63,8 +70,12 @@ uint8_t platform_controller_read_joystick(ps2plus_controller_joystick_axis joyst
   ADGO = 1;
   while (ADGO);
 
-  // Returns an 8-bit converted result
-  return ((ADRESH << 6) | (ADRESL >> 2)); 
+  // After conversion, ADRES is a 2-byte register representing a 12-bit value:
+  //    ADRESH  |  ADRESL
+  //   ----XXXX   YYYYZZZZ
+  // Converting to an 8-bit will require using the lower 4 bits of ADRESH and
+  // dropping the lower 4 bits of ADRESL
+  return ((ADRESH << 4) | (ADRESL >> 4)); 
 }
 
 void platform_controller_set_analog_led(bool active) {

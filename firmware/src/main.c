@@ -13,14 +13,19 @@ void interrupt_handler() {
 }
 
 void update_controller() {
-    // Update the controller state
-    for (ps2plus_controller_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
-      bool active_low_button_state = !platform_controller_read_digital_button(button);
-//      debounced_update(&state.input.digital_buttons[button], active_low_button_state);
-      debounced_force(&state.input.digital_buttons[button], active_low_button_state);
-    }
-    controller_input_recompute(&state.input);
-    controller_state_update_mode(&state);
+  // Update the controller state
+  for (ps2plus_controller_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
+    bool active_low_button_state = !platform_controller_read_digital_button(button);
+    debounced_force(&state.input.digital_buttons[button], active_low_button_state);
+    // debounced_update(&state.input.digital_buttons[button], active_low_button_state);
+  }
+
+  for (ps2plus_controller_joystick_axis joystick = 0; joystick < NUM_JOYSTICK_AXES; joystick++) {
+    state.input.joysticks[joystick] = platform_controller_read_joystick(joystick);
+  }
+  
+  controller_input_recompute(&state.input);
+  controller_state_update_mode(&state);
 }
 
 void handle_transmission() {

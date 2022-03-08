@@ -41,12 +41,16 @@
 #define PIC_ANALOG_ENABLE 1
 #define PIC_ANALOG_DISABLE 0
 
+#define PIC_INPUT_ENABLE 1
+#define PIC_OUTPUT_ENABLE 0
+
 // Suppressing "unused" warnings for register clear variables
 #define UNUSED(X) ((void)(X))
 
 typedef struct {
   const uint8_t bit;
   volatile uint8_t *enable;
+  volatile uint8_t *input;
   const uint8_t channel;
 } pic_analog_io_pin;
 
