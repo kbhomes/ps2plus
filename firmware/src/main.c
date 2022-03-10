@@ -9,23 +9,32 @@ void write_with_ack(uint8_t value) {
 }
 
 void interrupt_handler() {
+#if defined(PS2PLUS_FIRMWARE)
   command_packet_step(&packet, &state, platform_spi_playstation_read());
+#elif defined(PS2PLUS_BOOTLOADER)
+  // DEV: Nothing! Trying to determine whether the right interrupt executes in firmware mode.
+#endif
 }
 
 void update_controller() {
-  // Update the controller state
+  // Read digital button values
   for (ps2plus_controller_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
     bool active_low_button_state = !platform_controller_read_digital_button(button);
     debounced_force(&state.input.digital_buttons[button], active_low_button_state);
     // debounced_update(&state.input.digital_buttons[button], active_low_button_state);
   }
 
+  // Read joystick values
   for (ps2plus_controller_joystick_axis joystick = 0; joystick < NUM_JOYSTICK_AXES; joystick++) {
     state.input.joysticks[joystick] = platform_controller_read_joystick(joystick);
   }
   
+  // Recompute controller state
   controller_input_recompute(&state.input);
   controller_state_update_mode(&state);
+  
+  // Update the analog mode LED
+  platform_controller_set_analog_led(state.analog_mode == CMAnalog || state.analog_mode == CMAnalogFull);
 }
 
 void handle_transmission() {
@@ -43,12 +52,7 @@ int main(void) {
   // Set the initial internal state of the firmware
   controller_state_initialize(&state);
   controller_state_set_versions(&state, VERSION_FIRMWARE, VERSION_MICROCONTROLLER, VERSION_CONFIGURATION, VERSION_BOOTLOADER);
-
   command_packet_initialize(&packet, &write_with_ack);
-  
-  // Update the controller state
-  controller_input_recompute(&state.input);
-  controller_state_update_mode(&state);
   
   while (true) {
     update_controller();

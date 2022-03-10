@@ -31,6 +31,7 @@
         <itemPath>lib/PS2Plus/platforms/platform.h</itemPath>
         <itemPath>lib/PS2Plus/platforms/spi_playstation.h</itemPath>
         <itemPath>lib/PS2Plus/platforms/timing.h</itemPath>
+        <itemPath>lib/PS2Plus/platforms/bootloader.h</itemPath>
       </logicalFolder>
       <logicalFolder name="shared" displayName="shared" projectFiles="true">
         <itemPath>../shared/config.h</itemPath>
@@ -110,6 +111,7 @@
               <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_spi_playstation.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_timing.c</itemPath>
               <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_uart_serial.c</itemPath>
+              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_bootloader.c</itemPath>
             </logicalFolder>
             <itemPath>lib/PS2Plus/platforms/platform.c</itemPath>
           </logicalFolder>
@@ -121,6 +123,7 @@
       </logicalFolder>
       <logicalFolder name="shared" displayName="shared" projectFiles="true">
         <itemPath>../shared/primitive_data.c</itemPath>
+        <itemPath>../shared/bootloader.c</itemPath>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>src/main.c</itemPath>
@@ -167,7 +170,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
         <subordinates>
@@ -220,7 +223,7 @@
       </HI-TECH-COMP>
       <HI-TECH-LINK>
         <property key="additional-options-checksum" value=""/>
-        <property key="additional-options-code-offset" value=""/>
+        <property key="additional-options-code-offset" value="0x4000"/>
         <property key="additional-options-command-line" value=""/>
         <property key="additional-options-errata" value=""/>
         <property key="additional-options-extend-address" value="false"/>
@@ -253,7 +256,7 @@
         <property key="format-hex-file-for-download" value="false"/>
         <property key="initialize-data" value="true"/>
         <property key="input-libraries" value="libm"/>
-        <property key="keep-generated-startup.as" value="false"/>
+        <property key="keep-generated-startup.as" value="true"/>
         <property key="link-in-c-library" value="true"/>
         <property key="link-in-c-library-gcc" value=""/>
         <property key="link-in-peripheral-library" value="false"/>
@@ -306,7 +309,7 @@
         <property key="programoptions.testmodeentrymethod" value="VPPFirst"/>
         <property key="programoptions.usehighvoltageonmclr" value="false"/>
         <property key="programoptions.uselvpprogramming" value="false"/>
-        <property key="voltagevalue" value="4.75"/>
+        <property key="voltagevalue" value="4.25"/>
       </PICkit3PlatformTool>
       <Simulator>
         <property key="codecoverage.enabled" value="Disable"/>
@@ -920,7 +923,7 @@
         <property key="usartf1io.output" value="window"/>
         <property key="usartf1io.outputfile" value=""/>
         <property key="usartf1io.uartioenabled" value="false"/>
-        <property key="voltagevalue" value="4.75"/>
+        <property key="voltagevalue" value="4.25"/>
         <property key="warningmessagebreakoptions.W0001_CORE_BITREV_MODULO_EN"
                   value="report"/>
         <property key="warningmessagebreakoptions.W0002_CORE_SECURE_MEMORYACCESS"
@@ -1337,7 +1340,7 @@
         </archiverTool>
         <loading>
           <useAlternateLoadableFile>false</useAlternateLoadableFile>
-          <parseOnProdLoad>false</parseOnProdLoad>
+          <parseOnProdLoad>true</parseOnProdLoad>
           <alternateLoadableFile></alternateLoadableFile>
         </loading>
         <subordinates>
@@ -1423,7 +1426,7 @@
         <property key="format-hex-file-for-download" value="false"/>
         <property key="initialize-data" value="true"/>
         <property key="input-libraries" value="libm"/>
-        <property key="keep-generated-startup.as" value="false"/>
+        <property key="keep-generated-startup.as" value="true"/>
         <property key="link-in-c-library" value="true"/>
         <property key="link-in-c-library-gcc" value=""/>
         <property key="link-in-peripheral-library" value="false"/>

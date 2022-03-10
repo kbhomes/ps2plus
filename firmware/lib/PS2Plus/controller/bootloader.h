@@ -25,11 +25,7 @@ typedef struct {
   
   struct {
     bool ready;
-    ps2plus_bootloader_update_record_type record_type;
-    uint16_t target_address;
-    uint8_t data[16];
-    uint8_t data_length;
-    uint8_t data_checksum;
+    ps2plus_bootloader_update_record record;
   } update;
 } controller_bootloader;
 

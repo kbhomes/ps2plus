@@ -9,11 +9,12 @@
 #include <stdio.h>
 
 #if defined(PS2PLUS_FIRMWARE)
-//#define PIC_IVT_BASE 0x4008
-#define PIC_IVT_BASE 0x0008
+#define PIC_IVT_BASE 0x4008
 #elif defined(PS2PLUS_BOOTLOADER)
 #define PIC_IVT_BASE 0x0008
 #endif
+
+#define PIC_FIRMWARE_BASE 0x4000
 
 #define _XTAL_FREQ 64000000
 

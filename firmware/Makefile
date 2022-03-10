@@ -57,9 +57,8 @@ build: .build-post
 # Add your pre 'build' code here...
 
 .build-post: .build-impl
-# Add your post 'build' code here...
-
-
+	hexmate "dist/Bootloader/production/firmware.production.hex" "dist/Firmware/production/firmware.production.hex" -O"dist/ps2plus-firmware-bootloader-combined.hex"
+	
 # clean
 clean: .clean-post
 

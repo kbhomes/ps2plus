@@ -5,6 +5,7 @@
 #pragma config RSTOSC = HFINTOSC_64MHZ    // Reset Oscillator Selection->HFINTOSC with HFFRQ = 64 MHz and CDIV = 1:1
 #pragma config MCLRE = EXTMCLR    // MCLR Enable bit->If LVP = 0, MCLR pin is MCLR; If LVP = 1, RE3 pin function is MCLR 
 #pragma config WDTE = OFF    // WDT operating mode->WDT Disabled; SWDTEN is ignored
+#pragma config IVT1WAY = OFF // Interrupt vector table lock bit can be repeatedly set and cleared
 #pragma config LVP = OFF    // Low Voltage Programming Enable bit->HV on MCLR/VPP must be used for programming
 
 #include "pic18f46k42_platform.h"
@@ -12,24 +13,20 @@
 // Interrupt callback to the main program loop
 platform_interrupt_callback main_loop_callback = NULL;
 
-void INTERRUPT_Initialize(void) {
-
-}
-
 void platform_init(platform_interrupt_callback callback) {
   main_loop_callback = callback;
-  
-  // Enable vectored interrupts
-  INTCON0bits.GIEH = 1;
-  INTCON0bits.GIEL = 1;
-  INTCON0bits.IPEN = 1;
-  IPR2bits.SPI1RXIP = 1;
   
   // Setup platform internals
   pic18f46k42_setup_spi_playstation();
   pic18f46k42_setup_timing();
   pic18f46k42_setup_uart_serial();
   pic18f46k42_setup_wired_controller();
+  
+  // Enable vectored interrupts
+  INTCON0bits.GIEH = 1;
+  INTCON0bits.GIEL = 1;
+  INTCON0bits.IPEN = 1;
+  IPR2bits.SPI1RXIP = 1;
 }
 
 void platform_reset(void) {
