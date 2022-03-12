@@ -85,8 +85,7 @@ int main(int argc, char **argv) {
 
     // Setup the graphics and ImGui systems
     bool hires = false;
-    bool use_texture_manager = true;
-    GSGLOBAL *global = gfx_init(hires, use_texture_manager);
+    GSGLOBAL *global = gfx_init(hires);
     gfx_imgui_init(global);
     ImGuiIO &io = ImGui::GetIO();
 
@@ -95,13 +94,12 @@ int main(int argc, char **argv) {
     state.current_controller->connected = true;
 
     while (1) {
-        gfx_render_begin(global, hires, use_texture_manager);
-        gfx_render_clear(global, GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
-
         pad_get_status(&state.pad_status);
-        
+        gfx_update_pad(global, &state.pad_status);
+        gfx_render_begin(global, hires);
+        gfx_render_clear(global, GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
         app_display(io, &state);
-        gfx_render_end(global, hires, use_texture_manager);
+        gfx_render_end(global, hires);
     }
 
     return 0;

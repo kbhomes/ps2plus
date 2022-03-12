@@ -8,7 +8,7 @@
 #include "drawing/drawing.h"
 #include "widgets/widget.h"
 
-GSGLOBAL *gfx_init(bool hires, bool textureManager) {
+GSGLOBAL *gfx_init(bool hires) {
     // TODO: Can't get hires to work on my PS2 :(
     GSGLOBAL *gsGlobal;
     int hiresPassCount;
@@ -50,10 +50,8 @@ GSGLOBAL *gfx_init(bool hires, bool textureManager) {
         gsKit_init_screen(gsGlobal);
     }
 
-    if (textureManager) {
-        gsKit_vram_clear(gsGlobal);
-        gsKit_TexManager_init(gsGlobal);
-    }
+    gsKit_vram_clear(gsGlobal);
+    gsKit_TexManager_init(gsGlobal);
 
     return gsGlobal;
 }
@@ -99,14 +97,14 @@ void gfx_render_clear(GSGLOBAL *gsGlobal, u64 color) {
     gsGlobal->PrimAlphaEnable = GS_SETTING_ON;
 }
 
-void gfx_render_begin(GSGLOBAL *gsGlobal, bool hires, bool textureManager) {
+void gfx_render_begin(GSGLOBAL *gsGlobal, bool hires) {
     // Start the Dear ImGui frame
     ImGui_ImplPs2Sdk_NewFrame();
     ImGui_ImplPs2GsKit_NewFrame();
     ImGui::NewFrame();
 }
 
-void gfx_render_end(GSGLOBAL *gsGlobal, bool hires, bool textureManager) {
+void gfx_render_end(GSGLOBAL *gsGlobal, bool hires) {
     // Draw our custom mouse cursor for this frame; see `widgets/widget_cursor.cpp` for 
     // examples on how to draw a custom cursor depending on the cursor type. Must be 
     // called at the end of the frame so ImGui has time to update the cursor type.
@@ -123,7 +121,9 @@ void gfx_render_end(GSGLOBAL *gsGlobal, bool hires, bool textureManager) {
         gsKit_sync_flip(gsGlobal);
     }
 
-    if (textureManager) {
-        gsKit_TexManager_nextFrame(gsGlobal);
-    }
+    gsKit_TexManager_nextFrame(gsGlobal);
+}
+
+void gfx_update_pad(GSGLOBAL *gsGlobal, PadStatus *pad) {
+    ImGui_ImplPs2Sdk_UpdateGamepad(pad ? &pad->pad : NULL);
 }
