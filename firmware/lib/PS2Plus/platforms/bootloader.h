@@ -27,4 +27,9 @@ bool platform_bootloader_validate_update_record_address(ps2plus_bootloader_updat
  */
 bool platform_bootloader_flash_update_record(ps2plus_bootloader_update_record *record);
 
+/**
+ * @brief Calculates the checksum for the current loaded firmware
+ */
+uint8_t platform_bootloader_calculate_firmware_checksum();
+
 #endif /* PLATFORMS_MEMORY_H */
