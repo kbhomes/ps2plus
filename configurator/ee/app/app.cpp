@@ -1,7 +1,17 @@
 #include "app.h"
 
+bool dialog_displaying = false;
+
 bool IsGamepadCaptured() {
     return !(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NavEnableGamepad);
+}
+
+void app_begin_dialog() {
+    dialog_displaying = true;
+}
+
+void app_end_dialog() {
+    dialog_displaying = false;
 }
 
 void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
@@ -63,7 +73,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         // PushStyleVar in previous lines was used to increase the title-bar height
         ImGui::PopStyleVar();
 
-        if (is_selecting_section) {
+        if (is_selecting_section && !dialog_displaying) {
             // Only allow the left pane to have focus while the user selects
             ImGui::SetNextWindowFocus();
         }
@@ -92,7 +102,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         ImGui::BeginGroup();
         {
             // Content pane will retain focus if it is selected
-            if (selected_content >= 0 && !is_selecting_section) {
+            if (selected_content >= 0 && !is_selecting_section && !dialog_displaying) {
                 ImGui::SetNextWindowFocus();
             }
 
@@ -120,7 +130,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
                 }
 
                 // Allow the user to change sections using the triangle button
-                if (!IsGamepadCaptured() && (state->pad_status.buttonsNew & PAD_TRIANGLE)) {
+                if (!IsGamepadCaptured() && !dialog_displaying && (state->pad_status.buttonsNew & PAD_TRIANGLE)) {
                     is_selecting_section = !is_selecting_section;
                 }
 
