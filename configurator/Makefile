@@ -11,7 +11,7 @@ BUILDDIR_EE=$(BUILDDIR)/ee
 BUILDDIR_IOP=$(BUILDDIR)/iop
 
 EEFILES=$(BUILDDIR_EE)/ps2plman.elf
-IRXFILES=ps2plman.irx
+IRXFILES=ps2plman.irx iomanX.irx fileXio.irx
 EE_IRX_OBJS = $(addprefix $(BUILDDIR_EE)/, $(addsuffix _irx.o, $(basename $(IRXFILES))))
 
 # Where to find the IRX files
@@ -19,9 +19,9 @@ vpath %.irx $(PS2SDK)/iop/irx/
 vpath %.irx $(BUILDDIR_IOP)
 
 # Rule to generate them
-$(BUILDDIR_EE)/%_irx.o:
+$(BUILDDIR_EE)/%_irx.o: %.irx
 	mkdir -p $(BUILDDIR_EE)
-	$(BIN2C) $(BUILDDIR_IOP)/$*.irx $(BUILDDIR_IOP)/$*_irx.c $*_irx
+	$(BIN2C) $< $(BUILDDIR_IOP)/$*_irx.c $*_irx
 	$(EE_CC) -c $(BUILDDIR_IOP)/$*_irx.c -o $(BUILDDIR_EE)/$*_irx.o
 	rm $(BUILDDIR_IOP)/$*_irx.c
 

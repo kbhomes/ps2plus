@@ -10,11 +10,14 @@ SRCFILES = $(foreach dir, $(SRCDIRS), $(shell find $(dir) -name '*.c' -o -name '
 
 EE_BIN = $(BUILDDIR)/ps2plman.elf
 EE_INCS += -I./ -Ilib -I../common -I../..
-EE_LIBS += -lpatches -lpad
+EE_LIBS += -lpatches -lpad -lfileXio
 EE_OBJS = $(addprefix $(BUILDDIR)/, $(patsubst %.c, %.o, $(patsubst %.cpp, %.o, $(SRCFILES))))
 
 # Add all required IRX files into the compilation
-EE_LDFLAGS += $(ROOTDIR)/build/$(PROJECTDIR)/ps2plman_irx.o
+EE_LDFLAGS += \
+	$(ROOTDIR)/build/$(PROJECTDIR)/ps2plman_irx.o \
+	$(ROOTDIR)/build/$(PROJECTDIR)/iomanX_irx.o \
+	$(ROOTDIR)/build/$(PROJECTDIR)/fileXio_irx.o 
 EE_CXXFLAGS += -std=gnu++11
 
 # Add gsKit references

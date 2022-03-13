@@ -61,7 +61,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
     static bool is_selecting_section = false;
 
     // Actively displayed section content
-    static int selected_content = 0;
+    static int selected_content = 2;
 
     // Full screen "window" that can't be moved or resized
     ImGui::SetNextWindowPos(ImVec2(0, 0));

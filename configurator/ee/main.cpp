@@ -20,6 +20,10 @@
 #include "ui/pad.h"
 #include "ui/widgets/widget.h"
 
+#define NEWLIB_PORT_AWARE
+#include <fileXio_rpc.h>
+#include <io_common.h>
+
 bool is_reading_ps2_state = false;
 
 configurator_state state;
@@ -39,13 +43,22 @@ static void load_modules(void) {
 
     // Patch is required to load modules from memory
     sbv_patch_enable_lmb();
+    sbv_patch_disable_prefix_check();
     
-    printf("Loading padman module (system) - \n");
+    printf("Loading sio2man module (system) - \n");
     ret = SifLoadModule("rom0:SIO2MAN", 0, NULL);
     printf("[%d] returned\n", ret);
 
     printf("Loading padman module (system) - \n");
     ret = SifLoadModule("rom0:PADMAN", 0, NULL);
+    printf("[%d] returned\n", ret);
+
+    printf("Loading iomanX module (builtin) - (%x,%d) ", (unsigned int)iomanX_irx, size_iomanX_irx);
+    SifExecModuleBuffer(iomanX_irx, size_iomanX_irx, 0, NULL, &ret);
+    printf("[%d] returned\n", ret);
+
+    printf("Loading fileXio module (builtin) - (%x,%d) ", (unsigned int)fileXio_irx, size_fileXio_irx);
+    SifExecModuleBuffer(fileXio_irx, size_fileXio_irx, 0, NULL, &ret);
     printf("[%d] returned\n", ret);
 
     printf("Loading ps2plman module (builtin) - (%x,%d) ", (unsigned int)ps2plman_irx, size_ps2plman_irx);
@@ -82,6 +95,18 @@ int main(int argc, char **argv) {
     pad_init();
     ps2plman_init();
     // update_controllers();
+
+    // struct fileXioDevice deviceEntries[32];
+    // int deviceEntriesCount;
+    // printf("Initializing fileXio\n");
+    // printf("- Returned: %d\n", fileXioInit());
+    // printf("Getting device list\n");
+    // deviceEntriesCount = fileXioGetDeviceList(deviceEntries, 32);
+    // printf("- Returned: %d\n", deviceEntriesCount);
+    // for (int i = 0; i < deviceEntriesCount; i++) {
+    //     printf("deviceEntries[%d].name = %s\n", i, deviceEntries[i].name);
+    // }
+
 
     // Setup the graphics and ImGui systems
     bool hires = false;
