@@ -15,6 +15,8 @@ void app_section_firmware(ImGuiIO &io, configurator_state *state) {
   if (ImGui::Button("Choose file")) {
     ImGui::OpenPopup("Choose firmware update file");
   }
+  ImGui::SameLine();
+  ImGui::TextWrapped("%s", path);
 
   ImGui::SetNextWindowPos(ImVec2(10, 10));
   ImGui::SetNextWindowSize(ImVec2(io.DisplaySize.x - 20, io.DisplaySize.y - 20));

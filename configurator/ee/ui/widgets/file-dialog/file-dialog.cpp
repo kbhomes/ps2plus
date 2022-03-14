@@ -350,7 +350,7 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
 
     {
         if (!dialog->GetDeviceList().empty()) {
-            if (ImGui::Button("Devices")) {
+            if (ImGui::SmallButton("Devices")) {
                 dialog->ShowDeviceList();
             }
             
@@ -366,7 +366,7 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
         auto collapsedComponentIterator = directoryComponents.end();
 
         for (auto component = directoryComponents.begin(); component != directoryComponents.end(); ++component) {
-            if (ImGui::Button(component->c_str())) {
+            if (ImGui::SmallButton(component->c_str())) {
                 // Set the new directory to the path of all the previous components
                 dialog->ScanDirectory(join(std::vector<std::string>(directoryComponents.begin(), component + 1), std::string(1, PATH_SEP)));
             }
@@ -389,10 +389,10 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
 
         if (collapsedComponentIterator != directoryComponents.end()) {
             const ImVec2 &pos = ImGui::GetCursorScreenPos();
-            if (ImGui::Button("##CollapsedComponents")) {
+            if (ImGui::SmallButton("##CollapsedComponents")) {
                 ImGui::OpenPopup("CollapsedComponentsPopup");
             }
-            ImGui::RenderArrow(ImGui::GetWindowDrawList(), ImVec2(pos.x + 2.f, pos.y + ImGui::GetFontSize()*0.2), ImGui::GetColorU32(ImGuiCol_Text), ImGuiDir_Right, 0.8);
+            ImGui::RenderArrow(ImGui::GetWindowDrawList(), ImVec2(pos.x + 2.f, pos.y + ImGui::GetFontSize()*0.1), ImGui::GetColorU32(ImGuiCol_Text), ImGuiDir_Right, 0.75);
 
             if (ImGui::BeginPopup("CollapsedComponentsPopup")) {
                 for (auto component = collapsedComponentIterator; component != directoryComponents.end(); component++) {
@@ -406,7 +406,6 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
         }
     }
 
-    // ImGui::BeginChild("FileDialogChildWindow", ImVec2(0, -2 * ImGui::GetFrameHeightWithSpacing()), false);
     {
         std::vector<FileDialog_::Entry> displayedEntries = dialog->GetEntries();
 
@@ -477,7 +476,6 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
             ImGui::EndTable();
         } 
     }
-    // ImGui::EndChild();
 
     std::string selectedPath = dialog->GetSelectedPath();
     ImGui::Text("File:"); ImGui::SameLine();
@@ -495,6 +493,12 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
         finished = true;
     }
     ImGui::EndDisabled();
+    ImGui::SameLine();
+    if (ImGui::Button("Cancel")) {
+        selectedFile[0] = 0;
+        dialogs.erase(key);
+        finished = true;
+    }
 
     return finished;
 }
