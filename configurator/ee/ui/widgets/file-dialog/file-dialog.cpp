@@ -1,6 +1,9 @@
 #include "file-dialog.h"
 
+#include <imgui/imgui_internal.h>
+
 #include <map>
+#include <memory>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -8,6 +11,34 @@
 
 #define PATH_SEP '/'
 #define MAX_PATH 255
+
+template<typename ... Args>
+std::string stringformat(const std::string& format, Args ... args )
+{
+    int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1;
+    auto size = static_cast<size_t>( size_s );
+    std::unique_ptr<char[]> buf( new char[ size ] );
+    std::snprintf( buf.get(), size, format.c_str(), args ... );
+    return std::string( buf.get(), buf.get() + size - 1 );
+}
+
+std::string friendlytime(struct timespec ts)
+{
+    char buff[100];
+    strftime(buff, sizeof buff, "%D %T", gmtime(&ts.tv_sec));
+    return buff;
+}
+
+std::string friendlysize(unsigned long bytes)
+{
+    if (bytes < 1024) {
+        return stringformat("%d B", bytes);
+    } else if (bytes < (1024 * 1024)) {
+        return stringformat("%.1f KB", bytes / 1024.f);
+    } else {
+        return stringformat("%.1f MB", bytes / 1024.f / 1024.f);
+    }
+}
 
 std::vector<std::string> split(const std::string &s, char delim) {
   std::stringstream ss(s);
@@ -208,6 +239,7 @@ void ImGui::Widgets::FileDialog_::ScanDirectory(std::string directory)
     }
     else {
         // The path exists, so load it in the dialog
+        _recentlyChanged = true;
         _showingDeviceList = false;
         _currentDirectory = directory;
         _currentEntries.clear();
@@ -221,7 +253,9 @@ void ImGui::Widgets::FileDialog_::ScanDirectory(std::string directory)
             struct dirent *entry = namelist[i];
             std::string name = entry->d_name;
             EntryType type = S_ISDIR(entry->d_stat.st_mode) ? EntryTypeDirectory : EntryTypeFile;
-            _currentEntries.push_back({ name, type });
+            size_t size = S_ISREG(entry->d_stat.st_mode) ? entry->d_stat.st_size : 0;
+            struct timespec modified = entry->d_stat.st_mtim;
+            _currentEntries.push_back({ name, type, size, modified });
             free(namelist[i++]);
         }
 
@@ -241,13 +275,14 @@ void ImGui::Widgets::FileDialog_::ScanParentDirectory()
 
 void ImGui::Widgets::FileDialog_::ShowDeviceList() 
 {
+    _recentlyChanged = true;
     _showingDeviceList = true;
     _currentDirectory = "";
     _currentEntries.clear();
     _currentDirectoryComponents.clear();
 
     for (auto device : _deviceList) {
-        _currentEntries.push_back({ device, EntryTypeDirectory });
+        _currentEntries.push_back({ device, EntryTypeDirectory, 0 });
     }
 }
 
@@ -291,6 +326,13 @@ bool ImGui::Widgets::FileDialog_::IsShowingDeviceList()
     return _showingDeviceList;
 }
 
+bool ImGui::Widgets::FileDialog_::HasRecentlyChanged()
+{
+    bool value = _recentlyChanged;
+    _recentlyChanged = false;
+    return value;
+}
+
 bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, std::vector<std::string> deviceList, char *selectedFile) {
     FileDialog_ *dialog;
 
@@ -303,6 +345,8 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
         dialog->ScanDirectory(initialDirectory);
         dialogs.insert({ key, dialog });
     }
+
+    bool recentlyChanged = dialog->HasRecentlyChanged();
 
     {
         if (!dialog->GetDeviceList().empty()) {
@@ -318,6 +362,9 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
         }
 
         std::vector<std::string> directoryComponents = dialog->GetDirectoryComponents();
+        float windowMaxContentX = ImGui::GetWindowPos().x + ImGui::GetWindowContentRegionMax().x;
+        auto collapsedComponentIterator = directoryComponents.end();
+
         for (auto component = directoryComponents.begin(); component != directoryComponents.end(); ++component) {
             if (ImGui::Button(component->c_str())) {
                 // Set the new directory to the path of all the previous components
@@ -326,28 +373,69 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
 
             if (component + 1 != directoryComponents.end()) {
                 ImGui::SameLine(0, 2.0f);
+                
+                float lastComponentMaxX = ImGui::GetItemRectMax().x;
+                auto nextComponent = component + 1;
+                float nextComponentWidth = ImGui::CalcTextSize(nextComponent->c_str()).x;
+                float nextComponentMaxX = lastComponentMaxX + ImGui::GetStyle().ItemSpacing.x + ImGui::GetStyle().FramePadding.x*2 + nextComponentWidth;
+
+                if (nextComponentMaxX >= windowMaxContentX) {
+                    // Remaining components are offscreen -- we'll need to show a context menu
+                    collapsedComponentIterator = component + 1;
+                    break;
+                }
+            }
+        }
+
+        if (collapsedComponentIterator != directoryComponents.end()) {
+            const ImVec2 &pos = ImGui::GetCursorScreenPos();
+            if (ImGui::Button("##CollapsedComponents")) {
+                ImGui::OpenPopup("CollapsedComponentsPopup");
+            }
+            ImGui::RenderArrow(ImGui::GetWindowDrawList(), ImVec2(pos.x + 2.f, pos.y + ImGui::GetFontSize()*0.2), ImGui::GetColorU32(ImGuiCol_Text), ImGuiDir_Right, 0.8);
+
+            if (ImGui::BeginPopup("CollapsedComponentsPopup")) {
+                for (auto component = collapsedComponentIterator; component != directoryComponents.end(); component++) {
+                    if (ImGui::Selectable(component->c_str())) {
+                        // Set the new directory to the path of all the previous components
+                        dialog->ScanDirectory(join(std::vector<std::string>(directoryComponents.begin(), component + 1), std::string(1, PATH_SEP)));
+                    }
+                }
+                ImGui::EndPopup();
             }
         }
     }
 
-    ImGui::Separator();
-
+    // ImGui::BeginChild("FileDialogChildWindow", ImVec2(0, -2 * ImGui::GetFrameHeightWithSpacing()), false);
     {
         std::vector<FileDialog_::Entry> displayedEntries = dialog->GetEntries();
 
-        if (ImGui::BeginTable("FilesTable", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersInnerV)) {
-            ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch, 0.0f);
-            ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 0.0f);
+        if (ImGui::BeginTable("FilesTable", 4, ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY, ImVec2(0, -2 * ImGui::GetFrameHeightWithSpacing()))) {
+            ImGui::TableSetupColumn("##Type", ImGuiTableColumnFlags_WidthFixed, 0.0f);
+            ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 0.0f);
+            ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, 0.0f);
+            ImGui::TableSetupColumn("Modified", ImGuiTableColumnFlags_WidthFixed, 0.0f);
             ImGui::TableHeadersRow();
+
+            if (recentlyChanged) {
+                ImGui::SetItemDefaultFocus();
+                ImGui::SetKeyboardFocusHere();
+            }
 
             if (!dialog->IsShowingDeviceList()) {
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                if (ImGui::Selectable("../", nullptr, ImGuiSelectableFlags_SpanAllColumns)) {
+                const ImVec2 &pos = ImGui::GetCursorScreenPos();
+                ImGui::RenderArrow(ImGui::GetWindowDrawList(), ImVec2(pos.x, pos.y + ImGui::GetFontSize()*0.1), ImGui::GetColorU32(ImGuiCol_TextDisabled), ImGuiDir_Up, 0.65);
+                ImGui::Dummy(ImVec2(ImGui::GetFontSize() * 0.5, ImGui::GetFontSize()));
+                
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable("../", nullptr, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_DontClosePopups)) {
                     dialog->ScanParentDirectory();
                 }
-                ImGui::TableNextColumn();
-                ImGui::Text("D");
+
+                ImGui::TableNextColumn(); // No size for this entry
+                ImGui::TableNextColumn(); // No modified time for this entry
             }
 
             for (FileDialog_::Entry &entry : displayedEntries) {
@@ -361,8 +449,14 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
 
                 ImGui::TableNextRow();
                 ImGui::TableNextColumn();
-                
-                if (ImGui::Selectable(entryLabel.c_str(), isEntrySelected, ImGuiSelectableFlags_SpanAllColumns)) {
+                if (entry.type == FileDialog_::EntryTypeDirectory) {
+                const ImVec2 &pos = ImGui::GetCursorScreenPos();
+                ImGui::RenderArrow(ImGui::GetWindowDrawList(), ImVec2(pos.x, pos.y + ImGui::GetFontSize()*0.1), ImGui::GetColorU32(ImGuiCol_Text), ImGuiDir_Right, 0.65);
+                    ImGui::Dummy(ImVec2(ImGui::GetFontSize() * 0.5, ImGui::GetFontSize()));
+                }
+
+                ImGui::TableNextColumn();
+                if (ImGui::Selectable(entryLabel.c_str(), isEntrySelected, ImGuiSelectableFlags_SpanAllColumns | ImGuiSelectableFlags_DontClosePopups)) {
                     if (entry.type == FileDialog_::EntryTypeDirectory) {
                         dialog->ScanSubdirectory(entry.name);
                     } else {
@@ -371,26 +465,36 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
                 }
 
                 ImGui::TableNextColumn();
-                ImGui::Text(entry.type == FileDialog_::EntryTypeDirectory ? "D" : "F");
-            }
-            ImGui::EndTable();
-        }
-        
-        ImGui::Separator();
-
-        {
-            std::string selectedPath = dialog->GetSelectedPath();
-
-            if (!selectedPath.empty()) {
-                if (ImGui::Button("OK")) {
-                    strncpy(selectedFile, selectedPath.c_str(), MAX_PATH);
-                    return true;
+                if (entry.type == FileDialog_::EntryTypeFile) {
+                    ImGui::Text(friendlysize(entry.size).c_str());
                 }
 
-                ImGui::Text(selectedPath.c_str());
+                ImGui::TableNextColumn();
+                if (entry.type == FileDialog_::EntryTypeFile) {
+                    ImGui::Text(friendlytime(entry.modified).c_str());
+                }
             }
-        }    
+            ImGui::EndTable();
+        } 
     }
+    // ImGui::EndChild();
 
-    return false;
+    std::string selectedPath = dialog->GetSelectedPath();
+    ImGui::Text("File:"); ImGui::SameLine();
+    ImGui::BeginDisabled();
+    ImGui::SetNextItemWidth(-FLT_MIN);
+    ImGui::InputText("##SelectedPath", (char *)selectedPath.c_str(), selectedPath.size());
+    ImGui::EndDisabled();
+
+    bool finished = false;
+
+    ImGui::BeginDisabled(selectedPath.empty());
+    if (ImGui::Button("OK")) {
+        strncpy(selectedFile, selectedPath.c_str(), MAX_PATH);
+        dialogs.erase(key);
+        finished = true;
+    }
+    ImGui::EndDisabled();
+
+    return finished;
 }

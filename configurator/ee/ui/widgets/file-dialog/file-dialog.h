@@ -2,6 +2,7 @@
 
 #include <dirent.h>
 #include <string>
+#include <time.h>
 #include <vector>
 
 namespace ImGui::Widgets {
@@ -15,6 +16,8 @@ namespace ImGui::Widgets {
         struct Entry {
             std::string name;
             EntryType type;
+            size_t size;
+            struct timespec modified;
         };
 
         FileDialog_(std::string initialDirectory);
@@ -31,6 +34,7 @@ namespace ImGui::Widgets {
         std::string GetSelectedPath();
         void SetSelectedPath(std::string path);
         bool IsShowingDeviceList();
+        bool HasRecentlyChanged();
 
     private:
 
@@ -42,6 +46,7 @@ namespace ImGui::Widgets {
         std::vector<Entry> _currentEntries;
         std::string _selectedPath;
         std::vector<std::string> _deviceList;
+        bool _recentlyChanged;
     };
 
     bool FileDialog(const char *key, const char *initialDirectory, std::vector<std::string> deviceList, char *selectedFile);
