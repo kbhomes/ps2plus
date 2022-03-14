@@ -1,5 +1,6 @@
 #include "file-dialog.h"
 
+#define IMGUI_DISABLE_SSE
 #include <imgui/imgui_internal.h>
 
 #include <map>
