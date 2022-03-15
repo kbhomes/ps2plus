@@ -95,6 +95,9 @@ int main(int argc, char **argv) {
     pad_init();
     ps2plman_init();
     // update_controllers();
+    state.controllers[0].versions.firmware = 30;
+    state.controllers[0].versions.configuration = 1;
+    strncpy(state.controllers[0].versions.microcontroller, "PIC18F46K42", 12);
 
     // struct fileXioDevice deviceEntries[32];
     // int deviceEntriesCount;

@@ -1,16 +1,28 @@
 #include "app.h"
 
+#include <cstring>
 #include <dirent.h>
 #include <stdio.h>
 #include <string.h>
 #include <ui/widgets/file-dialog/file-dialog.h>
+#include <ui/widgets/icons/misc.h>
 #include <ui/widgets/wizard/wizard.h>
+#include <util/firmware-update.h>
 
 #define MAX_PATH 255
+
+const ImU32 COLOR_SUCCESS = IM_COL32(0x00, 0xFF, 0x00, 0x80);
+const ImU32 COLOR_ERROR = IM_COL32(0xFF, 0x00, 0x00, 0x80);
+const ImU32 COLOR_WARNING = IM_COL32(0xFF, 0xFF, 0x00, 0x80);
 
 std::vector<std::string> deviceList = { "host:", "mc0:", "mc1:", "mass:" };
 char path[MAX_PATH];
 int currentStep = 0;
+FirmwareUpdate *firmwareUpdate;
+
+enum FirmwareUpdateType {
+  NoChange, Upgrade, Downgrade
+};
 
 void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
   if (ImGui::BeginTable("UpdateButtonTable", 3)) {
@@ -68,19 +80,117 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
   bool hasPath = path[0] != 0;
   ImGui::BeginDisabled(!hasPath);
   if (ImGui::Button("Continue", actionButtonSize)) {
+    // Read the firmware
+    firmwareUpdate = new FirmwareUpdate(path);
     ImGui::Widgets::WizardNext();
   }
+  
   ImGui::EndDisabled();
 }
 
 void wizard_review_update(ImGuiIO &io, configurator_state *state) {
-  ImGui::Text("Step 2!");
+  if (ImGui::BeginTable("FirmwareUpdateVersions", 3, ImGuiTableFlags_Borders)) {
+    ImGui::TableSetupColumn("Version", ImGuiTableColumnFlags_WidthFixed);
+    ImGui::TableSetupColumn("Current", ImGuiTableColumnFlags_WidthStretch);
+    ImGui::TableSetupColumn("Update", ImGuiTableColumnFlags_WidthStretch);
+    ImGui::TableHeadersRow();
 
-  if (ImGui::Button("Previous")) {
+    uint16_t versionFirmwareCurrent = state->current_controller->versions.firmware;
+    uint16_t versionFirmwareUpdate = firmwareUpdate->GetFirmwareVersion();
+    FirmwareUpdateType versionFirmwareUpdateType = 
+        (versionFirmwareUpdate > versionFirmwareCurrent) ? Upgrade :
+        (versionFirmwareUpdate < versionFirmwareCurrent) ? Downgrade :
+        NoChange;
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn(); 
+    ImGui::Text("Firmware");
+    ImGui::TableNextColumn(); 
+    ImGui::Text("%d", state->current_controller->versions.firmware);
+    ImGui::TableNextColumn(); 
+    if (versionFirmwareUpdateType == Upgrade)
+      ImGui::Widgets::Icons::Arrow(ImGui::GetFontSize(), COLOR_SUCCESS, ImGuiDir_Up);
+    else if (versionFirmwareUpdateType == Downgrade)
+      ImGui::Widgets::Icons::Arrow(ImGui::GetFontSize(), COLOR_ERROR, ImGuiDir_Down);
+    else if (versionFirmwareUpdateType == NoChange)
+      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+    ImGui::SameLine();
+    ImGui::Text("%d", firmwareUpdate->GetFirmwareVersion());
+
+    char *versionMicrocontrollerCurrent = state->current_controller->versions.microcontroller;
+    std::string versionMicrocontrollerUpdate = firmwareUpdate->GetMicrocontrollerVersion();
+    bool versionMicrocontrollerMismatch = std::strcmp(versionMicrocontrollerUpdate.c_str(), versionMicrocontrollerCurrent) != 0;
+    ImGui::TableNextRow(); 
+    ImGui::TableNextColumn(); ImGui::Text("Microcontroller");
+    ImGui::TableNextColumn(); ImGui::Text("%s", state->current_controller->versions.microcontroller);
+    ImGui::TableNextColumn(); 
+    if (versionMicrocontrollerMismatch)
+      ImGui::Widgets::Icons::Error(ImGui::GetFontSize(), COLOR_ERROR);
+    else
+      ImGui::Widgets::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
+    ImGui::SameLine();
+    ImGui::Text("%s", firmwareUpdate->GetMicrocontrollerVersion().c_str());
+
+    uint8_t versionConfigurationCurrent = state->current_controller->versions.configuration;
+    uint8_t versionConfigurationUpdate = firmwareUpdate->GetConfigurationVersion();
+    bool versionConfigurationMismatch = (versionConfigurationCurrent != versionConfigurationUpdate);
+    ImGui::TableNextRow();
+    ImGui::TableNextColumn(); ImGui::Text("Configuration");
+    ImGui::TableNextColumn(); ImGui::Text("%d", state->current_controller->versions.configuration);
+    ImGui::TableNextColumn(); 
+    if (versionConfigurationMismatch)
+      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+    else
+      ImGui::Widgets::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
+    ImGui::SameLine();
+    ImGui::Text("%d", firmwareUpdate->GetConfigurationVersion());
+
+    ImGui::EndTable();
+  }
+
+  ImGui::Separator();
+
+  // if (ImGui::BeginTable("FirmwareRecordsTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollY, ImVec2(0, -ImGui::GetFrameHeightWithSpacing()))) {
+  //   ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
+  //   ImGui::TableSetupColumn("Address", ImGuiTableColumnFlags_WidthFixed);
+  //   ImGui::TableSetupColumn("Length", ImGuiTableColumnFlags_WidthFixed);
+  //   ImGui::TableSetupColumn("Data", ImGuiTableColumnFlags_WidthStretch);
+  //   ImGui::TableSetupColumn("Checksum", ImGuiTableColumnFlags_WidthFixed);
+  //   ImGui::TableHeadersRow();
+
+  //   for (auto record : firmwareUpdate->GetRecords()) {
+  //     ImGui::TableNextRow();
+  //     ImGui::TableNextColumn();
+  //     ImGui::Text(
+  //       record->type == BLRecordTypeStart ? "Start" :
+  //       record->type == BLRecordTypeData ? "Data" :
+  //       record->type == BLRecordTypeEnd ? "End" :
+  //       "Unknown");
+
+  //     if (record->type != BLRecordTypeData) {
+  //       continue;
+  //     }
+
+  //     ImGui::TableNextColumn();
+  //     ImGui::Text("0x%04lX", record->target_address);
+
+  //     ImGui::TableNextColumn();
+  //     ImGui::Text("%d", record->data_length);
+
+  //     ImGui::TableNextColumn();
+  //     ImGui::Text("...");
+
+  //     ImGui::TableNextColumn();
+  //     ImGui::Text("0x%02X", record->data_checksum);
+  //   }
+
+  //   ImGui::EndTable();
+  // }
+
+  if (ImGui::Button("Back")) {
     ImGui::Widgets::WizardPrevious();
   }
   ImGui::SameLine();
-  if (ImGui::Button("Next")) {
+  if (ImGui::Button("Update")) {
     ImGui::Widgets::WizardNext();
   }
 }
