@@ -59,7 +59,7 @@ void ImGui::Widgets::SetupWizardStep(const char *name, bool enabled) {
     ImGui::TableNextColumn();
     
     const ImVec2 p = ImGui::GetCursorScreenPos();
-    float arrowSize = 5;
+    float arrowSize = 10;
     float stepHeight = 30;
     ImDrawList *drawList = ImGui::GetWindowDrawList();
     ImVec2 size = ImGui::GetContentRegionAvail();
@@ -99,7 +99,7 @@ bool ImGui::Widgets::BeginWizardStep(const char *name) {
     auto result = wizard->steps.find(name);
     if (result != wizard->steps.end()) {
         if (wizard->currentStep == result->second.index) {
-            ImGui::BeginChild(name, ImVec2(), true);
+            // ImGui::BeginChild(name, ImVec2(), true, ImGuiWindowFlags_NavFlattened);
             return true;
         } else {
             return false;
@@ -110,7 +110,7 @@ bool ImGui::Widgets::BeginWizardStep(const char *name) {
 }
 
 void ImGui::Widgets::EndWizardStep() {
-    ImGui::EndChild();
+    // ImGui::EndChild();
 }
 
 void ImGui::Widgets::EndWizard() {

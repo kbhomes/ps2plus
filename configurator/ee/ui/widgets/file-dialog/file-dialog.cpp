@@ -479,11 +479,10 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
     }
 
     std::string selectedPath = dialog->GetSelectedPath();
+    ImGui::AlignTextToFramePadding();
     ImGui::Text("File:"); ImGui::SameLine();
-    ImGui::BeginDisabled();
     ImGui::SetNextItemWidth(-FLT_MIN);
-    ImGui::InputText("##SelectedPath", (char *)selectedPath.c_str(), selectedPath.size());
-    ImGui::EndDisabled();
+    ImGui::InputText("##SelectedPath", (char *)selectedPath.c_str(), selectedPath.size(), ImGuiInputTextFlags_ReadOnly);
 
     bool finished = false;
 
