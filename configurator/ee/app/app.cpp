@@ -18,7 +18,7 @@ void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
     // Information section
     if (ImGui::BeginTable("PS2+ Ports#Table", 2)) {
         ImGui::TableNextRow();
-        for (int i = 0; i < sizeof(state->controllers) / sizeof(configurator_ps2plus_controller); i++) {
+        for (size_t i = 0; i < sizeof(state->controllers) / sizeof(configurator_ps2plus_controller); i++) {
             configurator_ps2plus_controller *controller = &state->controllers[i];
 
             ImGui::TableSetColumnIndex(i);

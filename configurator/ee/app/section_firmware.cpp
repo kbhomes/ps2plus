@@ -6,8 +6,13 @@
 #include <string.h>
 #include <ui/widgets/file-dialog/file-dialog.h>
 #include <ui/widgets/icons/misc.h>
+#include "ui/widgets/status/loading-progress.h"
+#include "ui/widgets/status/status.h"
 #include <ui/widgets/wizard/wizard.h>
 #include <util/firmware-update.h>
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui/imgui_internal.h>
 
 #define MAX_PATH 255
 
@@ -15,7 +20,7 @@ const ImU32 COLOR_SUCCESS = IM_COL32(0x00, 0xFF, 0x00, 0x80);
 const ImU32 COLOR_ERROR = IM_COL32(0xFF, 0x00, 0x00, 0x80);
 const ImU32 COLOR_WARNING = IM_COL32(0xFF, 0xFF, 0x00, 0x80);
 
-std::vector<std::string> deviceList = { "host:", "mc0:", "mc1:", "mass:" };
+std::vector<std::string> deviceList = { "host:", "mc0:", "mc1:", "mass:", "mass0:", "mass1:" };
 char path[MAX_PATH];
 int currentStep = 0;
 FirmwareUpdate *firmwareUpdate;
@@ -48,7 +53,7 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
     if (ImGui::BeginPopupModal("Choose firmware update file")) {
       app_begin_dialog();
 
-      if (ImGui::Widgets::FileDialog("FileDialog-FirmwareUpdate", "host:/", deviceList, path)) {
+      if (ImGui::Widgets::FileDialog("FileDialog-FirmwareUpdate", NULL, deviceList, path)) {
         printf("Got path: %s\n", path);
         ImGui::CloseCurrentPopup();
         app_end_dialog();
@@ -68,11 +73,29 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
     ImGui::Bullet(); ImGui::TextWrapped("Microcontroller: %s", state->current_controller->versions.microcontroller);
     ImGui::Bullet(); ImGui::TextWrapped("Update Only (not Bootloader or Combined)");
   ImGui::Unindent();
-  ImGui::Bullet(); ImGui::TextWrapped("Save the update file to a USB flash drive and insert it into your PS2");
-  ImGui::Bullet(); ImGui::TextWrapped("Press \"Browse\" above and choose the update file");
-  ImGui::Bullet(); ImGui::TextWrapped("Press \"Continue\" below to review the selected update");
+  
+  // Hack: Create a child window to move the action buttons to the bottom of the pane
+  ImGui::BeginChild("ChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 8.f), false, ImGuiWindowFlags_NoNav);
+  ImGui::EndChild(); 
 
   ImGui::Separator();
+
+  if (ImGui::Button("Test")) {
+      ImGui::OpenPopup("TestSelectFirmwareUpdate");
+  }
+  ImGui::SameLine();
+  if (ImGui::BeginPopup("TestSelectFirmwareUpdate")) {
+    app_begin_dialog();
+    for (auto testFilename : FirmwareUpdate::GetTestFilenames()) {
+      if (ImGui::Selectable(testFilename.c_str())) {
+        // Read the test firmware
+        firmwareUpdate = new FirmwareUpdate(testFilename);
+        ImGui::Widgets::WizardNext();
+        app_end_dialog();
+      }
+    }
+    ImGui::EndPopup();
+  }
 
   ImVec2 actionButtonSize = ImVec2(100, 0);
   ImGui::Dummy(ImVec2());
@@ -89,18 +112,30 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
 }
 
 void wizard_review_update(ImGuiIO &io, configurator_state *state) {
+  uint16_t versionFirmwareCurrent = state->current_controller->versions.firmware;
+  uint16_t versionFirmwareUpdate = firmwareUpdate->GetFirmwareVersion();
+  FirmwareUpdateType versionFirmwareUpdateType = 
+      (versionFirmwareUpdate > versionFirmwareCurrent) ? Upgrade :
+      (versionFirmwareUpdate < versionFirmwareCurrent) ? Downgrade :
+      NoChange;
+      
+  char *versionMicrocontrollerCurrent = state->current_controller->versions.microcontroller;
+  std::string versionMicrocontrollerUpdate = firmwareUpdate->GetMicrocontrollerVersion();
+  bool versionMicrocontrollerMismatch = std::strcmp(versionMicrocontrollerUpdate.c_str(), versionMicrocontrollerCurrent) != 0;
+
+  uint8_t versionConfigurationCurrent = state->current_controller->versions.configuration;
+  uint8_t versionConfigurationUpdate = firmwareUpdate->GetConfigurationVersion();
+  bool versionConfigurationMismatch = (versionConfigurationCurrent != versionConfigurationUpdate);
+
+  static bool acceptIssues = false;
+  bool anyIssues = (versionFirmwareUpdateType != Upgrade) || versionMicrocontrollerMismatch || versionConfigurationMismatch;
+
   if (ImGui::BeginTable("FirmwareUpdateVersions", 3, ImGuiTableFlags_Borders)) {
     ImGui::TableSetupColumn("Version", ImGuiTableColumnFlags_WidthFixed);
     ImGui::TableSetupColumn("Current", ImGuiTableColumnFlags_WidthStretch);
     ImGui::TableSetupColumn("Update", ImGuiTableColumnFlags_WidthStretch);
     ImGui::TableHeadersRow();
 
-    uint16_t versionFirmwareCurrent = state->current_controller->versions.firmware;
-    uint16_t versionFirmwareUpdate = firmwareUpdate->GetFirmwareVersion();
-    FirmwareUpdateType versionFirmwareUpdateType = 
-        (versionFirmwareUpdate > versionFirmwareCurrent) ? Upgrade :
-        (versionFirmwareUpdate < versionFirmwareCurrent) ? Downgrade :
-        NoChange;
     ImGui::TableNextRow();
     ImGui::TableNextColumn(); 
     ImGui::Text("Firmware");
@@ -116,9 +151,6 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
     ImGui::SameLine();
     ImGui::Text("%d", firmwareUpdate->GetFirmwareVersion());
 
-    char *versionMicrocontrollerCurrent = state->current_controller->versions.microcontroller;
-    std::string versionMicrocontrollerUpdate = firmwareUpdate->GetMicrocontrollerVersion();
-    bool versionMicrocontrollerMismatch = std::strcmp(versionMicrocontrollerUpdate.c_str(), versionMicrocontrollerCurrent) != 0;
     ImGui::TableNextRow(); 
     ImGui::TableNextColumn(); ImGui::Text("Microcontroller");
     ImGui::TableNextColumn(); ImGui::Text("%s", state->current_controller->versions.microcontroller);
@@ -130,9 +162,6 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
     ImGui::SameLine();
     ImGui::Text("%s", firmwareUpdate->GetMicrocontrollerVersion().c_str());
 
-    uint8_t versionConfigurationCurrent = state->current_controller->versions.configuration;
-    uint8_t versionConfigurationUpdate = firmwareUpdate->GetConfigurationVersion();
-    bool versionConfigurationMismatch = (versionConfigurationCurrent != versionConfigurationUpdate);
     ImGui::TableNextRow();
     ImGui::TableNextColumn(); ImGui::Text("Configuration");
     ImGui::TableNextColumn(); ImGui::Text("%d", state->current_controller->versions.configuration);
@@ -146,65 +175,133 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
 
     ImGui::EndTable();
   }
+  
+  if (anyIssues) {
+    ImGui::Separator();
+    ImGui::Text("Issues:");
+
+    if (versionFirmwareUpdateType == Downgrade) {
+      ImGui::Bullet();
+      ImGui::Widgets::Icons::Arrow(ImGui::GetFontSize(), COLOR_ERROR, ImGuiDir_Down);
+      ImGui::SameLine(); 
+      ImGui::TextWrapped("Firmware will downgrade the PS2+");
+    } else if (versionFirmwareUpdateType == NoChange) {
+      ImGui::Bullet();
+      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+      ImGui::SameLine(); 
+      ImGui::TextWrapped("Firmware may already be on the PS2+");
+    }
+
+    if (versionMicrocontrollerMismatch) {
+      ImGui::Bullet();
+      ImGui::Widgets::Icons::Error(ImGui::GetFontSize(), COLOR_ERROR);
+      ImGui::SameLine(); 
+      ImGui::TextWrapped("Firmware is not for this microcontroller and may damage the PS2+");
+    } 
+
+    if (versionConfigurationMismatch) {
+      ImGui::Bullet();
+      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+      ImGui::SameLine(); 
+      ImGui::TextWrapped("PS2+ configuration will be reset after update");
+    }
+  } else {
+    ImGui::Separator();
+    ImGui::Widgets::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
+    ImGui::SameLine();
+    ImGui::TextWrapped("Firmware update appears valid! Press \"Update\" below to begin.");
+  }
+
+  // Hack: Create a child window to move the action buttons to the bottom of the pane
+  ImGui::BeginChild("ChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 8.f), false, ImGuiWindowFlags_NoNav);
+  ImGui::EndChild(); 
 
   ImGui::Separator();
-
-  // if (ImGui::BeginTable("FirmwareRecordsTable", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollY, ImVec2(0, -ImGui::GetFrameHeightWithSpacing()))) {
-  //   ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed);
-  //   ImGui::TableSetupColumn("Address", ImGuiTableColumnFlags_WidthFixed);
-  //   ImGui::TableSetupColumn("Length", ImGuiTableColumnFlags_WidthFixed);
-  //   ImGui::TableSetupColumn("Data", ImGuiTableColumnFlags_WidthStretch);
-  //   ImGui::TableSetupColumn("Checksum", ImGuiTableColumnFlags_WidthFixed);
-  //   ImGui::TableHeadersRow();
-
-  //   for (auto record : firmwareUpdate->GetRecords()) {
-  //     ImGui::TableNextRow();
-  //     ImGui::TableNextColumn();
-  //     ImGui::Text(
-  //       record->type == BLRecordTypeStart ? "Start" :
-  //       record->type == BLRecordTypeData ? "Data" :
-  //       record->type == BLRecordTypeEnd ? "End" :
-  //       "Unknown");
-
-  //     if (record->type != BLRecordTypeData) {
-  //       continue;
-  //     }
-
-  //     ImGui::TableNextColumn();
-  //     ImGui::Text("0x%04lX", record->target_address);
-
-  //     ImGui::TableNextColumn();
-  //     ImGui::Text("%d", record->data_length);
-
-  //     ImGui::TableNextColumn();
-  //     ImGui::Text("...");
-
-  //     ImGui::TableNextColumn();
-  //     ImGui::Text("0x%02X", record->data_checksum);
-  //   }
-
-  //   ImGui::EndTable();
-  // }
 
   if (ImGui::Button("Back")) {
     ImGui::Widgets::WizardPrevious();
   }
   ImGui::SameLine();
+
+  ImGui::BeginDisabled(anyIssues && !acceptIssues);
   if (ImGui::Button("Update")) {
+    state->current_controller->update.status = StatusPending;
+    state->current_controller->update.firmware = firmwareUpdate;
     ImGui::Widgets::WizardNext();
+  }
+  ImGui::EndDisabled();
+
+  if (anyIssues) {
+    ImGui::SameLine();
+    ImGui::Checkbox("Accept issues", &acceptIssues);
   }
 }
 
 void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
-  ImGui::Text("Step 3!");
+  float progress = 0.f;
+  const char *label = NULL;
+  ImGui::Widgets::StatusType status = ImGui::Widgets::StatusType_Loading;
 
-  if (ImGui::Button("Finish")) {
-    ImGui::Widgets::WizardGoToStep("1. Choose Update");
+  switch (state->current_controller->update.status) {
+    case StatusNone:
+    case StatusPending:
+      label = "Update pending";
+      status = ImGui::Widgets::StatusType_Loading;
+      break;
+
+    case StatusRebooting:
+      label = "Rebooting controller";
+      status = ImGui::Widgets::StatusType_Loading;
+      break;
+
+    case StatusUpdating:
+      progress = (float)state->current_controller->update.last_record_index / state->current_controller->update.total_records;
+      label = "Updating controller";
+      status = ImGui::Widgets::StatusType_Loading;
+      break;
+
+    case StatusCompleted:
+      label = "Firmware update complete!";
+      status = ImGui::Widgets::StatusType_Success;
+      break;
+
+    case StatusFailed:
+      label = "Error occurred during the update";
+      status = ImGui::Widgets::StatusType_Error;
+      break;
   }
+
+  // Center align the status
+  ImVec2 statusSize = ImGui::CalcTextSize(label);
+  ImVec2 totalStatusSize((ImGui::GetFontSize() * 0.85) + ImGui::GetStyle().ItemSpacing.x + statusSize.x, statusSize.y);
+  ImGui::SetCursorPos((ImGui::GetWindowSize() - totalStatusSize) * 0.5f);
+  ImGui::Widgets::StatusText(label, status);
+
+  if (state->current_controller->update.status == StatusUpdating) {
+    float windowWidth = ImGui::GetWindowSize().x;
+    float progressPadding = windowWidth * 0.1f;
+    ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(progressPadding, 0));
+    ImGui::SetNextItemWidth(windowWidth - progressPadding*2.f);
+    ImGui::Widgets::LoadingProgress("##Progress", progress, "%0.f%%");
+  }
+
+  // Hack: Create a child window to move the action buttons to the bottom of the pane
+  ImGui::BeginChild("ChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing() - 8.f), false, ImGuiWindowFlags_NoNav);
+  ImGui::EndChild(); 
+  ImGui::Separator();
+
+  ImGui::BeginDisabled(state->current_controller->update.status != StatusCompleted && state->current_controller->update.status != StatusFailed);
+  if (ImGui::Button("Finish")) {
+    path[0] = 0;
+    state->current_controller->update.status = StatusNone;
+    state->current_controller->update.firmware = NULL;
+    state->current_controller->update.last_check_time = ImGui::GetTime();;
+    ImGui::Widgets::WizardGoToStep("Choose Update");
+  }
+  ImGui::EndDisabled();
 }
 
 void app_section_firmware(ImGuiIO &io, configurator_state *state) {
-
   if (ImGui::Widgets::BeginWizard("UpdateFirmwareWizard", 3, &currentStep)) {
     if (ImGui::Widgets::BeginWizardStepList()) {
       ImGui::Widgets::SetupWizardStep("Choose Update", currentStep == 0 || currentStep == 1);

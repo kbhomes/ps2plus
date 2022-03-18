@@ -88,6 +88,45 @@ void update_controllers() {
     state.controllers[0].connected = connected;
 }
 
+void handle_update() {
+    configurator_ps2plus_controller *controller = state.current_controller;
+    if (!controller || !controller->connected) {
+        return;
+    }
+
+    if (controller->update.status == StatusPending) {
+        controller->update.status = StatusRebooting;
+        controller->update.last_check_time = ImGui::GetTime();
+        // TODO: Do the reboot
+    } else if (controller->update.status == StatusRebooting) {
+        if (ImGui::GetTime() - controller->update.last_check_time > 5.f) {
+            controller->update.status = StatusUpdating;
+            controller->update.last_check_time = ImGui::GetTime();
+            controller->update.last_record_index = 0;
+            controller->update.total_records = controller->update.firmware->GetRecords().size();
+            // TODO: Start the updating
+        }
+    } else if (controller->update.status == StatusUpdating) {
+        // DEV: Advance progress every 0.1s
+        float __delta = ImGui::GetTime() - controller->update.last_check_time;
+        
+        if (__delta > 0.01f) {
+            controller->update.last_check_time = ImGui::GetTime();
+            controller->update.last_record_index++;
+            // TODO: Actually send the update record
+        }
+
+        if (controller->update.last_record_index == controller->update.total_records) {
+            controller->update.status = StatusCompleted;
+            controller->update.last_check_time = ImGui::GetTime();
+        }
+    } else if (controller->update.status == StatusCompleted) {
+
+    } else if (controller->update.status == StatusFailed) {
+
+    }
+}
+
 int main(int argc, char **argv) {
     int ret;
     
@@ -95,9 +134,6 @@ int main(int argc, char **argv) {
     pad_init();
     ps2plman_init();
     // update_controllers();
-    state.controllers[0].versions.firmware = 30;
-    state.controllers[0].versions.configuration = 1;
-    strncpy(state.controllers[0].versions.microcontroller, "PIC18F46K42", 12);
 
     // struct fileXioDevice deviceEntries[32];
     // int deviceEntriesCount;
@@ -110,7 +146,6 @@ int main(int argc, char **argv) {
     //     printf("deviceEntries[%d].name = %s\n", i, deviceEntries[i].name);
     // }
 
-
     // Setup the graphics and ImGui systems
     bool hires = false;
     GSGLOBAL *global = gfx_init(hires);
@@ -120,8 +155,13 @@ int main(int argc, char **argv) {
     // TODO: Actually populate state based on connected controllers
     state.current_controller = &state.controllers[0];
     state.current_controller->connected = true;
+    state.current_controller->versions.firmware = 30;
+    state.current_controller->versions.configuration = 1;
+    strncpy(state.current_controller->versions.microcontroller, "PIC18F46K42", 12);
 
     while (1) {
+        handle_update();
+
         pad_get_status(&state.pad_status);
         gfx_update_pad(global, &state.pad_status);
         gfx_render_begin(global, hires);

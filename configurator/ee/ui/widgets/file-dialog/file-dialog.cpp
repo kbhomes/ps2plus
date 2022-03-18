@@ -341,9 +341,14 @@ bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, s
     if (result != dialogs.end()) {
         dialog = result->second;
     } else {
-        dialog = new FileDialog_(initialDirectory);   
+        dialog = new FileDialog_(initialDirectory ? initialDirectory : "");   
         dialog->SetDeviceList(deviceList);
-        dialog->ScanDirectory(initialDirectory);
+
+        if (initialDirectory == NULL) {
+            dialog->ShowDeviceList();
+        } else {
+            dialog->ScanDirectory(initialDirectory);
+        }
         dialogs.insert({ key, dialog });
     }
 

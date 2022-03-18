@@ -6,6 +6,19 @@
 
 using namespace std;
 
+const vector<string> FirmwareUpdate::_testFilenames = {
+    "Upgrade",
+    "Downgrade",
+    "No Change",
+    "Configuration Change",
+    "Microcontroller Mismatch",
+    "Invalid Update"
+};
+
+const vector<string> FirmwareUpdate::GetTestFilenames() {
+    return _testFilenames;
+}
+
 enum HEXRecordType {
     HEXData = 0,
     HEXEndOfFile = 1,
@@ -31,6 +44,43 @@ bool validateChecksum(uint8_t length, uint16_t address, uint8_t type, uint8_t *d
 }
 
 FirmwareUpdate::FirmwareUpdate(string filename) {
+    if (filename == "Upgrade") {
+        _firmwareVersion = 40;
+        _microcontrollerVersion = "PIC18F46K42";
+        _configurationVersion = 1;
+        for (int i = 0; i < 1000; i++) 
+            _records.push_back(nullptr);
+        return;
+    } else if (filename == "Downgrade") {
+        _firmwareVersion = 20;
+        _microcontrollerVersion = "PIC18F46K42";
+        _configurationVersion = 1;
+        for (int i = 0; i < 1000; i++) 
+            _records.push_back(nullptr);
+        return;
+    } else if (filename == "No Change") {
+        _firmwareVersion = 30;
+        _microcontrollerVersion = "PIC18F46K42";
+        _configurationVersion = 1;
+        for (int i = 0; i < 1000; i++) 
+            _records.push_back(nullptr);
+        return;
+    } else if (filename == "Configuration Change") {
+        _firmwareVersion = 31;
+        _microcontrollerVersion = "PIC18F46K42";
+        _configurationVersion = 3;
+        for (int i = 0; i < 1000; i++) 
+            _records.push_back(nullptr);
+        return;
+    } else if (filename == "Microcontroller Mismatch") {
+        _firmwareVersion = 30;
+        _microcontrollerVersion = "Arduino-Nano";
+        _configurationVersion = 1;
+        for (int i = 0; i < 1000; i++) 
+            _records.push_back(nullptr);
+        return;
+    }
+
     ifstream infile(filename);
     std::string line;
     uint32_t base = 0x00;

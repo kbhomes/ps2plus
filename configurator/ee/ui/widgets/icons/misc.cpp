@@ -5,6 +5,7 @@
 
 void ImGui::Widgets::Icons::Checkmark(float size, ImU32 color) {
     size *= 0.85;
+    ImVec2 bb(size, size);
 
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -21,11 +22,12 @@ void ImGui::Widgets::Icons::Checkmark(float size, ImU32 color) {
     draw_list->PathLineTo(ImVec2(bx + third * 2.0f, by - third * 2.0f));
     draw_list->PathStroke(color, 0, thickness);
 
-    ImGui::Dummy(ImVec2(size, size));
+    ImGui::Dummy(bb);
 }
 
 void ImGui::Widgets::Icons::Error(float size, ImU32 color) {
     size *= 0.85;
+    ImVec2 bb(size, size);
 
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -39,11 +41,12 @@ void ImGui::Widgets::Icons::Error(float size, ImU32 color) {
     draw_list->AddLine(ImVec2(center.x - extent, center.y - extent), ImVec2(center.x + extent, center.y + extent), color, thickness);
     draw_list->AddLine(ImVec2(center.x - extent, center.y + extent), ImVec2(center.x + extent, center.y - extent), color, thickness);
 
-    ImGui::Dummy(ImVec2(size, size));
+    ImGui::Dummy(bb);
 }
 
 void ImGui::Widgets::Icons::Warning(float size, ImU32 color) {
     size *= 0.85;
+    ImVec2 bb(size, size);
 
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -54,6 +57,11 @@ void ImGui::Widgets::Icons::Warning(float size, ImU32 color) {
     
     ImVec2 center = pos + ImVec2(size * 0.5f, size * 0.5f);
     float extent = size * 0.4f;
+    draw_list->AddTriangleFilled(
+        ImVec2(center.x - extent, center.y + extent), 
+        ImVec2(center.x + extent, center.y + extent), 
+        ImVec2(center.x, center.y - extent + 1), 
+        color);
     draw_list->AddTriangle(
         ImVec2(center.x - extent, center.y + extent), 
         ImVec2(center.x + extent, center.y + extent), 
@@ -61,11 +69,12 @@ void ImGui::Widgets::Icons::Warning(float size, ImU32 color) {
         color, 
         thickness);
 
-    ImGui::Dummy(ImVec2(size, size));
+    ImGui::Dummy(bb);
 }
 
 void ImGui::Widgets::Icons::Arrow(float size, ImU32 color, ImGuiDir dir) {
     size *= 0.85;
+    ImVec2 bb(size, size);
 
     ImVec2 pos = ImGui::GetCursorScreenPos();
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -98,5 +107,5 @@ void ImGui::Widgets::Icons::Arrow(float size, ImU32 color, ImGuiDir dir) {
     }
     draw_list->AddTriangleFilled(center + a, center + b, center + c, color);
 
-    ImGui::Dummy(ImVec2(size, size));
+    ImGui::Dummy(bb);
 }
