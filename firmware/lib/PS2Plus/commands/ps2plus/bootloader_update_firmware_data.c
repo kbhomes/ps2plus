@@ -19,17 +19,21 @@ command_result bufd_process(volatile command_packet *packet, controller_state *s
   } else if (packet->command_index == 1) {
     state->bootloader.update.record.target_address |= packet->command_byte;
   } else if (packet->command_index == 2) {
-    state->bootloader.update.record.target_address |= (packet->command_byte >> 8);
+    state->bootloader.update.record.target_address |= (packet->command_byte << 8);
   } else if (packet->command_index == 3) {
+    state->bootloader.update.record.target_address |= (packet->command_byte << 16);
+  } else if (packet->command_index == 4) {
+    state->bootloader.update.record.target_address |= (packet->command_byte << 24);
+  } else if (packet->command_index == 5) {
     state->bootloader.update.record.data_length = packet->command_byte;
-  } else if (packet->command_index == 3 + state->bootloader.update.record.data_length + 1) {
+  } else if (packet->command_index == 6 + state->bootloader.update.record.data_length) {
     state->bootloader.update.record.data_checksum = packet->command_byte;
   } else {
-    state->bootloader.update.record.data[packet->command_index - 4] = packet->command_byte;
+    state->bootloader.update.record.data[packet->command_index - 6] = packet->command_byte;
   }
 
   // If the final byte hasn't been written, mark this command as still processing
-  if (packet->data_index + 1 != 5 + state->bootloader.update.record.data_length) {
+  if (packet->data_index + 1 != 6 + state->bootloader.update.record.data_length) {
     return CRProcessing;
   }
 

@@ -1,6 +1,7 @@
 #ifndef PS2PLUS_COMMON_H
 #define PS2PLUS_COMMON_H
 
+#include <shared/bootloader.h>
 #include <shared/primitive_data.h>
 
 #define PS2PLMAN_RPC_BIND_ID 0x7FFFA100
@@ -14,6 +15,8 @@ typedef enum {
   PS2Plus_DisableEnableConfiguration,
   PS2Plus_RestoreConfigurationDefaults,
   PS2Plus_RebootController,
+  PS2Plus_BootloaderUpdateFirmwareData,
+  PS2Plus_BootloaderQueryFirmwareUpdateStatus,
   NUM_PS2PLUS_RPC_COMMANDS,
 } ps2plman_rpc_command;
 
@@ -48,6 +51,15 @@ typedef struct {
   // Empty struct -- no payload
 } ps2plman_rpc_command_reboot_controller;
 
+typedef struct {
+  ps2plus_bootloader_update_record record;
+} ps2plman_rpc_command_bootloader_update_firmware_data;
+
+typedef struct {
+  ps2plus_bootloader_status status;
+  ps2plus_bootloader_error error; 
+} ps2plman_rpc_command_bootloader_query_firmware_update_status;
+
 typedef union {
   struct {
     bool ok;
@@ -59,6 +71,8 @@ typedef union {
       ps2plman_rpc_command_disable_enable_configuration disable_enable_configuration;
       ps2plman_rpc_command_restore_configuration_defaults restore_configuration_defaults;
       ps2plman_rpc_command_reboot_controller reboot_controller;
+      ps2plman_rpc_command_bootloader_update_firmware_data bootloader_update_firmware_data;
+      ps2plman_rpc_command_bootloader_query_firmware_update_status bootloader_query_firmware_update_status;
     };
   };
   uint8_t _[128];

@@ -292,3 +292,37 @@ int ps2plman_reboot_controller() {
 
   return PS2PLMAN_RET_OK;
 }
+
+int ps2plman_bootloader_update_firmware_data(ps2plus_bootloader_update_record *record) {
+  rpc_packet.command = PS2Plus_BootloaderUpdateFirmwareData;
+  memcpy(&rpc_packet.bootloader_update_firmware_data.record, record, sizeof(*record));
+  
+  int ret = SifCallRpc(&rpc_client_data, 0, 0, &rpc_packet, sizeof(ps2plman_rpc_packet), &rpc_packet, sizeof(ps2plman_rpc_packet), NULL, NULL);
+  if (ret < 0) {
+    return PS2PLMAN_RET_ERROR_RPC;
+  }
+
+  if (!rpc_packet.ok) {
+    return PS2PLMAN_RET_ERROR_CONTROLLER;
+  }
+
+  return PS2PLMAN_RET_OK;
+}
+
+int ps2plman_bootloader_query_firmware_update_status(ps2plus_bootloader_status *status, ps2plus_bootloader_error *error) {
+  rpc_packet.command = PS2Plus_BootloaderQueryFirmwareUpdateStatus;
+  
+  int ret = SifCallRpc(&rpc_client_data, 0, 0, &rpc_packet, sizeof(ps2plman_rpc_packet), &rpc_packet, sizeof(ps2plman_rpc_packet), NULL, NULL);
+  if (ret < 0) {
+    return PS2PLMAN_RET_ERROR_RPC;
+  }
+
+  if (!rpc_packet.ok) {
+    return PS2PLMAN_RET_ERROR_CONTROLLER;
+  }
+
+  *status = rpc_packet.bootloader_query_firmware_update_status.status;
+  *error = rpc_packet.bootloader_query_firmware_update_status.error;
+
+  return PS2PLMAN_RET_OK;
+}

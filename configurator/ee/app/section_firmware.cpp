@@ -302,6 +302,10 @@ void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
 }
 
 void app_section_firmware(ImGuiIO &io, configurator_state *state) {
+  if (!state->current_controller || !state->current_controller->connected) {
+    return;
+  }
+  
   if (ImGui::Widgets::BeginWizard("UpdateFirmwareWizard", 3, &currentStep)) {
     if (ImGui::Widgets::BeginWizardStepList()) {
       ImGui::Widgets::SetupWizardStep("Choose Update", currentStep == 0 || currentStep == 1);

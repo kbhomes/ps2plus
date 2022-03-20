@@ -49,6 +49,8 @@ int ps2plman_set_configuration_array(uint8_t id, char *in, size_t size);
 int ps2plman_disable_enable_configuration(bool enable, bool *original);
 int ps2plman_restore_configuration_defaults();
 int ps2plman_reboot_controller();
+int ps2plman_bootloader_update_firmware_data(ps2plus_bootloader_update_record *record);
+int ps2plman_bootloader_query_firmware_update_status(ps2plus_bootloader_status *status, ps2plus_bootloader_error *error);
 
 #ifdef __cplusplus
 }

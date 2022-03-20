@@ -7,22 +7,22 @@
 void main_init(volatile controller_state *state) {
   GIE = 0;
   
-  puts("[bootloader] Initializing");
-  printf("[bootloader] Erasing firmware: %02X\n", platform_bootloader_calculate_firmware_checksum());
-  
-  // Infinite loop!
-  while (true) { }
-  
-//  puts("[bootloader] Waiting one second for firmware update signal");
-//  platform_timing_sleep(1000);
+//  puts("[bootloader] Initializing");
+//  printf("[bootloader] Erasing firmware: %02X\n", platform_bootloader_calculate_firmware_checksum());
 //  
-//  if (platform_controller_read_digital_button(DBTriangle)) {
-//    puts("[bootloader] Remaining in bootloader");
-//  } else {
-//    // Transfer execution to the firmware
-//    puts("[bootloader] Transferring execution to firmware");
-//    platform_bootloader_execute_firmware();
-//  }
+//  // Infinite loop!
+//  while (true) { }
+  
+  puts("[bootloader] Waiting three seconds for firmware update signal");
+  platform_timing_sleep(3000);
+  
+  if (platform_controller_read_digital_button(DBTriangle)) {
+    puts("[bootloader] Remaining in bootloader");
+  } else {
+    // Transfer execution to the firmware
+    puts("[bootloader] Transferring execution to firmware");
+    platform_bootloader_execute_firmware();
+  }
 }
 
 void main_loop(volatile controller_state *state) {

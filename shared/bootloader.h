@@ -24,7 +24,7 @@ typedef enum {
 } ps2plus_bootloader_error;
 
 typedef struct {
-  ps2plus_bootloader_update_record_type type;
+  uint8_t type; /* ps2plus_bootloader_update_record_type */
   uint32_t target_address;
   uint8_t data[16];
   uint8_t data_length;
