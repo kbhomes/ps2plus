@@ -2,6 +2,6 @@
 
 #include <imgui/imgui.h>
 
-namespace ImGui::Widgets {
+namespace PS2Plus::UI {
     void Spinner(float size, ImU32 color);
 }

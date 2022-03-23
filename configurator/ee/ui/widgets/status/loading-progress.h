@@ -2,6 +2,6 @@
 
 #include <imgui/imgui.h>
 
-namespace ImGui::Widgets {
+namespace PS2Plus::UI {
     void LoadingProgress(const char *label, float progress, const char *format = NULL);
 }

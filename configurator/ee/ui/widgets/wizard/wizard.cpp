@@ -19,7 +19,7 @@ struct WizardInfo {
 std::map<std::string, WizardInfo *> information;
 WizardInfo *wizard = nullptr;
 
-bool ImGui::Widgets::BeginWizard(const char *key, int stepCount, int *currentStep) {
+bool PS2Plus::UI::BeginWizard(const char *key, int stepCount, int *currentStep) {
     auto result = information.find(key);
     if (result != information.end()) {
         wizard = result->second;
@@ -40,19 +40,19 @@ bool ImGui::Widgets::BeginWizard(const char *key, int stepCount, int *currentSte
     return true;
 }
 
-bool ImGui::Widgets::BeginWizardStepList() {
+bool PS2Plus::UI::BeginWizardStepList() {
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(0, 0));
     bool value = ImGui::BeginTable("StepList", wizard->stepCount, ImGuiTableFlags_BordersOuter);
     ImGui::TableNextRow();
     return value;
 }
 
-void ImGui::Widgets::EndWizardStepList() {
+void PS2Plus::UI::EndWizardStepList() {
     ImGui::EndTable();
     ImGui::PopStyleVar();
 }
 
-void ImGui::Widgets::SetupWizardStep(const char *name, bool enabled) {
+void PS2Plus::UI::SetupWizardStep(const char *name, bool enabled) {
     int index = wizard->setupStepIndex++;
     wizard->steps.insert({ name, { .enabled = enabled, .index = index } });
     
@@ -65,8 +65,8 @@ void ImGui::Widgets::SetupWizardStep(const char *name, bool enabled) {
     ImVec2 size = ImGui::GetContentRegionAvail();
     ImGui::Dummy(ImVec2(1, stepHeight));
     ImGui::SetCursorScreenPos(p);
-    ImU32 borderColor = GetColorU32(ImGuiCol_TableBorderStrong);
-    ImU32 activeColor = GetColorU32(ImGuiCol_FrameBg);
+    ImU32 borderColor = ImGui::GetColorU32(ImGuiCol_TableBorderStrong);
+    ImU32 activeColor = ImGui::GetColorU32(ImGuiCol_FrameBg);
     
     // Shade in previous/current steps
     if (index <= wizard->currentStep) {
@@ -95,7 +95,7 @@ void ImGui::Widgets::SetupWizardStep(const char *name, bool enabled) {
     ImGui::Text(name);
 }
 
-bool ImGui::Widgets::BeginWizardStep(const char *name) {
+bool PS2Plus::UI::BeginWizardStep(const char *name) {
     auto result = wizard->steps.find(name);
     if (result != wizard->steps.end()) {
         if (wizard->currentStep == result->second.index) {
@@ -109,28 +109,28 @@ bool ImGui::Widgets::BeginWizardStep(const char *name) {
     }
 }
 
-void ImGui::Widgets::EndWizardStep() {
+void PS2Plus::UI::EndWizardStep() {
     // ImGui::EndChild();
 }
 
-void ImGui::Widgets::EndWizard() {
+void PS2Plus::UI::EndWizard() {
     wizard = nullptr;
     ImGui::PopID();
 }
 
-void ImGui::Widgets::WizardPrevious() {
+void PS2Plus::UI::WizardPrevious() {
     if (wizard->currentStep != 0) {
         wizard->currentStep--;
     }
 }
 
-void ImGui::Widgets::WizardNext() {
+void PS2Plus::UI::WizardNext() {
     if (wizard->currentStep + 1 != wizard->stepCount) {
         wizard->currentStep++;
     }
 }
 
-void ImGui::Widgets::WizardGoToStep(const char *name) {
+void PS2Plus::UI::WizardGoToStep(const char *name) {
     auto result = wizard->steps.find(name);
     if (result != wizard->steps.end()) {
         wizard->currentStep = result->second.index;

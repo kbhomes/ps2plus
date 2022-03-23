@@ -1,6 +1,6 @@
 #include "widget.h"
 
-void ImGui::Widgets::GamePadVisualizer(padButtonStatus *pad, float width, float height) {
+void PS2Plus::UI::GamePadVisualizer(padButtonStatus *pad, float width, float height) {
     ImU16 buttons = pad->btns ^ 0xFFFF;
 
     const ImVec2 p = ImGui::GetCursorScreenPos();

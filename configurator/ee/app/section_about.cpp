@@ -6,9 +6,9 @@
 #include <math.h>
 
 void app_section_about(ImGuiIO &io, configurator_state *state) {
-    ImGui::Widgets::StatusText("Firmware updated!", ImGui::Widgets::StatusType_Success);
-    ImGui::Widgets::StatusText("Update taking longer than expected", ImGui::Widgets::StatusType_Warning);
-    ImGui::Widgets::StatusText("Error occurred during update", ImGui::Widgets::StatusType_Error);
-    ImGui::Widgets::StatusText("Rebooting controller", ImGui::Widgets::StatusType_Loading);
-    ImGui::Widgets::LoadingProgress("##Progress", fmodf(ImGui::GetTime(), 5.f) / 5.f, "%0.f%%");
+    PS2Plus::UI::StatusText("Firmware updated!", PS2Plus::UI::StatusType_Success);
+    PS2Plus::UI::StatusText("Update taking longer than expected", PS2Plus::UI::StatusType_Warning);
+    PS2Plus::UI::StatusText("Error occurred during update", PS2Plus::UI::StatusType_Error);
+    PS2Plus::UI::StatusText("Rebooting controller", PS2Plus::UI::StatusType_Loading);
+    PS2Plus::UI::LoadingProgress("##Progress", fmodf(ImGui::GetTime(), 5.f) / 5.f, "%0.f%%");
 }

@@ -7,7 +7,7 @@
 
 #define RADIANS_CIRCLE (M_PI * 2)
 
-void ImGui::Widgets::Spinner(float size, ImU32 color) {
+void PS2Plus::UI::Spinner(float size, ImU32 color) {
     size *= 0.85;
     ImVec2 bb(size, size);
     

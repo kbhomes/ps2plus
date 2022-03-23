@@ -1,6 +1,6 @@
 #include <imgui/imgui.h>
 
-namespace ImGui::Widgets {
+namespace PS2Plus::UI {
     bool BeginWizard(const char *key, int stepCount, int *currentStep = nullptr);
     bool BeginWizardStepList();
     void EndWizardStepList();

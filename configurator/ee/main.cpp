@@ -131,9 +131,11 @@ int main(int argc, char **argv) {
     int ret;
     
     load_modules();
-    pad_init();
     ps2plman_init();
     // update_controllers();
+
+    PS2Plus::Gamepad::Start();
+    PS2Plus::Graphics::Initialize();
 
     // struct fileXioDevice deviceEntries[32];
     // int deviceEntriesCount;
@@ -146,28 +148,32 @@ int main(int argc, char **argv) {
     //     printf("deviceEntries[%d].name = %s\n", i, deviceEntries[i].name);
     // }
 
-    // Setup the graphics and ImGui systems
-    bool hires = false;
-    GSGLOBAL *global = gfx_init(hires);
-    gfx_imgui_init(global);
-    ImGuiIO &io = ImGui::GetIO();
-
-    // TODO: Actually populate state based on connected controllers
+    // // TODO: Actually populate state based on connected controllers
     state.current_controller = &state.controllers[0];
     state.current_controller->connected = true;
     state.current_controller->versions.firmware = 30;
     state.current_controller->versions.configuration = 1;
     strncpy(state.current_controller->versions.microcontroller, "PIC18F46K42", 12);
 
+    float last_check_time = ImGui::GetTime();
+    float time_delta = 0;
+
     while (1) {
+        // time_delta = ImGui::GetTime() - last_check_time;
+        // if (time_delta > 5.f) {
+        //     update_controllers();
+        //     last_check_time = ImGui::GetTime();
+        // }
+
         handle_update();
 
-        pad_get_status(&state.pad_status);
-        gfx_update_pad(global, &state.pad_status);
-        gfx_render_begin(global, hires);
-        gfx_render_clear(global, GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
-        app_display(io, &state);
-        gfx_render_end(global, hires);
+        state.pad_status = PS2Plus::Gamepad::Read();
+        
+        // Update the graphics state
+        PS2Plus::Graphics::UpdateGamepad(state.pad_status);
+        PS2Plus::Graphics::BeginFrame(GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
+        app_display(ImGui::GetIO(), &state);
+        PS2Plus::Graphics::EndFrame();
     }
 
     return 0;

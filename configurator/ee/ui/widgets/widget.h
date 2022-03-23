@@ -6,7 +6,7 @@
 #include <imgui/imgui.h>
 
 
-namespace ImGui::Widgets {
+namespace PS2Plus::UI {
     enum WidgetGamePadIconType {
         WidgetGamePadIconType_Triangle,
         WidgetGamePadIconType_Circle,

@@ -5,7 +5,7 @@
 #include <time.h>
 #include <vector>
 
-namespace ImGui::Widgets {
+namespace PS2Plus::UI {
     class FileDialog_ {
     public:
         enum EntryType {

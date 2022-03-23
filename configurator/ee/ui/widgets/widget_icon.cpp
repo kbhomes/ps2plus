@@ -1,6 +1,6 @@
 #include "widget.h"
 
-void ImGui::Widgets::GamePadIcon(WidgetGamePadIconType icon, float height) {
+void PS2Plus::UI::GamePadIcon(WidgetGamePadIconType icon, float height) {
     const float radius = height > 0 ? height/2 : ImGui::GetFrameHeight()/2.5;
     const ImVec2 p = ImGui::GetCursorScreenPos();
     const ImVec2 center(p.x + radius, p.y + radius);

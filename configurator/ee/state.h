@@ -35,5 +35,5 @@ typedef struct {
 typedef struct {
     configurator_ps2plus_controller controllers[2];
     configurator_ps2plus_controller *current_controller;
-    PadStatus pad_status;
+    PS2Plus::Gamepad::PadStatus pad_status;
 } configurator_state;

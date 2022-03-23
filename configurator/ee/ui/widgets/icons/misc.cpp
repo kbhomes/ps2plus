@@ -3,7 +3,7 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui_internal.h>
 
-void ImGui::Widgets::Icons::Checkmark(float size, ImU32 color) {
+void PS2Plus::UI::Icons::Checkmark(float size, ImU32 color) {
     size *= 0.85;
     ImVec2 bb(size, size);
 
@@ -25,7 +25,7 @@ void ImGui::Widgets::Icons::Checkmark(float size, ImU32 color) {
     ImGui::Dummy(bb);
 }
 
-void ImGui::Widgets::Icons::Error(float size, ImU32 color) {
+void PS2Plus::UI::Icons::Error(float size, ImU32 color) {
     size *= 0.85;
     ImVec2 bb(size, size);
 
@@ -44,7 +44,7 @@ void ImGui::Widgets::Icons::Error(float size, ImU32 color) {
     ImGui::Dummy(bb);
 }
 
-void ImGui::Widgets::Icons::Warning(float size, ImU32 color) {
+void PS2Plus::UI::Icons::Warning(float size, ImU32 color) {
     size *= 0.85;
     ImVec2 bb(size, size);
 
@@ -72,7 +72,7 @@ void ImGui::Widgets::Icons::Warning(float size, ImU32 color) {
     ImGui::Dummy(bb);
 }
 
-void ImGui::Widgets::Icons::Arrow(float size, ImU32 color, ImGuiDir dir) {
+void PS2Plus::UI::Icons::Arrow(float size, ImU32 color, ImGuiDir dir) {
     size *= 0.85;
     ImVec2 bb(size, size);
 

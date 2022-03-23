@@ -225,21 +225,21 @@ void app_configuration_joysticks_axis_range_remapping(ImGuiIO &io, configurator_
             ImGui::EndDisabled();
 
             if (is_calibrating) {
-                ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Square); ImGui::SameLine();
+                PS2Plus::UI::GamePadIcon(PS2Plus::UI::WidgetGamePadIconType_Square); ImGui::SameLine();
                     ImGui::Text("Update centers");
 
-                ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Circle); ImGui::SameLine();
+                PS2Plus::UI::GamePadIcon(PS2Plus::UI::WidgetGamePadIconType_Circle); ImGui::SameLine();
                     ImGui::Text("Finish calibration");
             }
 
-            if (is_calibrating && state->pad_status.buttonsNew & PAD_SQUARE) {
+            if (is_calibrating && state->pad_status.IsButtonPressed(PAD_SQUARE)) {
                 joystick_axis_range_remappings[JSAxisRange_LeftXCenter] = state->pad_status.pad.ljoy_h;
                 joystick_axis_range_remappings[JSAxisRange_LeftYCenter] = state->pad_status.pad.ljoy_v;
                 joystick_axis_range_remappings[JSAxisRange_RightXCenter] = state->pad_status.pad.rjoy_h;
                 joystick_axis_range_remappings[JSAxisRange_RightYCenter] = state->pad_status.pad.rjoy_v;
             }
 
-            if (is_calibrating && state->pad_status.buttonsNew & PAD_CIRCLE) {
+            if (is_calibrating && state->pad_status.IsButtonPressed(PAD_CIRCLE)) {
                 is_calibrating = false;
                 EndCaptureGamepad();
                 // ps2plman_disable_enable_configuration(true, NULL);

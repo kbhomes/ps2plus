@@ -61,7 +61,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
     static bool is_selecting_section = false;
 
     // Actively displayed section content
-    static int selected_content = 2;
+    static int selected_content = 0;
 
     // Full screen "window" that can't be moved or resized
     ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -130,13 +130,13 @@ void app_display(ImGuiIO &io, configurator_state *state) {
                 }
 
                 // Allow the user to change sections using the triangle button
-                if (!IsGamepadCaptured() && !dialog_displaying && (state->pad_status.buttonsNew & PAD_TRIANGLE)) {
+                if (!IsGamepadCaptured() && !dialog_displaying && (state->pad_status.IsButtonPressed(PAD_TRIANGLE))) {
                     is_selecting_section = !is_selecting_section;
                 }
 
                 // Dim this content section window if the user is selecting a different section
                 if (is_selecting_section) {
-                    ImGui::Widgets::WindowOverlay(0.6f);
+                    PS2Plus::UI::WindowOverlay(0.6f);
                 }
             }
             ImGui::EndChild();
@@ -144,7 +144,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
 
             // Bottom row with control information
             {
-                ImGui::Widgets::GamePadIcon(ImGui::Widgets::WidgetGamePadIconType_Triangle);
+                PS2Plus::UI::GamePadIcon(PS2Plus::UI::WidgetGamePadIconType_Triangle);
                 ImGui::SameLine();
                 ImGui::Text("Change Section");
                 ImGui::SameLine();

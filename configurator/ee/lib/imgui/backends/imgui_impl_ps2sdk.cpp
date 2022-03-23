@@ -90,7 +90,7 @@ void ImGui_ImplPs2Sdk_NewFrame()
     io.DeltaTime = (float)(1.0f / 60.0f);
 }
 
-void ImGui_ImplPs2Sdk_UpdateGamepad(padButtonStatus *pad)
+void ImGui_ImplPs2Sdk_UpdateGamepad(const padButtonStatus *pad)
 {
     ImGui_ImplPs2Sdk_Data* bd = ImGui_ImplPs2Sdk_GetBackendData();
     IM_ASSERT(bd != NULL && "Did you call ImGui_ImplPs2Sdk_Init()?");

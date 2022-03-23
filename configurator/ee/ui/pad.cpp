@@ -1,117 +1,143 @@
 #include "pad.h"
 
+#include "cstring"
 #include "stdio.h"
 
-// pad_dma_buf is provided by the user, one buf for each pad
-// contains the pad's current state
-static char padBuf[256] __attribute__((aligned(64)));
+#define PAD_NUM_PORTS 2
 
-static int waitPadReady(int port, int slot) {
-    int state;
-    int lastState;
-    char stateString[16];
+static char _padBuffers[PAD_NUM_PORTS][256] __attribute__((aligned(64)));
+static PS2Plus::Gamepad::PadStatus _statuses[PAD_NUM_PORTS]; 
 
-    state = padGetState(port, slot);
-    lastState = -1;
-    while ((state != PAD_STATE_STABLE) && (state != PAD_STATE_FINDCTP1)) {
-        if (state != lastState) {
-            padStateInt2String(state, stateString);
-            printf("Please wait, pad(%d,%d) is in state %s\n", port, slot, stateString);
+namespace PS2Plus::Gamepad {
+    void Start(int port) {
+        int ret;
+
+        // Reset the pad state
+        PadStatus &status = _statuses[port];
+        status.Reset();
+        status.status = PadPortOpening;
+        status.port = port;
+        status.slot = 0;
+
+        // Initialize the pad port
+        padInit(0);
+        ret = padPortOpen(status.port, status.slot, _padBuffers[port]);
+        if (!ret) {
+            printf("[PS2Plus::Gamepad::Start] padPortOpen(%d, %d, ...) = %d - failed\n", status.port, status.slot, ret);
+            status.status = PadPortError;
+        } else {
+            printf("[PS2Plus::Gamepad::Start] padPortOpen(%d, %d, ...) succeeded!\n", status.port, status.slot);
         }
-        lastState = state;
-        state = padGetState(port, slot);
-    }
-    // Were the pad ever 'out of sync'?
-    if (lastState != -1) {
-        printf("Pad OK!\n");
-    }
-    return 0;
-}
-
-int pad_init(int port, int slot) {
-    int ret;
-    int i;
-    int modes;
-
-    printf("Initiating pad\n");
-
-    padInit(0);
-
-    printf("Opening pad\n");
-    if ((ret = padPortOpen(port, slot, padBuf)) == 0) {
-        printf("padOpenPort failed: %d\n", ret);
     }
 
-    printf("Waiting for pad\n");
-    waitPadReady(port, slot);
+    void Stop(int port) {
+        // Reset the pad state
+        PadStatus &status = _statuses[port];
+        status.Reset();
+    }
 
-    // How many different modes can this device operate in?
-    // i.e. get # entrys in the modetable
-    modes = padInfoMode(port, slot, PAD_MODETABLE, -1);
-    printf("The device has %d modes\n", modes);
+    const PadStatus& Read(int port) {
+        PadStatus& status = _statuses[port];
+        status.Update();
+        return status;
+    }
 
-    if (modes > 0) {
-        printf("( ");
-        for (i = 0; i < modes; i++) {
-            printf("%d ", padInfoMode(port, slot, PAD_MODETABLE, i));
+    void PadStatus::Reset() {
+        status = PadPortStopped;
+        rawButtons = 0;
+        rawButtonsPrevious = 0;
+        rawButtonsNew = 0;
+        memset(&pad, 0, sizeof(pad));
+    }
+
+    bool PadStatus::Update() {
+        if (status == PadPortStopped || status == PadPortError || status == PadPortDisconnected) {
+            return false;
         }
-        printf(")");
+
+        int rawState = padGetState(port, slot);
+
+        if (status == PadPortOpening) {
+            if (rawState == PAD_STATE_STABLE || rawState == PAD_STATE_FINDCTP1) {
+                // Determine if there are any non-digital controller modes
+                int modes = padInfoMode(port, slot, PAD_MODETABLE, -1);
+                bool hasDualShockMode = false;
+                for (int i = 0; i < modes; i++) {
+                    if (padInfoMode(port, slot, PAD_MODETABLE, i) == PAD_TYPE_DUALSHOCK) {
+                        hasDualShockMode = true;
+                        break;
+                    }
+                }
+
+                // If DualShock mode is available, enable it and lock it
+                if (hasDualShockMode) {
+                    printf("[PS2Plus::Gamepad::Update][status=%d] Setting DualShock mode\n", status);
+                    padSetMainMode(port, slot, PAD_MMODE_DUALSHOCK, PAD_MMODE_LOCK);
+                } else {
+                    printf("[PS2Plus::Gamepad::Update][status=%d] Controller remaining in digital mode\n", status);
+                }
+
+                // Update the status
+                status = PadPortSettingMode;
+            }
+        } else if (status == PadPortSettingMode) {
+            if (rawState == PAD_STATE_STABLE || rawState == PAD_STATE_FINDCTP1) {
+                printf("[PS2Plus::Gamepad::Update][status=%d] Controller is ready\n", status);
+
+                // Update the status
+                status = PadPortReady;
+            }
+        } else if (status == PadPortReady) {
+            if (rawState == PAD_STATE_STABLE || rawState == PAD_STATE_FINDCTP1) {
+                int ret = padRead(port, slot, &pad);
+
+                if (ret != 0) {
+                    rawButtonsPrevious = rawButtons;
+                    rawButtons = pad.btns ^ 0xFFFF;
+                    rawButtonsNew = rawButtons & ~rawButtonsPrevious;
+                    return true;
+                } else {
+                    rawButtons = 0;
+                    rawButtonsNew = 0;
+                    rawButtonsPrevious = 0;
+                    return false;
+                }
+            } else if (rawState == PAD_STATE_DISCONN) {
+                printf("[PS2Plus::Gamepad::Update][status=%d] Controller disconnected!\n", status);
+                status = PadPortDisconnected;
+            } else if (rawState == PAD_STATE_ERROR) {
+                printf("[PS2Plus::Gamepad::Update][status=%d] Controller error!\n", status);
+                status = PadPortError;
+            }
+        }
+
+        return false;
     }
 
-    printf("It is currently using mode %d\n", padInfoMode(port, slot, PAD_MODECURID, 0));
-
-    // If modes == 0, this is not a Dual shock controller
-    // (it has no actuator engines)
-    if (modes == 0) {
-        printf("This is a digital controller?\n");
-        return 1;
+    bool PadStatus::IsButtonDown(int button) {
+        return (rawButtons & button) != 0;
     }
 
-    // Verify that the controller has a DUAL SHOCK mode
-    i = 0;
-    do {
-        if (padInfoMode(port, slot, PAD_MODETABLE, i) == PAD_TYPE_DUALSHOCK) break;
-        i++;
-    } while (i < modes);
-    if (i >= modes) {
-        printf("This is no Dual Shock controller\n");
-        return 1;
+    bool PadStatus::IsButtonPressed(int button) {
+        return (rawButtonsNew & button) != 0;
     }
 
-    // If ExId != 0x0 => This controller has actuator engines
-    // This check should always pass if the Dual Shock test above passed
-    ret = padInfoMode(port, slot, PAD_MODECUREXID, 0);
-    if (ret == 0) {
-        printf("This is no Dual Shock controller??\n");
-        return 1;
+    uint8_t PadStatus::GetJoystickAxisRaw(JoystickAxis axis) {
+        switch (axis) {
+            case JSRightX:  return pad.rjoy_h;
+            case JSRightY:  return pad.rjoy_v;
+            case JSLeftX:   return pad.ljoy_h;
+            case JSLeftY:   return pad.ljoy_v;
+            default:        return 0x7F;
+        }
     }
 
-    printf("Enabling dual shock functions\n");
-
-    // When using MMODE_LOCK, user cant change mode with Select button
-    padSetMainMode(port, slot, PAD_MMODE_DUALSHOCK, PAD_MMODE_LOCK);
-
-    waitPadReady(port, slot);
-    printf("infoPressMode: %d\n", padInfoPressMode(port, slot));
-
-    waitPadReady(port, slot);
-    printf("enterPressMode: %d\n", padEnterPressMode(port, slot));
-
-    return 1;
-}
-
-int pad_get_status(PadStatus *padStatus) {
-    int ret = padRead(0, 0, &padStatus->pad);
-
-    if (ret != 0) {
-        padStatus->buttons = padStatus->pad.btns ^ 0xFFFF;
-        padStatus->buttonsNew = padStatus->buttons & ~padStatus->buttonsPrevious;
-        padStatus->buttonsPrevious = padStatus->buttons;
-    } else {
-        padStatus->buttons = 0;
-        padStatus->buttonsNew = 0;
-        padStatus->buttonsPrevious = 0;
+    float PadStatus::GetJoystickAxis(JoystickAxis axis) {
+        uint8_t raw = GetJoystickAxisRaw(axis);
+        return (raw / 255.f) * 2 - 1;
     }
 
-    return ret;
+    PadPortStatus PadStatus::GetStatus() {
+        return status;
+    }
 }

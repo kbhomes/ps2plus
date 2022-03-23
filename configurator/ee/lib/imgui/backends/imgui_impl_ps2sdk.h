@@ -18,4 +18,4 @@
 IMGUI_IMPL_API bool     ImGui_ImplPs2Sdk_InitForGsKit(GSGLOBAL* global);
 IMGUI_IMPL_API void     ImGui_ImplPs2Sdk_Shutdown();
 IMGUI_IMPL_API void     ImGui_ImplPs2Sdk_NewFrame();
-IMGUI_IMPL_API void     ImGui_ImplPs2Sdk_UpdateGamepad(padButtonStatus *pad);
+IMGUI_IMPL_API void     ImGui_ImplPs2Sdk_UpdateGamepad(const padButtonStatus *pad);

@@ -53,7 +53,7 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
     if (ImGui::BeginPopupModal("Choose firmware update file")) {
       app_begin_dialog();
 
-      if (ImGui::Widgets::FileDialog("FileDialog-FirmwareUpdate", NULL, deviceList, path)) {
+      if (PS2Plus::UI::FileDialog("FileDialog-FirmwareUpdate", NULL, deviceList, path)) {
         printf("Got path: %s\n", path);
         ImGui::CloseCurrentPopup();
         app_end_dialog();
@@ -90,7 +90,7 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
       if (ImGui::Selectable(testFilename.c_str())) {
         // Read the test firmware
         firmwareUpdate = new FirmwareUpdate(testFilename);
-        ImGui::Widgets::WizardNext();
+        PS2Plus::UI::WizardNext();
         app_end_dialog();
       }
     }
@@ -105,7 +105,7 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
   if (ImGui::Button("Continue", actionButtonSize)) {
     // Read the firmware
     firmwareUpdate = new FirmwareUpdate(path);
-    ImGui::Widgets::WizardNext();
+    PS2Plus::UI::WizardNext();
   }
   
   ImGui::EndDisabled();
@@ -143,11 +143,11 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
     ImGui::Text("%d", state->current_controller->versions.firmware);
     ImGui::TableNextColumn(); 
     if (versionFirmwareUpdateType == Upgrade)
-      ImGui::Widgets::Icons::Arrow(ImGui::GetFontSize(), COLOR_SUCCESS, ImGuiDir_Up);
+      PS2Plus::UI::Icons::Arrow(ImGui::GetFontSize(), COLOR_SUCCESS, ImGuiDir_Up);
     else if (versionFirmwareUpdateType == Downgrade)
-      ImGui::Widgets::Icons::Arrow(ImGui::GetFontSize(), COLOR_ERROR, ImGuiDir_Down);
+      PS2Plus::UI::Icons::Arrow(ImGui::GetFontSize(), COLOR_ERROR, ImGuiDir_Down);
     else if (versionFirmwareUpdateType == NoChange)
-      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+      PS2Plus::UI::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
     ImGui::SameLine();
     ImGui::Text("%d", firmwareUpdate->GetFirmwareVersion());
 
@@ -156,9 +156,9 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
     ImGui::TableNextColumn(); ImGui::Text("%s", state->current_controller->versions.microcontroller);
     ImGui::TableNextColumn(); 
     if (versionMicrocontrollerMismatch)
-      ImGui::Widgets::Icons::Error(ImGui::GetFontSize(), COLOR_ERROR);
+      PS2Plus::UI::Icons::Error(ImGui::GetFontSize(), COLOR_ERROR);
     else
-      ImGui::Widgets::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
+      PS2Plus::UI::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
     ImGui::SameLine();
     ImGui::Text("%s", firmwareUpdate->GetMicrocontrollerVersion().c_str());
 
@@ -167,9 +167,9 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
     ImGui::TableNextColumn(); ImGui::Text("%d", state->current_controller->versions.configuration);
     ImGui::TableNextColumn(); 
     if (versionConfigurationMismatch)
-      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+      PS2Plus::UI::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
     else
-      ImGui::Widgets::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
+      PS2Plus::UI::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
     ImGui::SameLine();
     ImGui::Text("%d", firmwareUpdate->GetConfigurationVersion());
 
@@ -182,32 +182,32 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
 
     if (versionFirmwareUpdateType == Downgrade) {
       ImGui::Bullet();
-      ImGui::Widgets::Icons::Arrow(ImGui::GetFontSize(), COLOR_ERROR, ImGuiDir_Down);
+      PS2Plus::UI::Icons::Arrow(ImGui::GetFontSize(), COLOR_ERROR, ImGuiDir_Down);
       ImGui::SameLine(); 
       ImGui::TextWrapped("Firmware will downgrade the PS2+");
     } else if (versionFirmwareUpdateType == NoChange) {
       ImGui::Bullet();
-      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+      PS2Plus::UI::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
       ImGui::SameLine(); 
       ImGui::TextWrapped("Firmware may already be on the PS2+");
     }
 
     if (versionMicrocontrollerMismatch) {
       ImGui::Bullet();
-      ImGui::Widgets::Icons::Error(ImGui::GetFontSize(), COLOR_ERROR);
+      PS2Plus::UI::Icons::Error(ImGui::GetFontSize(), COLOR_ERROR);
       ImGui::SameLine(); 
       ImGui::TextWrapped("Firmware is not for this microcontroller and may damage the PS2+");
     } 
 
     if (versionConfigurationMismatch) {
       ImGui::Bullet();
-      ImGui::Widgets::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
+      PS2Plus::UI::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
       ImGui::SameLine(); 
       ImGui::TextWrapped("PS2+ configuration will be reset after update");
     }
   } else {
     ImGui::Separator();
-    ImGui::Widgets::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
+    PS2Plus::UI::Icons::Checkmark(ImGui::GetFontSize(), COLOR_SUCCESS);
     ImGui::SameLine();
     ImGui::TextWrapped("Firmware update appears valid! Press \"Update\" below to begin.");
   }
@@ -219,7 +219,7 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
   ImGui::Separator();
 
   if (ImGui::Button("Back")) {
-    ImGui::Widgets::WizardPrevious();
+    PS2Plus::UI::WizardPrevious();
   }
   ImGui::SameLine();
 
@@ -227,7 +227,7 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
   if (ImGui::Button("Update")) {
     state->current_controller->update.status = StatusPending;
     state->current_controller->update.firmware = firmwareUpdate;
-    ImGui::Widgets::WizardNext();
+    PS2Plus::UI::WizardNext();
   }
   ImGui::EndDisabled();
 
@@ -240,34 +240,34 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
 void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
   float progress = 0.f;
   const char *label = NULL;
-  ImGui::Widgets::StatusType status = ImGui::Widgets::StatusType_Loading;
+  PS2Plus::UI::StatusType status = PS2Plus::UI::StatusType_Loading;
 
   switch (state->current_controller->update.status) {
     case StatusNone:
     case StatusPending:
       label = "Update pending";
-      status = ImGui::Widgets::StatusType_Loading;
+      status = PS2Plus::UI::StatusType_Loading;
       break;
 
     case StatusRebooting:
       label = "Rebooting controller";
-      status = ImGui::Widgets::StatusType_Loading;
+      status = PS2Plus::UI::StatusType_Loading;
       break;
 
     case StatusUpdating:
       progress = (float)state->current_controller->update.last_record_index / state->current_controller->update.total_records;
       label = "Updating controller";
-      status = ImGui::Widgets::StatusType_Loading;
+      status = PS2Plus::UI::StatusType_Loading;
       break;
 
     case StatusCompleted:
       label = "Firmware update complete!";
-      status = ImGui::Widgets::StatusType_Success;
+      status = PS2Plus::UI::StatusType_Success;
       break;
 
     case StatusFailed:
       label = "Error occurred during the update";
-      status = ImGui::Widgets::StatusType_Error;
+      status = PS2Plus::UI::StatusType_Error;
       break;
   }
 
@@ -275,14 +275,14 @@ void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
   ImVec2 statusSize = ImGui::CalcTextSize(label);
   ImVec2 totalStatusSize((ImGui::GetFontSize() * 0.85) + ImGui::GetStyle().ItemSpacing.x + statusSize.x, statusSize.y);
   ImGui::SetCursorPos((ImGui::GetWindowSize() - totalStatusSize) * 0.5f);
-  ImGui::Widgets::StatusText(label, status);
+  PS2Plus::UI::StatusText(label, status);
 
   if (state->current_controller->update.status == StatusUpdating) {
     float windowWidth = ImGui::GetWindowSize().x;
     float progressPadding = windowWidth * 0.1f;
     ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(progressPadding, 0));
     ImGui::SetNextItemWidth(windowWidth - progressPadding*2.f);
-    ImGui::Widgets::LoadingProgress("##Progress", progress, "%0.f%%");
+    PS2Plus::UI::LoadingProgress("##Progress", progress, "%0.f%%");
   }
 
   // Hack: Create a child window to move the action buttons to the bottom of the pane
@@ -296,7 +296,7 @@ void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
     state->current_controller->update.status = StatusNone;
     state->current_controller->update.firmware = NULL;
     state->current_controller->update.last_check_time = ImGui::GetTime();;
-    ImGui::Widgets::WizardGoToStep("Choose Update");
+    PS2Plus::UI::WizardGoToStep("Choose Update");
   }
   ImGui::EndDisabled();
 }
@@ -306,25 +306,25 @@ void app_section_firmware(ImGuiIO &io, configurator_state *state) {
     return;
   }
   
-  if (ImGui::Widgets::BeginWizard("UpdateFirmwareWizard", 3, &currentStep)) {
-    if (ImGui::Widgets::BeginWizardStepList()) {
-      ImGui::Widgets::SetupWizardStep("Choose Update", currentStep == 0 || currentStep == 1);
-      ImGui::Widgets::SetupWizardStep("Review Update", currentStep == 1);
-      ImGui::Widgets::SetupWizardStep("Perform Update", currentStep == 2);
-      ImGui::Widgets::EndWizardStepList();
+  if (PS2Plus::UI::BeginWizard("UpdateFirmwareWizard", 3, &currentStep)) {
+    if (PS2Plus::UI::BeginWizardStepList()) {
+      PS2Plus::UI::SetupWizardStep("Choose Update", currentStep == 0 || currentStep == 1);
+      PS2Plus::UI::SetupWizardStep("Review Update", currentStep == 1);
+      PS2Plus::UI::SetupWizardStep("Perform Update", currentStep == 2);
+      PS2Plus::UI::EndWizardStepList();
     }
 
-    if (ImGui::Widgets::BeginWizardStep("Choose Update")) {
+    if (PS2Plus::UI::BeginWizardStep("Choose Update")) {
       wizard_choose_update(io, state);
-      ImGui::Widgets::EndWizardStep();
-    } else if (ImGui::Widgets::BeginWizardStep("Review Update")) {
+      PS2Plus::UI::EndWizardStep();
+    } else if (PS2Plus::UI::BeginWizardStep("Review Update")) {
       wizard_review_update(io, state);
-      ImGui::Widgets::EndWizardStep();
-    } else if (ImGui::Widgets::BeginWizardStep("Perform Update")) {
+      PS2Plus::UI::EndWizardStep();
+    } else if (PS2Plus::UI::BeginWizardStep("Perform Update")) {
       wizard_perform_update(io, state);
-      ImGui::Widgets::EndWizardStep();
+      PS2Plus::UI::EndWizardStep();
     }
 
-    ImGui::Widgets::EndWizard();
+    PS2Plus::UI::EndWizard();
   }
 }

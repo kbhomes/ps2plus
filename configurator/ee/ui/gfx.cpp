@@ -8,9 +8,11 @@
 #include "drawing/drawing.h"
 #include "widgets/widget.h"
 
-GSGLOBAL *gfx_init(bool hires) {
+static GSGLOBAL *gsGlobal;
+static bool hires;
+
+void initializeGsKit() {
     // TODO: Can't get hires to work on my PS2 :(
-    GSGLOBAL *gsGlobal;
     int hiresPassCount;
 
     if (hires) {
@@ -52,11 +54,9 @@ GSGLOBAL *gfx_init(bool hires) {
 
     gsKit_vram_clear(gsGlobal);
     gsKit_TexManager_init(gsGlobal);
-
-    return gsGlobal;
 }
 
-void gfx_imgui_init(GSGLOBAL *gsGlobal) {
+void initializeImGui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -91,24 +91,29 @@ void gfx_imgui_init(GSGLOBAL *gsGlobal) {
     ImGui_ImplPs2GsKit_Init(gsGlobal);
 }
 
-void gfx_render_clear(GSGLOBAL *gsGlobal, u64 color) {
+void PS2Plus::Graphics::Initialize(bool hiresFlag) {
+    hires = hiresFlag;
+    initializeGsKit();
+    initializeImGui();
+}
+
+void PS2Plus::Graphics::BeginFrame(uint64_t color) {
+    // Clear the frame
     gsGlobal->PrimAlphaEnable = GS_SETTING_OFF;
     gsKit_clear(gsGlobal, color);
     gsGlobal->PrimAlphaEnable = GS_SETTING_ON;
-}
 
-void gfx_render_begin(GSGLOBAL *gsGlobal, bool hires) {
     // Start the Dear ImGui frame
     ImGui_ImplPs2Sdk_NewFrame();
     ImGui_ImplPs2GsKit_NewFrame();
     ImGui::NewFrame();
 }
 
-void gfx_render_end(GSGLOBAL *gsGlobal, bool hires) {
+void PS2Plus::Graphics::EndFrame() {
     // Draw our custom mouse cursor for this frame; see `widgets/widget_cursor.cpp` for 
     // examples on how to draw a custom cursor depending on the cursor type. Must be 
     // called at the end of the frame so ImGui has time to update the cursor type.
-    ImGui::Widgets::MouseCursor();
+    PS2Plus::UI::MouseCursor();
     ImGui::Render();
 
     ImGui_ImplPs2GsKit_RenderDrawData(ImGui::GetDrawData(), ImVec2(-0.5f, -0.5f));
@@ -124,6 +129,6 @@ void gfx_render_end(GSGLOBAL *gsGlobal, bool hires) {
     gsKit_TexManager_nextFrame(gsGlobal);
 }
 
-void gfx_update_pad(GSGLOBAL *gsGlobal, PadStatus *pad) {
-    ImGui_ImplPs2Sdk_UpdateGamepad(pad ? &pad->pad : NULL);
+void PS2Plus::Graphics::UpdateGamepad(const PS2Plus::Gamepad::PadStatus& pad) {
+    ImGui_ImplPs2Sdk_UpdateGamepad(&pad.pad);
 }

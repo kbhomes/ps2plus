@@ -7,7 +7,7 @@ void drawCustomPointerCursor() {
     drawList->AddCircle(ImGui::GetMousePos(), 6, IM_COL32(255, 255, 255, 32), 0, 2.0f);
 }
 
-void ImGui::Widgets::MouseCursor() {
+void PS2Plus::UI::MouseCursor() {
     ImGuiIO& io = ImGui::GetIO();
 
     if (!io.MouseDrawCursor) {

@@ -215,11 +215,11 @@ int scandir(
     return result;
 }
 
-namespace ImGui::Widgets {
+namespace PS2Plus::UI {
     std::map<const char *, FileDialog_ *> dialogs;
 }
 
-ImGui::Widgets::FileDialog_::FileDialog_(std::string initialDirectory)
+PS2Plus::UI::FileDialog_::FileDialog_(std::string initialDirectory)
     : _currentDirectoryComponents(), _currentEntries(), _selectedPath(), _deviceList()
 {
     _opened = false;
@@ -227,7 +227,7 @@ ImGui::Widgets::FileDialog_::FileDialog_(std::string initialDirectory)
     _currentDirectory = initialDirectory;
 }
 
-void ImGui::Widgets::FileDialog_::ScanDirectory(std::string directory)
+void PS2Plus::UI::FileDialog_::ScanDirectory(std::string directory)
 {
     struct dirent **namelist;
     int n;
@@ -236,7 +236,7 @@ void ImGui::Widgets::FileDialog_::ScanDirectory(std::string directory)
     n = scandir(directory.c_str(), &namelist, NULL, diralphasort);
 
     if (n < 0) {
-        printf("[ImGui::Widgets::FileDialog] scandir failed for directory: %s\n", directory.c_str());
+        printf("[PS2Plus::UI::FileDialog] scandir failed for directory: %s\n", directory.c_str());
     }
     else {
         // The path exists, so load it in the dialog
@@ -264,17 +264,17 @@ void ImGui::Widgets::FileDialog_::ScanDirectory(std::string directory)
     }
 }
 
-void ImGui::Widgets::FileDialog_::ScanSubdirectory(std::string directory)
+void PS2Plus::UI::FileDialog_::ScanSubdirectory(std::string directory)
 {
     ScanDirectory(joinpath(_currentDirectory, directory));
 }
 
-void ImGui::Widgets::FileDialog_::ScanParentDirectory()
+void PS2Plus::UI::FileDialog_::ScanParentDirectory()
 {
     ScanDirectory(_currentDirectory.substr(0, _currentDirectory.find_last_of('/')));
 }
 
-void ImGui::Widgets::FileDialog_::ShowDeviceList() 
+void PS2Plus::UI::FileDialog_::ShowDeviceList() 
 {
     _recentlyChanged = true;
     _showingDeviceList = true;
@@ -287,54 +287,54 @@ void ImGui::Widgets::FileDialog_::ShowDeviceList()
     }
 }
 
-void ImGui::Widgets::FileDialog_::SetDeviceList(std::vector<std::string> deviceList)
+void PS2Plus::UI::FileDialog_::SetDeviceList(std::vector<std::string> deviceList)
 {
     _deviceList = deviceList;
 }
 
-std::vector<std::string> ImGui::Widgets::FileDialog_::GetDeviceList()
+std::vector<std::string> PS2Plus::UI::FileDialog_::GetDeviceList()
 {
     return _deviceList;
 }
 
-std::vector<ImGui::Widgets::FileDialog_::Entry> ImGui::Widgets::FileDialog_::GetEntries() 
+std::vector<PS2Plus::UI::FileDialog_::Entry> PS2Plus::UI::FileDialog_::GetEntries() 
 {
     return _currentEntries;
 }
 
-std::vector<std::string> ImGui::Widgets::FileDialog_::GetDirectoryComponents()
+std::vector<std::string> PS2Plus::UI::FileDialog_::GetDirectoryComponents()
 {
     return _currentDirectoryComponents;
 }
 
-std::string ImGui::Widgets::FileDialog_::GetCurrentDirectory()
+std::string PS2Plus::UI::FileDialog_::GetCurrentDirectory()
 {
     return _currentDirectory;
 }
 
-std::string ImGui::Widgets::FileDialog_::GetSelectedPath()
+std::string PS2Plus::UI::FileDialog_::GetSelectedPath()
 {
     return _selectedPath;
 }
 
-void ImGui::Widgets::FileDialog_::SetSelectedPath(std::string path)
+void PS2Plus::UI::FileDialog_::SetSelectedPath(std::string path)
 {
     _selectedPath = path;
 }
 
-bool ImGui::Widgets::FileDialog_::IsShowingDeviceList()
+bool PS2Plus::UI::FileDialog_::IsShowingDeviceList()
 {
     return _showingDeviceList;
 }
 
-bool ImGui::Widgets::FileDialog_::HasRecentlyChanged()
+bool PS2Plus::UI::FileDialog_::HasRecentlyChanged()
 {
     bool value = _recentlyChanged;
     _recentlyChanged = false;
     return value;
 }
 
-bool ImGui::Widgets::FileDialog(const char *key, const char *initialDirectory, std::vector<std::string> deviceList, char *selectedFile) {
+bool PS2Plus::UI::FileDialog(const char *key, const char *initialDirectory, std::vector<std::string> deviceList, char *selectedFile) {
     FileDialog_ *dialog;
 
     auto result = dialogs.find(key);

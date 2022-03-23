@@ -2,7 +2,7 @@
 
 #include <imgui/imgui.h>
 
-namespace ImGui::Widgets {
+namespace PS2Plus::UI {
     enum StatusType {
         StatusType_Success,
         StatusType_Error,
