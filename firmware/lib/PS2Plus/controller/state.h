@@ -81,5 +81,6 @@ typedef struct {
 void controller_state_initialize(controller_state *);
 void controller_state_update_mode(controller_state *);
 void controller_state_set_versions(controller_state *, uint16_t firmware, char microcontroller[32], uint16_t configuration, uint16_t bootloader);
+void controller_state_reset(controller_state *);
 
 #endif /* CONTROLLER_STATE_H */
