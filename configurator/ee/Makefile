@@ -8,17 +8,23 @@ PROJECTDIR = $(ROOTDIR)/$(PROJECTDIR)
 SRCDIRS = ./ ../common ../../shared
 SRCFILES = $(foreach dir, $(SRCDIRS), $(shell find $(dir) -name '*.c' -o -name '*.cpp'))
 
+IRX_OBJS = \
+	$(ROOTDIR)/build/$(PROJECTDIR)/ps2plman_irx.o \
+	$(ROOTDIR)/build/$(PROJECTDIR)/iomanX_irx.o \
+	$(ROOTDIR)/build/$(PROJECTDIR)/freepad_irx.o \
+	$(ROOTDIR)/build/$(PROJECTDIR)/freesio2_irx.o \
+	$(ROOTDIR)/build/$(PROJECTDIR)/fileXio_irx.o 
+
 EE_BIN = $(BUILDDIR)/ps2plman.elf
 EE_INCS += -I./ -Ilib -I../common -I../..
 EE_LIBS += -lpatches -lpad -lfileXio
+EE_CXXFLAGS += -std=gnu++11
+
 EE_OBJS = $(addprefix $(BUILDDIR)/, $(patsubst %.c, %.o, $(patsubst %.cpp, %.o, $(SRCFILES))))
 
 # Add all required IRX files into the compilation
-EE_LDFLAGS += \
-	$(ROOTDIR)/build/$(PROJECTDIR)/ps2plman_irx.o \
-	$(ROOTDIR)/build/$(PROJECTDIR)/iomanX_irx.o \
-	$(ROOTDIR)/build/$(PROJECTDIR)/fileXio_irx.o 
-EE_CXXFLAGS += -std=gnu++11
+EE_OBJS += $(IRX_OBJS)
+
 
 # Add gsKit references
 EE_INCS += -I$(GSKIT)/include

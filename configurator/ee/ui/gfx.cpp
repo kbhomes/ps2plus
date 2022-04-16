@@ -130,5 +130,5 @@ void PS2Plus::Graphics::EndFrame() {
 }
 
 void PS2Plus::Graphics::UpdateGamepad(const PS2Plus::Gamepad::PadStatus& pad) {
-    ImGui_ImplPs2Sdk_UpdateGamepad(&pad.pad);
+    ImGui_ImplPs2Sdk_UpdateGamepad(pad.status == PS2Plus::Gamepad::PadPortReady ? &pad.pad : NULL);
 }

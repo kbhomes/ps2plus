@@ -11,7 +11,7 @@ BUILDDIR_EE=$(BUILDDIR)/ee
 BUILDDIR_IOP=$(BUILDDIR)/iop
 
 EEFILES=$(BUILDDIR_EE)/ps2plman.elf
-IRXFILES=ps2plman.irx iomanX.irx fileXio.irx
+IRXFILES=ps2plman.irx iomanX.irx fileXio.irx freepad.irx freesio2.irx
 EE_IRX_OBJS = $(addprefix $(BUILDDIR_EE)/, $(addsuffix _irx.o, $(basename $(IRXFILES))))
 
 # Where to find the IRX files

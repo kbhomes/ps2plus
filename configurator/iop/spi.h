@@ -3,6 +3,7 @@
 
 #include "sio2regs.h"
 
+#include <irx_imports.h>
 #include <stdbool.h>
 
 bool ps2plman_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_size);

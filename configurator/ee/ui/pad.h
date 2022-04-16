@@ -37,6 +37,7 @@ namespace PS2Plus::Gamepad {
         PadPortStatus GetStatus();
     };
 
+    void Initialize();
     void Start(int port = 0);
     void Stop(int port = 0);
     const PadStatus& Read(int port = 0); 

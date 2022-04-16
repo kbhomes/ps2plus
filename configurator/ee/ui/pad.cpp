@@ -9,6 +9,16 @@ static char _padBuffers[PAD_NUM_PORTS][256] __attribute__((aligned(64)));
 static PS2Plus::Gamepad::PadStatus _statuses[PAD_NUM_PORTS]; 
 
 namespace PS2Plus::Gamepad {
+    void Initialize() {
+        // Initialize the pad module
+        int ret = padInit(0);
+        if (!ret) {
+            printf("[PS2Plus::Gamepad::Initialize] padPortOpen(0) = %d - failed\n", ret);
+        } else {
+            printf("[PS2Plus::Gamepad::Initialize] padPortOpen(0) succeeded!\n");
+        }
+    }
+
     void Start(int port) {
         int ret;
 
@@ -19,8 +29,7 @@ namespace PS2Plus::Gamepad {
         status.port = port;
         status.slot = 0;
 
-        // Initialize the pad port
-        padInit(0);
+        // Open the pad port
         ret = padPortOpen(status.port, status.slot, _padBuffers[port]);
         if (!ret) {
             printf("[PS2Plus::Gamepad::Start] padPortOpen(%d, %d, ...) = %d - failed\n", status.port, status.slot, ret);
@@ -31,8 +40,30 @@ namespace PS2Plus::Gamepad {
     }
 
     void Stop(int port) {
-        // Reset the pad state
+        int ret;
         PadStatus &status = _statuses[port];
+
+        // Close the pad port
+        printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) ...\n", status.port, status.slot);
+        ret = padPortClose(status.port, status.slot);
+        if (!ret) {
+            printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) = %d - failed\n", status.port, status.slot, ret);
+            status.status = PadPortError;
+        } else {
+            printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) succeeded!\n", status.port, status.slot);
+        }
+
+        // // End pad communication
+        // printf("[PS2Plus::Gamepad::Stop] padEnd() ...\n", status.port, status.slot);
+        // ret = padEnd();
+        // if (!ret) {
+        //     printf("[PS2Plus::Gamepad::Stop] padEnd() = %d - failed\n", ret);
+        //     status.status = PadPortError;
+        // } else {
+        //     printf("[PS2Plus::Gamepad::Stop] padEnd() succeeded!\n");
+        // }
+        
+        // Reset the pad state
         status.Reset();
     }
 

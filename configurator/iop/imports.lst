@@ -16,11 +16,6 @@ I_sceSifDmaStat
 I_sceSifCheckInit
 sifman_IMPORTS_end
 
-sio2man_IMPORTS_start
-I_sio2_pad_transfer_init
-I_sio2_transfer
-sio2man_IMPORTS_end
-
 stdio_IMPORTS_start
 I_printf
 stdio_IMPORTS_end
@@ -53,3 +48,11 @@ I_iSetEventFlag
 I_ClearEventFlag
 I_WaitEventFlag
 thevent_IMPORTS_end
+
+xsio2man_IMPORTS_start
+I_sio2_pad_transfer_init
+I_sio2_stat6c_get
+I_sio2_stat70_get
+I_sio2_transfer
+I_sio2_transfer_reset
+xsio2man_IMPORTS_end

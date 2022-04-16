@@ -30,13 +30,8 @@ configurator_state state;
 
 static void load_modules(void) {
     int ret;
-
-    //Reboot IOP
-    SifInitRpc(0);
-    while(!SifIopReset("", 0)){};
-    while(!SifIopSync()){};
         
-    //Initialize SIF services
+    // Initialize SIF services
     SifInitRpc(0);
     SifLoadFileInit();
     SifInitIopHeap();
@@ -45,12 +40,12 @@ static void load_modules(void) {
     sbv_patch_enable_lmb();
     sbv_patch_disable_prefix_check();
     
-    printf("Loading sio2man module (system) - \n");
-    ret = SifLoadModule("rom0:SIO2MAN", 0, NULL);
+    printf("Loading freesio2 module (builtin) - (%x,%d) ", (unsigned int)freesio2_irx, size_freesio2_irx);
+    SifExecModuleBuffer(freesio2_irx, size_freesio2_irx, 0, NULL, &ret);
     printf("[%d] returned\n", ret);
 
-    printf("Loading padman module (system) - \n");
-    ret = SifLoadModule("rom0:PADMAN", 0, NULL);
+    printf("Loading freepad module (builtin) - (%x,%d) ", (unsigned int)freepad_irx, size_freepad_irx);
+    SifExecModuleBuffer(freepad_irx, size_freepad_irx, 0, NULL, &ret);
     printf("[%d] returned\n", ret);
 
     printf("Loading iomanX module (builtin) - (%x,%d) ", (unsigned int)iomanX_irx, size_iomanX_irx);
@@ -70,22 +65,41 @@ void update_controllers() {
     int ret;
     bool connected = true;
 
+    printf("[update_controllers] Updating controllers at %f\n", ImGui::GetTime());
+
+    // Stop the gamepad
+    printf("[update_controllers] Stopping controllers\n");
+    PS2Plus::Gamepad::Stop();
+    printf("[update_controllers] Stopped controllers\n");
+
+    printf("[update_controllers] Retrieving PS2+ firmware version\n");
     if ((ret = ps2plman_get_firmware_version(&state.controllers[0].versions.firmware)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ firmware version: %d\n", ret);
         connected = false;
+    } else {
+        printf("[update_controllers] Retrieved PS2+ firmware version: %d\n", state.controllers[0].versions.firmware);
     }
 
+    printf("[update_controllers] Retrieving PS2+ microcontroller version\n");
     if ((ret = ps2plman_get_microcontroller_version(state.controllers[0].versions.microcontroller, NULL, sizeof(state.controllers[0].versions.microcontroller) - 1)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ microcontroller version: %d\n", ret);
         connected = false;
+    } else {
+        printf("[update_controllers] Retrieved PS2+ microcontroller version: %s\n", state.controllers[0].versions.microcontroller);
     }
 
+    printf("[update_controllers] Retrieving PS2+ configuration version\n");
     if ((ret = ps2plman_get_configuration_version(&state.controllers[0].versions.configuration)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ configuration version: %d\n", ret);
         connected = false;
+    } else {
+        printf("[update_controllers] Retrieved PS2+ configuration version: %d\n", state.controllers[0].versions.configuration);
     }
     
     state.controllers[0].connected = connected;
+
+    // Start reading controller data again
+    PS2Plus::Gamepad::Start();
 }
 
 void handle_update() {
@@ -134,6 +148,7 @@ int main(int argc, char **argv) {
     ps2plman_init();
     // update_controllers();
 
+    PS2Plus::Gamepad::Initialize();
     PS2Plus::Gamepad::Start();
     PS2Plus::Graphics::Initialize();
 
@@ -150,20 +165,21 @@ int main(int argc, char **argv) {
 
     // // TODO: Actually populate state based on connected controllers
     state.current_controller = &state.controllers[0];
-    state.current_controller->connected = true;
-    state.current_controller->versions.firmware = 30;
-    state.current_controller->versions.configuration = 1;
-    strncpy(state.current_controller->versions.microcontroller, "PIC18F46K42", 12);
+    // state.current_controller->connected = true;
+    // state.current_controller->versions.firmware = 30;
+    // state.current_controller->versions.configuration = 1;
+    // strncpy(state.current_controller->versions.microcontroller, "PIC18F46K42", 12);
 
     float last_check_time = ImGui::GetTime();
     float time_delta = 0;
 
     while (1) {
-        // time_delta = ImGui::GetTime() - last_check_time;
-        // if (time_delta > 5.f) {
-        //     update_controllers();
-        //     last_check_time = ImGui::GetTime();
-        // }
+        // DEV: Code to test PS2+ custom commands that interrupt the main controller thread
+        time_delta = ImGui::GetTime() - last_check_time;
+        if (time_delta > 5.f) {
+            update_controllers();
+            last_check_time = ImGui::GetTime();
+        }
 
         handle_update();
 

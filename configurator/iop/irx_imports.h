@@ -7,10 +7,10 @@
 #include <loadcore.h>
 #include <sifcmd.h>
 #include <sifman.h>
-#include <sio2man.h>
 #include <stdio.h>
 #include <sysclib.h>
 #include <thbase.h>
 #include <thevent.h>
+#include <xsio2man.h>
 
 #endif /* IOP_IRX_IMPORTS_H */
