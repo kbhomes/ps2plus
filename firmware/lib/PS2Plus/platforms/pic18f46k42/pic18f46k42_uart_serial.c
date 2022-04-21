@@ -37,9 +37,9 @@ void pic18f46k42_setup_uart_serial() {
   pic_digital_io_pin_pps_output(&PIN_UART_TX, PIC_UART_PPS_TX_CHANNEL);
   pic_digital_io_pin_pps_input(&PIN_UART_RX, &PIC_UART_PPS_RX_REGISTER);
   
-  // Enable UART serial communication with a baud rate of 9600 
+  // Enable UART serial communication with a baud rate of 57600 
   // See section 31.17 - UART Baud Rate Generator of the PIC18F46K42 data sheet
-  U1BRG = _XTAL_FREQ / 9600 / 16;
+  U1BRG = _XTAL_FREQ / 57600 / 16;
   U1CON0bits.TXEN = 1;
   U1CON0bits.RXEN = 1;
   U1CON1bits.ON = 1;

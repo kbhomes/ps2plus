@@ -1,6 +1,7 @@
 #ifdef PS2PLUS_FIRMWARE
 
 #include "custom_config.h"
+#include "shared/versions.h"
 
 #include <platforms/platform.h>
 
@@ -10,7 +11,7 @@
 
 void controller_custom_config_initialize(controller_custom_config *config) {
   config->enabled = true;
-  config->configuration_version = 0;
+  config->configuration_version = VERSION_CONFIGURATION;
   
   primitive_data_initialize_boolean(&config->values.enable_button_remapping, false);
   for (uint8_t b = 0; b < NUM_DIGITAL_BUTTONS; b++) {
@@ -32,7 +33,7 @@ void controller_custom_config_initialize(controller_custom_config *config) {
   primitive_data_initialize_boolean(&config->values.joystick_digital_enable_left, false);
   primitive_data_initialize_boolean(&config->values.joystick_digital_enable_right, false);
   primitive_data_initialize_uint8(&config->values.joystick_digital_threshold_left, 0x40);
-  primitive_data_initialize_uint8(&config->values.joystick_digital_threshold_left, 0x40);
+  primitive_data_initialize_uint8(&config->values.joystick_digital_threshold_right, 0x40);
 }
 
 void controller_custom_config_load(controller_custom_config *config) {
@@ -54,7 +55,7 @@ void controller_custom_config_load(controller_custom_config *config) {
   config->values.joystick_digital_enable_left.boolean = platform_memory_read(CONFIGURATION_ADDRESS(joystick_digital_enable_left));
   config->values.joystick_digital_enable_right.boolean = platform_memory_read(CONFIGURATION_ADDRESS(joystick_digital_enable_right));
   config->values.joystick_digital_threshold_left.uint8 = platform_memory_read(CONFIGURATION_ADDRESS(joystick_digital_threshold_left));
-  config->values.joystick_digital_threshold_left.uint8 = platform_memory_read(CONFIGURATION_ADDRESS(joystick_digital_threshold_left));
+  config->values.joystick_digital_threshold_right.uint8 = platform_memory_read(CONFIGURATION_ADDRESS(joystick_digital_threshold_right));
 }
 
 void controller_custom_config_save(controller_custom_config *config) {
@@ -76,7 +77,7 @@ void controller_custom_config_save(controller_custom_config *config) {
   platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_enable_left), config->values.joystick_digital_enable_left.boolean);
   platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_enable_right), config->values.joystick_digital_enable_right.boolean);
   platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_threshold_left), config->values.joystick_digital_threshold_left.uint8);
-  platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_threshold_left), config->values.joystick_digital_threshold_left.uint8);
+  platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_threshold_right), config->values.joystick_digital_threshold_right.uint8);
 }
 
 #endif

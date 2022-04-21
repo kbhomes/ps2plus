@@ -124,6 +124,7 @@
       <logicalFolder name="shared" displayName="shared" projectFiles="true">
         <itemPath>../shared/primitive_data.c</itemPath>
         <itemPath>../shared/bootloader.c</itemPath>
+        <itemPath>../shared/controller.c</itemPath>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>src/main.c</itemPath>
@@ -277,6 +278,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>

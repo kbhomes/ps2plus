@@ -35,6 +35,7 @@ typedef struct {
 void controller_custom_config_initialize(controller_custom_config *config);
 void controller_custom_config_load(controller_custom_config *config);
 void controller_custom_config_save(controller_custom_config *config);
+void controller_custom_config_dump(controller_custom_config *config);
 
 #endif /* CONTROLLER_CUSTOM_CONFIG_H */
 

@@ -13,8 +13,8 @@ void main_init(volatile controller_state *state) {
 //  // Infinite loop!
 //  while (true) { }
   
-  puts("[bootloader] Waiting three seconds for firmware update signal");
-  platform_timing_sleep(3000);
+  puts("[bootloader] Waiting one second for firmware update signal");
+  platform_timing_sleep(1000);
   
   if (platform_controller_read_digital_button(DBTriangle)) {
     puts("[bootloader] Remaining in bootloader");

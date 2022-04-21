@@ -47,13 +47,15 @@ void handle_transmission() {
 
 int main(void) {
   platform_init(&interrupt_handler);
-  main_init(&state);
-
+  
   // Set the initial internal state of the firmware
   controller_state_initialize(&state);
   controller_state_set_versions(&state, VERSION_FIRMWARE, VERSION_MICROCONTROLLER, VERSION_CONFIGURATION, VERSION_BOOTLOADER);
   command_packet_initialize(&packet, &write_with_ack);
   
+  // Execute the initialization for the bootloader/firmware
+  main_init(&state);
+
   while (true) {
     update_controller();
     handle_transmission();

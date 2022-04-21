@@ -1,8 +1,5 @@
 #include "../command.h"
-
-const uint8_t PAYLOAD_FIRMWARE_VERSION[] = { 0x03, 0x01, 0x00 };
-const uint8_t PAYLOAD_MICROCONTROLLER_VERSION[] = { 0x05, 11, 'P', 'I', 'C', '1', '8', 'F', '4', '6', 'K', '4', '2' };
-const uint8_t PAYLOAD_CONFIGURATION_VERSION[] = { 0x03, 0x01, 0x00 };
+#include "shared/versions.h"
 
 typedef enum PS2PlusVersion {
   PS2PlusVersion_Firmware = 0,
@@ -13,15 +10,15 @@ typedef enum PS2PlusVersion {
 
 struct {
   PS2PlusVersion version_id;
-  uint8_t *version_payload;
+  uint8_t version_payload[128];
   size_t version_payload_length;
 } gv_memory;
 
 command_result gv_initialize(volatile command_packet *packet, controller_state *state) {
   // Reset the version identifier that the configurator has requested
-  gv_memory.version_id = PS2PlusVersion_Firmware;
-  gv_memory.version_payload = PAYLOAD_FIRMWARE_VERSION;
-  gv_memory.version_payload_length = sizeof(PAYLOAD_FIRMWARE_VERSION);
+  gv_memory.version_id = -1;
+  primitive_data_serialize(&primitive_data_unknown, &gv_memory.version_payload);
+  gv_memory.version_payload_length = primitive_data_length(&primitive_data_unknown);
   
   return CRInitialized;
 }
@@ -36,32 +33,24 @@ command_result gv_process(volatile command_packet *packet, controller_state *sta
       switch (gv_memory.version_id) {
 #ifdef PS2PLUS_FIRMWARE
         case PS2PlusVersion_Firmware:
-          packet->write(0x03);
-          gv_memory.version_payload = PAYLOAD_FIRMWARE_VERSION;
-          gv_memory.version_payload_length = sizeof(PAYLOAD_FIRMWARE_VERSION);
+          primitive_data_serialize(&state->versions.firmware, &gv_memory.version_payload);
+          gv_memory.version_payload_length = primitive_data_length(&state->versions.firmware);
           break;
         
         case PS2PlusVersion_Microcontroller:
-          packet->write(0x05);
-          gv_memory.version_payload = PAYLOAD_MICROCONTROLLER_VERSION;
-          gv_memory.version_payload_length = sizeof(PAYLOAD_MICROCONTROLLER_VERSION);
+          primitive_data_serialize(&state->versions.microcontroller, &gv_memory.version_payload);
+          gv_memory.version_payload_length = primitive_data_length(&state->versions.microcontroller);
           break;
-
+        
         case PS2PlusVersion_Configuration:
-          packet->write(0x03);
-          gv_memory.version_payload = PAYLOAD_CONFIGURATION_VERSION;
-          gv_memory.version_payload_length = sizeof(PAYLOAD_CONFIGURATION_VERSION);
+          primitive_data_serialize(&state->versions.configuration, &gv_memory.version_payload);
+          gv_memory.version_payload_length = primitive_data_length(&state->versions.configuration);
           break;
 #endif
-
-        default:
-          packet->write(0xFF);
-          gv_memory.version_payload_length = 0;
-          break;
       }
-    } else {
-      packet->write(gv_memory.version_payload[packet->data_index - 1]);
     }
+    
+    packet->write(gv_memory.version_payload[packet->data_index - 1]);
   }
 
   // If the final byte hasn't been written, mark this command as still processing

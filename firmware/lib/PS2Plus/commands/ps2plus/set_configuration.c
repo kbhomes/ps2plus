@@ -44,7 +44,7 @@ command_result sc_process(volatile command_packet *packet, controller_state *sta
     // Only do processing if the the target is valid
     if (sc_memory.target_value != NULL) {
       sc_memory.value_raw[packet->command_index - 2] = packet->command_byte;
-      
+
       // The target configuration type and the incoming value type must match
       if (packet->command_index == 3 && sc_memory.target_value->type != packet->command_byte) {
         sc_memory.target_value = NULL;
@@ -81,14 +81,17 @@ void sc_finalize(volatile command_packet *packet, controller_state *state) {
 
     // Deserialize the processed data into the target configuration
     primitive_data_deserialize(sc_memory.target_value, sc_memory.value_raw);
+
+    // Save the configuration to storage
+    controller_custom_config_save(&state->custom_config);
   }
 }
 
 command_processor command_ps2plus_set_configuration = {
-    .id = 0x71,
-    .initialize = &sc_initialize,
-    .process = &sc_process,
-    .finalize = &sc_finalize,
+  .id = 0x71,
+  .initialize = &sc_initialize,
+  .process = &sc_process,
+  .finalize = &sc_finalize,
 };
 
 #endif
