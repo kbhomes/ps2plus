@@ -65,38 +65,63 @@ void update_controllers() {
     int ret;
     bool connected = true;
 
-    printf("[update_controllers] Updating controllers at %f\n", ImGui::GetTime());
-
     // Stop the gamepad
-    printf("[update_controllers] Stopping controllers\n");
     PS2Plus::Gamepad::Stop();
-    printf("[update_controllers] Stopped controllers\n");
 
-    printf("[update_controllers] Retrieving PS2+ firmware version\n");
     if ((ret = ps2plman_get_firmware_version(&state.controllers[0].versions.firmware)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ firmware version: %d\n", ret);
         connected = false;
-    } else {
-        printf("[update_controllers] Retrieved PS2+ firmware version: %d\n", state.controllers[0].versions.firmware);
     }
 
-    printf("[update_controllers] Retrieving PS2+ microcontroller version\n");
     if ((ret = ps2plman_get_microcontroller_version(state.controllers[0].versions.microcontroller, NULL, sizeof(state.controllers[0].versions.microcontroller) - 1)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ microcontroller version: %d\n", ret);
         connected = false;
-    } else {
-        printf("[update_controllers] Retrieved PS2+ microcontroller version: %s\n", state.controllers[0].versions.microcontroller);
     }
 
-    printf("[update_controllers] Retrieving PS2+ configuration version\n");
     if ((ret = ps2plman_get_configuration_version(&state.controllers[0].versions.configuration)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ configuration version: %d\n", ret);
         connected = false;
-    } else {
-        printf("[update_controllers] Retrieved PS2+ configuration version: %d\n", state.controllers[0].versions.configuration);
     }
     
     state.controllers[0].connected = connected;
+
+    // If the controller successfully connected, retrieve all configurations
+    if (connected) {
+        ps2plman_get_configuration(CONFIGURATION_ID(enable_button_remapping), &state.controllers[0].configuration.enable_button_remapping);
+        for (size_t i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
+            ps2plman_get_configuration(CONFIGURATION_ID(button_remapping) + i, &state.controllers[0].configuration.button_remapping[i]);
+        }
+        ps2plman_get_configuration(CONFIGURATION_ID(enable_joystick_axis_range_remapping), &state.controllers[0].configuration.enable_joystick_axis_range_remapping);
+        for (size_t i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
+            ps2plman_get_configuration(CONFIGURATION_ID(joystick_axis_range_remapping) + i, &state.controllers[0].configuration.joystick_axis_range_remapping[i]);
+        }
+        ps2plman_get_configuration(CONFIGURATION_ID(joystick_deadzone_left), &state.controllers[0].configuration.joystick_deadzone_left);
+        ps2plman_get_configuration(CONFIGURATION_ID(joystick_deadzone_right), &state.controllers[0].configuration.joystick_deadzone_right);
+        ps2plman_get_configuration(CONFIGURATION_ID(joystick_digital_enable_left), &state.controllers[0].configuration.joystick_digital_enable_left);
+        ps2plman_get_configuration(CONFIGURATION_ID(joystick_digital_enable_right), &state.controllers[0].configuration.joystick_digital_enable_right);
+        ps2plman_get_configuration(CONFIGURATION_ID(joystick_digital_threshold_left), &state.controllers[0].configuration.joystick_digital_threshold_left);
+        ps2plman_get_configuration(CONFIGURATION_ID(joystick_digital_threshold_right), &state.controllers[0].configuration.joystick_digital_threshold_right);
+
+        // Dump the configuration
+        printf("[config] enable_button_remapping = %d\n", state.controllers[0].configuration.enable_button_remapping.boolean);
+        for (uint8_t b = 0; b < NUM_DIGITAL_BUTTONS; b++) {
+            printf("[config] button_remapping[%s] = %s\n", 
+                ps2plus_controller_digital_button_name((ps2plus_controller_digital_button)b), 
+                ps2plus_controller_digital_button_name((ps2plus_controller_digital_button)state.controllers[0].configuration.button_remapping[b].uint8));
+        }
+        printf("[config] enable_joystick_axis_range_remapping = %d\n", state.controllers[0].configuration.enable_joystick_axis_range_remapping.boolean);
+        for (size_t a = 0; a < NUM_JOYSTICK_AXIS_RANGES; a++) {
+            printf("[config] joystick_axis_range_remapping[%s] = %u\n", 
+                ps2plus_controller_joystick_axis_range_name((ps2plus_controller_joystick_axis_range)a), 
+                state.controllers[0].configuration.joystick_axis_range_remapping[a].uint8);
+        }
+        printf("[config] joystick_deadzone_left = %u\n", state.controllers[0].configuration.joystick_deadzone_left.uint8);
+        printf("[config] joystick_deadzone_right = %u\n", state.controllers[0].configuration.joystick_deadzone_right.uint8);
+        printf("[config] joystick_digital_enable_left = %d\n", state.controllers[0].configuration.joystick_digital_enable_left.boolean);
+        printf("[config] joystick_digital_enable_right = %d\n", state.controllers[0].configuration.joystick_digital_enable_right.boolean);
+        printf("[config] joystick_digital_threshold_left = %u\n", state.controllers[0].configuration.joystick_digital_threshold_left.uint8);
+        printf("[config] joystick_digital_threshold_right = %u\n", state.controllers[0].configuration.joystick_digital_threshold_right.uint8);
+    }
 
     // Start reading controller data again
     PS2Plus::Gamepad::Start();
@@ -146,43 +171,41 @@ int main(int argc, char **argv) {
     
     load_modules();
     ps2plman_init();
-    // update_controllers();
 
     PS2Plus::Gamepad::Initialize();
     PS2Plus::Gamepad::Start();
     PS2Plus::Graphics::Initialize();
-
-    // struct fileXioDevice deviceEntries[32];
-    // int deviceEntriesCount;
-    // printf("Initializing fileXio\n");
-    // printf("- Returned: %d\n", fileXioInit());
-    // printf("Getting device list\n");
-    // deviceEntriesCount = fileXioGetDeviceList(deviceEntries, 32);
-    // printf("- Returned: %d\n", deviceEntriesCount);
-    // for (int i = 0; i < deviceEntriesCount; i++) {
-    //     printf("deviceEntries[%d].name = %s\n", i, deviceEntries[i].name);
-    // }
-
-    // // TODO: Actually populate state based on connected controllers
+    
+    update_controllers();
     state.current_controller = &state.controllers[0];
-    // state.current_controller->connected = true;
-    // state.current_controller->versions.firmware = 30;
-    // state.current_controller->versions.configuration = 1;
-    // strncpy(state.current_controller->versions.microcontroller, "PIC18F46K42", 12);
 
-    float last_check_time = ImGui::GetTime();
-    float time_delta = 0;
+    // Mock the controllers
+    {
+        state.current_controller->connected = true;
+        state.current_controller->versions.firmware = 30;
+        state.current_controller->versions.configuration = 1;
+        strncpy(state.current_controller->versions.microcontroller, "PIC18F46K42", 12);
+        
+        primitive_data_initialize_boolean(&state.current_controller->configuration.enable_button_remapping, false);
+        for (size_t i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
+            primitive_data_initialize_uint8(&state.current_controller->configuration.button_remapping[i], i);
+        }
+        primitive_data_initialize_boolean(&state.current_controller->configuration.enable_joystick_axis_range_remapping, false);
+        for (size_t i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
+            primitive_data_initialize_uint8(&state.current_controller->configuration.joystick_axis_range_remapping[i], (i % 3 == 0) ? 0 : (i % 3 == 1) ? 127 : 255);
+        }
+        primitive_data_initialize_uint8(&state.current_controller->configuration.joystick_deadzone_left, 0);
+        primitive_data_initialize_uint8(&state.current_controller->configuration.joystick_deadzone_right, 0);
+        primitive_data_initialize_boolean(&state.current_controller->configuration.joystick_digital_enable_left, false);
+        primitive_data_initialize_boolean(&state.current_controller->configuration.joystick_digital_enable_right, false);
+        primitive_data_initialize_uint8(&state.current_controller->configuration.joystick_digital_threshold_left, 0x40);
+        primitive_data_initialize_uint8(&state.current_controller->configuration.joystick_digital_threshold_right, 0x40);
+    }
 
     while (1) {
-        // DEV: Code to test PS2+ custom commands that interrupt the main controller thread
-        time_delta = ImGui::GetTime() - last_check_time;
-        if (time_delta > 5.f) {
-            update_controllers();
-            last_check_time = ImGui::GetTime();
-        }
-
         handle_update();
 
+        // Update the gamepad
         state.pad_status = PS2Plus::Gamepad::Read();
         
         // Update the graphics state

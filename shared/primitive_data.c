@@ -3,6 +3,11 @@
 #include <string.h>
 
 const primitive_data primitive_data_unknown = { .type = PDT_Unknown };
+const primitive_data primitive_data_boolean_default = { .type = PDT_Boolean, .boolean = false };
+const primitive_data primitive_data_uint8_default = { .type = PDT_Uint8, .uint8 = 0 };
+const primitive_data primitive_data_uint16_default = { .type = PDT_Uint16, .uint16 = 0 };
+const primitive_data primitive_data_uint32_default = { .type = PDT_Uint32, .uint32 = 0 };
+const primitive_data primitive_data_array_default = { .type = PDT_Array };
 
 void primitive_data_initialize_boolean(primitive_data *pd, bool value) {
   pd->type = PDT_Boolean;
@@ -106,4 +111,35 @@ void primitive_data_deserialize(primitive_data *pd, uint8_t *in) {
     default:
       return;
   }
+}
+
+bool primitive_data_equals(primitive_data *a, primitive_data *b) {
+  if (a->type != b->type) {
+    return false;
+  }
+
+  switch (a->type) {
+    case PDT_Boolean: 
+      return a->boolean == b->boolean;
+
+    case PDT_Uint8: 
+      return a->uint8 == b->uint8;
+
+    case PDT_Uint16: 
+      return a->uint16 == b->uint16;
+
+    case PDT_Uint32: 
+      return a->uint32 == b->uint32;
+
+    case PDT_Array: 
+      return (a->array.length == b->array.length && (
+        (a->array.data == NULL && b->array.data == NULL) || 
+        memcmp(a->array.data, b->array.data, a->array.length) == 0
+      ));
+
+    case PDT_Unknown:
+      return true;
+  }
+
+  return false;
 }

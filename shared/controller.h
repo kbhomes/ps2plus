@@ -50,5 +50,8 @@ typedef enum {
   NUM_JOYSTICK_AXIS_RANGES,
 } ps2plus_controller_joystick_axis_range;
 
+const char *ps2plus_controller_digital_button_name(ps2plus_controller_digital_button button);
+const char *ps2plus_controller_joystick_axis_name(ps2plus_controller_joystick_axis axis);
+const char *ps2plus_controller_joystick_axis_range_name(ps2plus_controller_joystick_axis_range axis_range);
 
 #endif /* SHARED_CONTROLLER_H */

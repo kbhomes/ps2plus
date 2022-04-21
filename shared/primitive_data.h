@@ -42,8 +42,15 @@ void primitive_data_initialize_array(primitive_data *pd, uint8_t *value, uint8_t
 size_t primitive_data_length(primitive_data *pd);
 void primitive_data_serialize(primitive_data *pd, uint8_t *out);
 void primitive_data_deserialize(primitive_data *pd, uint8_t *in);
+bool primitive_data_equals(primitive_data *a, primitive_data *b);
 
 extern const primitive_data primitive_data_unknown;
+extern const primitive_data primitive_data_boolean_default;
+extern const primitive_data primitive_data_uint8_default;
+extern const primitive_data primitive_data_uint16_default;
+extern const primitive_data primitive_data_uint32_default;
+extern const primitive_data primitive_data_array_default;
+
 
 #ifdef __cplusplus
 }

@@ -201,7 +201,7 @@ int ps2plman_set_configuration(uint8_t id, primitive_data *in) {
   memcpy(&rpc_packet.set_configuration.configuration_value, in, sizeof(primitive_data));
   
   // "Box" the array data by putting it into the packet buffer
-  if (in->type == PDT_Array) {
+  if (in->type == PDT_Array && in->array.data) {
     memcpy(&rpc_packet.set_configuration.configuration_buffer, in->array.data, in->array.length);
   }
   
