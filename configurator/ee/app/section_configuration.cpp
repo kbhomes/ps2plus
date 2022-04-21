@@ -1,6 +1,7 @@
 #include "app.h"
 #include "libps2plman.h"
 
+#include <map>
 #include <vector>
 
 ps2plus_configuration temporary_configuration;
@@ -349,14 +350,14 @@ void app_configuration_joysticks(ImGuiIO &io, configurator_state *state) {
     }
 }
 
-std::vector<primitive_data *> get_changed_configurations(configurator_state *state) {
-    std::vector<primitive_data *> new_configs;
+std::map<int, primitive_data *> get_changed_configurations(configurator_state *state) {
+    std::map<int, primitive_data *> new_configs;
     primitive_data *all_configs_previous = (primitive_data *)&state->current_controller->configuration;
     primitive_data *all_configs_new = (primitive_data *)&temporary_configuration;
     
     for (size_t i = 0; i < NUM_CUSTOM_CONFIGURATIONS; i++) {
         if (!primitive_data_equals(&all_configs_previous[i], &all_configs_new[i])) {
-            new_configs.push_back(&all_configs_new[i]);
+            new_configs[i] = &all_configs_new[i];
         }
     }
 
@@ -369,18 +370,37 @@ void reload_configuration(configurator_state *state) {
     stale_configuration = false;
 }
 
-void persist_configuration() {
+void persist_configuration(configurator_state *state) {
+    printf("Saving configuration\n");
+
+    // Persist changes to the controller
+    std::map<int, primitive_data *> new_configs = get_changed_configurations(state);
+    printf("Num changed configs: %d\n", new_configs.size());
+    if (!new_configs.empty()) {
+        PS2Plus::Gamepad::Stop();
+        for (auto const& config_pair : new_configs) {
+            printf("Updating configuration %d\n", config_pair.first);
+            ps2plman_set_configuration(config_pair.first, config_pair.second);
+        }
+        PS2Plus::Gamepad::Start();
+    }
+
+    // Optimistically copy the new configuration to the local state
+    memcpy(&state->current_controller->configuration, &temporary_configuration, sizeof(ps2plus_configuration));
+
     stale_configuration = true;
 }
 
 void app_configuration_status(ImGuiIO &io, configurator_state *state) {
     if (!get_changed_configurations(state).empty()) {
         ImGui::Text("Changed!");
+        ImGui::SameLine();
+        if (ImGui::Button("Save")) {
+            persist_configuration(state);
+        }
     } else {
         ImGui::Text("No change.");
     }
-
-    ImGui::Separator();
 }
 
 void app_section_configuration(ImGuiIO &io, configurator_state *state) {
@@ -392,7 +412,10 @@ void app_section_configuration(ImGuiIO &io, configurator_state *state) {
         reload_configuration(state);
     }
 
-    app_configuration_status(io, state);
+    ImGui::BeginChild("ConfigurationChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true, ImGuiWindowFlags_NavFlattened);
     app_configuration_buttons(io, state);
     app_configuration_joysticks(io, state);
+    ImGui::EndChild();
+
+    app_configuration_status(io, state);
 }

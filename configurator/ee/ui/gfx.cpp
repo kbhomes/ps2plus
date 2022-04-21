@@ -75,6 +75,7 @@ void initializeImGui() {
     style.ItemInnerSpacing = ImVec2(4, 4);
     style.FrameRounding = 4;
     style.FramePadding = ImVec2(10, 2);
+    style.TabRounding = 2;
     style.ScrollbarSize = 20;
     style.GrabMinSize = 10;
     style.GrabRounding = 2;
@@ -85,6 +86,7 @@ void initializeImGui() {
     style.TouchExtraPadding = ImVec2(8, 8);
     style.MouseCursorScale = 0.8;
     style.SelectableTextAlign = ImVec2(0, 0.5);
+    style.Colors[ImGuiCol_Tab].w = 0.2f;
 
     // Setup ImGui backends
     ImGui_ImplPs2Sdk_InitForGsKit(gsGlobal);

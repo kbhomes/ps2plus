@@ -25,6 +25,7 @@
 #include <io_common.h>
 
 bool is_reading_ps2_state = false;
+bool should_mock = false;
 
 configurator_state state;
 
@@ -180,7 +181,7 @@ int main(int argc, char **argv) {
     state.current_controller = &state.controllers[0];
 
     // Mock the controllers
-    {
+    if (should_mock) {
         state.current_controller->connected = true;
         state.current_controller->versions.firmware = 30;
         state.current_controller->versions.configuration = 1;
