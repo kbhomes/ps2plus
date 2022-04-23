@@ -23,7 +23,10 @@ inline float clampf(float min, float max, float value) {
 }
 
 void apply_custom_configuration() {
+  // Note: button remapping occurs at the input-read stage
+  
   if (state.analog_mode == CMAnalog || state.analog_mode == CMAnalogFull) {
+    // Remap joystick ranges, if necessary
     if (state.custom_config.values.enable_joystick_axis_range_remapping.boolean) {
       for (ps2plus_controller_joystick_axis a = 0; a < NUM_JOYSTICK_AXES; a++) {
         uint8_t axis_value = state.input.joysticks[a];
@@ -39,6 +42,7 @@ void apply_custom_configuration() {
       }
     }
     
+    // Apply joystick deadzones
     uint8_t deadzone_left = state.custom_config.values.joystick_deadzone_left.uint8;
     uint8_t deadzone_right = state.custom_config.values.joystick_deadzone_right.uint8;
     
@@ -127,7 +131,14 @@ void apply_custom_configuration() {
 void update_controller() {
   // Read digital button values
   for (ps2plus_controller_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
-    bool active_low_button_state = !platform_controller_read_digital_button(button);
+    ps2plus_controller_digital_button source = button;
+    
+    // Apply button remapping, if enabled
+    if (state.custom_config.values.enable_button_remapping.boolean) {
+      source = (ps2plus_controller_digital_button)state.custom_config.values.button_remapping[button].uint8;
+    }
+    
+    bool active_low_button_state = !platform_controller_read_digital_button(source);
     debounced_force(&state.input.digital_buttons[button], active_low_button_state);
     // debounced_update(&state.input.digital_buttons[button], active_low_button_state);
   }
