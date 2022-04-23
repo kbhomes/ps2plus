@@ -10435,7 +10435,8 @@ static void ImGui::NavUpdateWindowing()
     bool apply_toggle_layer = false;
 
     ImGuiWindow* modal_window = GetTopMostPopupModal();
-    bool allow_windowing = (modal_window == NULL);
+    // <PS2Plus> Disable windowing, this app is a single full-screen window
+    bool allow_windowing = false; // (modal_window == NULL);
     if (!allow_windowing)
         g.NavWindowingTarget = NULL;
 
