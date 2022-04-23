@@ -1,4 +1,5 @@
 #include "app.h"
+#include "ui/fonts/playstation.h"
 
 bool dialog_displaying = false;
 
@@ -82,11 +83,11 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         if (ImGui::BeginTabBar("Sections")) {
             // Control buttons on the ends have transparent backgrounds
             ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0, 0, 0, 0));
-            if (ImGui::TabItemButton("L1", ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_NoTooltip)) {
+            if (ImGui::TabItemButton(ICON_PLAYSTATION_L1_BUTTON_ALT, ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_NoTooltip)) {
                 active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
             }
 
-            if (ImGui::TabItemButton("R1", ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoTooltip)) {
+            if (ImGui::TabItemButton(ICON_PLAYSTATION_R1_BUTTON_ALT, ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoTooltip)) {
                 active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
             }
             ImGui::PopStyleColor(/* ImGuiCol_Tab */);
@@ -110,6 +111,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
 
             if (ImGui::BeginTabItem("Tests", NULL, active_tab == 1 ? ImGuiTabItemFlags_SetSelected : 0)) {
                 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 2));
+                ImGui::ShowStyleEditor();
                 ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
                 ImGui::EndTabItem();
             }
