@@ -1,7 +1,10 @@
 #include "app.h"
 #include "libps2plman.h"
+#include "ui/fonts/forkawesome.h"
+#include "ui/fonts/playstation.h"
 
 #include <map>
+#include <utility>
 #include <vector>
 
 ps2plus_configuration temporary_configuration;
@@ -16,11 +19,140 @@ void EndCaptureGamepad() {
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 }
 
+void show_button_remap_combo(const char *combo_id, ps2plus_controller_digital_button button_id, uint8_t *p_button_remapping) {
+    // Using the generic BeginCombo() API, you have full control over how to display the combo contents.
+    // (your selection data could be an index, a pointer to the object, an id for the object, a flag intrusively
+    // stored in the object itself, etc.)
+    static const std::pair<ps2plus_controller_digital_button, const char *> items[] = { 
+        { DBTriangle, ICON_PLAYSTATION_TRIANGLE_BUTTON }, 
+        { DBCircle, ICON_PLAYSTATION_CIRCLE_BUTTON }, 
+        { DBCross, ICON_PLAYSTATION_CROSS_BUTTON }, 
+        { DBSquare, ICON_PLAYSTATION_SQUARE_BUTTON }, 
+        { DDUp, ICON_PLAYSTATION_DS3_DPAD_FULL_UP }, 
+        { DDDown, ICON_PLAYSTATION_DS3_DPAD_FULL_DOWN }, 
+        { DDLeft, ICON_PLAYSTATION_DS3_DPAD_FULL_LEFT }, 
+        { DDRight, ICON_PLAYSTATION_DS3_DPAD_FULL_RIGHT }, 
+        { DBL1, ICON_PLAYSTATION_L1_BUTTON }, 
+        { DBR1, ICON_PLAYSTATION_R1_BUTTON }, 
+        { DBL2, ICON_PLAYSTATION_L2_BUTTON }, 
+        { DBR2, ICON_PLAYSTATION_R2_BUTTON }, 
+        { DBL3, ICON_PLAYSTATION_L3_BUTTON }, 
+        { DBR3, ICON_PLAYSTATION_R3_BUTTON }, 
+        { DBStart, "ST" },
+        { DBSelect, "SL" },
+    };
+    ps2plus_controller_digital_button current_remapped = (ps2plus_controller_digital_button)*p_button_remapping;
+    bool is_remapped = (current_remapped != button_id);
+    uint8_t item_current_idx = 0;
+
+    for (size_t i = 0; i < IM_ARRAYSIZE(items); i++) {
+        if (items[i].first == current_remapped) {
+            item_current_idx = i;
+            break;
+        }
+    }
+
+    if (is_remapped) {
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(0.48f, 0.29f, 0.48f, 0.54f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(0.98f, 0.59f, 0.98f, 0.40f));
+        ImGui::PushStyleColor(ImGuiCol_FrameBgActive, ImVec4(0.98f, 0.59f, 0.98f, 0.67f));
+    }
+
+    if (ImGui::BeginCombo(combo_id, items[item_current_idx].second, ImGuiComboFlags_NoArrowButton))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+        {
+            const bool is_selected = (item_current_idx == n);
+            if (ImGui::Selectable(items[n].second, is_selected)) {
+                *p_button_remapping = items[n].first;
+            }
+
+            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+
+    if (is_remapped) {
+        ImGui::PopStyleColor(/* ImGuiCol_FrameBgActive */);
+        ImGui::PopStyleColor(/* ImGuiCol_FrameBgHovered */);
+        ImGui::PopStyleColor(/* ImGuiCol_FrameBg */);
+    }
+}
+
 void app_configuration_button_remapping(ImGuiIO &io, configurator_state *state) {
     bool *p_enable_button_remapping = &temporary_configuration.enable_button_remapping.boolean;
+    
+    // Setup pointers to each of the joystick axis range values
+    uint8_t *p_button_remappings[NUM_DIGITAL_BUTTONS];
+    for (size_t i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
+        p_button_remappings[i] = &temporary_configuration.button_remapping[i].uint8;
+    }
+
     ImGui::Checkbox("##enable_button_remapping", p_enable_button_remapping); 
     ImGui::SameLine(); 
     ImGui::TextWrapped("Enable remapping of digital controller buttons");
+
+    ImGui::BeginDisabled(!*p_enable_button_remapping);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(2, 2));
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(8, 4));
+    ImGui::Indent(28.f);
+    if (ImGui::BeginTable("Button Remapping", 8)) {
+        ImGui::TableSetupColumn("##Btn1-Label", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("##Btn1-Value", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("##Btn2-Label", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("##Btn2-Value", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("##Btn3-Label", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("##Btn3-Value", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("##Btn4-Label", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("##Btn4-Value", ImGuiTableColumnFlags_WidthStretch);
+
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_TRIANGLE_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapTriangle", DBTriangle, p_button_remappings[DBTriangle]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_CIRCLE_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapCircle", DBCircle, p_button_remappings[DBCircle]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_CROSS_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapCross", DBCross, p_button_remappings[DBCross]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_SQUARE_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapSquare", DBSquare, p_button_remappings[DBSquare]);
+
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_DS3_DPAD_FULL_UP); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapUp", DDUp, p_button_remappings[DDUp]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_DS3_DPAD_FULL_DOWN); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapDown", DDDown, p_button_remappings[DDDown]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_DS3_DPAD_FULL_LEFT); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapLeft", DDLeft, p_button_remappings[DDLeft]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_DS3_DPAD_FULL_RIGHT); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapRight", DDRight, p_button_remappings[DDRight]);
+
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_L1_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapL1", DBL1, p_button_remappings[DBL1]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_L2_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapL2", DBL2, p_button_remappings[DBL2]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_R1_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapR1", DBR1, p_button_remappings[DBR1]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_R2_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapR2", DBR2, p_button_remappings[DBR2]);
+
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_L3_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapL3", DBL3, p_button_remappings[DBL3]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_R3_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapR3", DBR3, p_button_remappings[DBR3]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text("ST" " " ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapST", DBStart, p_button_remappings[DBStart]);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text("SL" " " ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); show_button_remap_combo("##RemapSL", DBSelect, p_button_remappings[DBSelect]);
+
+        ImGui::EndTable();
+    }
+    ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
+    ImGui::PopStyleVar(/* ImGuiStyleVar_CellPadding */);
+    ImGui::EndDisabled();
 }
 
 void app_configuration_buttons(ImGuiIO &io, configurator_state *state) {
@@ -158,7 +290,7 @@ void app_configuration_joysticks_axis_range_remapping(ImGuiIO &io, configurator_
     bool *p_enable_joystick_axis_range_remapping = &temporary_configuration.enable_joystick_axis_range_remapping.boolean;
 
     // Setup pointers to each of the joystick axis range values
-    uint8_t *p_joystick_axis_range_remappings[12];
+    uint8_t *p_joystick_axis_range_remappings[NUM_JOYSTICK_AXIS_RANGES];
     for (size_t i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
         p_joystick_axis_range_remappings[i] = &temporary_configuration.joystick_axis_range_remapping[i].uint8;
     }

@@ -4,6 +4,7 @@
 #include <imgui/backends/imgui_impl_ps2sdk.h>
 #include <imgui/backends/imgui_impl_ps2gskit.h>
 
+#include "fonts/forkawesome.h"
 #include "fonts/playstation.h"
 #include "custom_font.h"
 #include "drawing/drawing.h"
@@ -77,6 +78,16 @@ void initializeImGui() {
         config.GlyphOffset = ImVec2(0.f, 3.f);
         static const ImWchar icon_ranges[] = { ICON_PLAYSTATION_GLYPH_MIN, ICON_PLAYSTATION_GLYPH_MAX, 0 };
         io.Fonts->AddFontFromMemoryCompressedTTF(ICON_PLAYSTATION_TTF_COMPRESSED_DATA, ICON_PLAYSTATION_TTF_COMPRESSED_SIZE, 20.f, &config, icon_ranges);
+    }
+
+    // Add the ForkAwesome font
+    {
+        ImFontConfig config;
+        config.MergeMode = true;
+        config.GlyphMinAdvanceX = 18.0f; // Use if you want to make the icon monospaced
+        // config.GlyphOffset = ImVec2(0.f, 3.f);
+        static const ImWchar icon_ranges[] = { ICON_FK_GLYPH_MIN, ICON_FK_GLYPH_MAX, 0 };
+        io.Fonts->AddFontFromMemoryCompressedTTF(ICON_FK_TTF_COMPRESSED_DATA, ICON_FK_TTF_COMPRESSED_SIZE, 18.f, &config, icon_ranges);
     }
 
     ImGuiStyle& style = ImGui::GetStyle();
