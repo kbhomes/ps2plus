@@ -7,6 +7,8 @@
 #include <math.h>
 
 void app_section_about(ImGuiIO &io, configurator_state *state) {
+    ImGui::ShowStyleEditor();
+
     PS2Plus::UI::StatusText("Firmware updated!", PS2Plus::UI::StatusType_Success);
     PS2Plus::UI::StatusText("Update taking longer than expected", PS2Plus::UI::StatusType_Warning);
     PS2Plus::UI::StatusText("Error occurred during update", PS2Plus::UI::StatusType_Error);

@@ -12,6 +12,7 @@
 
 static GSGLOBAL *gsGlobal;
 static bool hires;
+static ImFont *fontPlayStationLarge;
 
 void initializeGsKit() {
     // TODO: Can't get hires to work on my PS2 :(
@@ -68,11 +69,23 @@ void initializeImGui() {
     io.IniFilename = NULL;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.MousePos = ImVec2(0, 0);
-    io.Fonts->AddFontFromMemoryCompressedTTF(custom_font_compressed_data, custom_font_compressed_size, 18.f);
+
+    // NOTE: Adding fonts increases the font texture atlas size. At some point, if the font texture atlas
+    // exceeds 512x512, the GSKit ImGui backend fails to render at all, leading to a black screen. To avoid
+    // this, oversampling can be disabled on fonts, and fonts should have glyph ranges minimized to only
+    // characters that are used.
+
+    // Add the PlayStation font in large format (this is a new font)
+    {
+        ImFontConfig config;
+        config.OversampleH = config.OversampleV = 1;
+        io.Fonts->AddFontFromMemoryCompressedTTF(custom_font_compressed_data, custom_font_compressed_size, 18.f, &config);
+    }
 
     // Add the PlayStation font
     {
         ImFontConfig config;
+        config.OversampleH = config.OversampleV = 1;
         config.MergeMode = true;
         config.GlyphMinAdvanceX = 18.0f; // Use if you want to make the icon monospaced
         config.GlyphOffset = ImVec2(0.f, 3.f);
@@ -83,11 +96,20 @@ void initializeImGui() {
     // Add the ForkAwesome font
     {
         ImFontConfig config;
+        config.OversampleH = config.OversampleV = 1;
         config.MergeMode = true;
-        config.GlyphMinAdvanceX = 18.0f; // Use if you want to make the icon monospaced
-        // config.GlyphOffset = ImVec2(0.f, 3.f);
+        config.GlyphMinAdvanceX = 36.0f; // Use if you want to make the icon monospaced
+        config.GlyphOffset = ImVec2(0.f, 3.f);
         static const ImWchar icon_ranges[] = { ICON_FK_GLYPH_MIN, ICON_FK_GLYPH_MAX, 0 };
         io.Fonts->AddFontFromMemoryCompressedTTF(ICON_FK_TTF_COMPRESSED_DATA, ICON_FK_TTF_COMPRESSED_SIZE, 18.f, &config, icon_ranges);
+    }
+
+    // Add the PlayStation font in large format (this is a new font)
+    {
+        ImFontConfig config;
+        config.OversampleH = config.OversampleV = 1;
+        static const ImWchar icon_ranges[] = { ICON_PLAYSTATION_GLYPH_MIN, ICON_PLAYSTATION_GLYPH_MAX, 0 };
+        fontPlayStationLarge = io.Fonts->AddFontFromMemoryCompressedTTF(ICON_PLAYSTATION_TTF_COMPRESSED_DATA, ICON_PLAYSTATION_TTF_COMPRESSED_SIZE, 28.f, &config, icon_ranges);
     }
 
     ImGuiStyle& style = ImGui::GetStyle();
@@ -155,4 +177,21 @@ void PS2Plus::Graphics::EndFrame() {
 
 void PS2Plus::Graphics::UpdateGamepad(const PS2Plus::Gamepad::PadStatus& pad) {
     ImGui_ImplPs2Sdk_UpdateGamepad(pad.status == PS2Plus::Gamepad::PadPortReady ? &pad.pad : NULL);
+}
+
+ImFont* PS2Plus::Graphics::GetFontPlayStationLarge() {
+    return fontPlayStationLarge;
+}
+
+void PS2Plus::Graphics::PauseGamepadNav() {
+    ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NavEnableGamepad;
+    ImGui::GetIO().MouseDrawCursor = false;
+}
+
+void PS2Plus::Graphics::ResumeGamepadNav() {
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
+}
+
+bool PS2Plus::Graphics::IsGamepadNavActive() {
+    return ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NavEnableGamepad;
 }

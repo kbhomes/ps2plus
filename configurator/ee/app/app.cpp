@@ -58,7 +58,7 @@ void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
 }
 
 void app_display(ImGuiIO &io, configurator_state *state) {
-    static int active_tab = 0;
+    static int active_tab = 1;
     static int tab_count = 5;
 
     // Full screen "window" that can't be moved or resized
@@ -77,6 +77,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         if (ImGui::BeginTabBar("Sections")) {
             // Control buttons on the ends have transparent backgrounds
             ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0, 0, 0, 0));
+            ImGui::BeginDisabled(!PS2Plus::Graphics::IsGamepadNavActive());
             if (ImGui::TabItemButton(ICON_PLAYSTATION_L1_BUTTON_ALT, ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_NoTooltip)) {
                 active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
             }
@@ -84,14 +85,17 @@ void app_display(ImGuiIO &io, configurator_state *state) {
             if (ImGui::TabItemButton(ICON_PLAYSTATION_R1_BUTTON_ALT, ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoTooltip)) {
                 active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
             }
+            ImGui::EndDisabled();
             ImGui::PopStyleColor(/* ImGuiCol_Tab */);
 
-            if (state->pad_status.IsButtonPressed(PAD_L1)) {
-                active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
-            }
+            if (PS2Plus::Graphics::IsGamepadNavActive()) {
+                if (state->pad_status.IsButtonPressed(PAD_L1)) {
+                    active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
+                }
 
-            if (state->pad_status.IsButtonPressed(PAD_R1)) {
-                active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
+                if (state->pad_status.IsButtonPressed(PAD_R1)) {
+                    active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
+                }
             }
 
             if (ImGui::BeginTabItem("Information", NULL, active_tab == 0 ? ImGuiTabItemFlags_SetSelected : 0)) {
@@ -103,9 +107,9 @@ void app_display(ImGuiIO &io, configurator_state *state) {
                 ImGui::EndTabItem();
             }
 
-            if (ImGui::BeginTabItem("Tests", NULL, active_tab == 1 ? ImGuiTabItemFlags_SetSelected : 0)) {
+            if (ImGui::BeginTabItem("Test", NULL, active_tab == 1 ? ImGuiTabItemFlags_SetSelected : 0)) {
                 ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 2));
-                ImGui::ShowStyleEditor();
+                app_section_test(io, state);
                 ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
                 ImGui::EndTabItem();
             }

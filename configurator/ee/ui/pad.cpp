@@ -7,6 +7,7 @@
 
 static char _padBuffers[PAD_NUM_PORTS][256] __attribute__((aligned(64)));
 static PS2Plus::Gamepad::PadStatus _statuses[PAD_NUM_PORTS]; 
+static char _actuators[PAD_NUM_PORTS][6];
 
 namespace PS2Plus::Gamepad {
     void Initialize() {
@@ -104,9 +105,40 @@ namespace PS2Plus::Gamepad {
                 if (hasDualShockMode) {
                     printf("[PS2Plus::Gamepad::Update][status=%d] Setting DualShock mode\n", status);
                     padSetMainMode(port, slot, PAD_MMODE_DUALSHOCK, PAD_MMODE_LOCK);
+
+                    if (padInfoAct(port, slot, -1, 0)) {
+                        printf("[PS2Plus::Gamepad::Update][status=%d] Controller has actuators\n", status);
+                        
+                        // Update the status
+                        status = PadPortSettingActuators;
+                    } else {
+                        printf("[PS2Plus::Gamepad::Update][status=%d] Controller has no actuators\n", status);
+
+                        // Update the status
+                        status = PadPortSettingMode;
+                    }
                 } else {
                     printf("[PS2Plus::Gamepad::Update][status=%d] Controller remaining in digital mode\n", status);
+
+                        // Update the status
+                        status = PadPortSettingMode;
                 }
+            }
+        } else if (status == PadPortSettingActuators) {
+            if (rawState == PAD_STATE_STABLE || rawState == PAD_STATE_FINDCTP1) {
+                printf("[PS2Plus::Gamepad::Update][status=%d] Controller is in DualShock mode\n", status);
+
+                // Initialize both motors
+                _actuators[port][0] = 0;   // Enable small engine
+                _actuators[port][1] = 1;   // Enable big engine
+                _actuators[port][2] = 0xff;
+                _actuators[port][3] = 0xff;
+                _actuators[port][4] = 0xff;
+                _actuators[port][5] = 0xff;
+
+                int ret = padSetActAlign(port, slot, _actuators[port]);
+                printf("[PS2Plus::Gamepad::Update][status=%d] Controller setting actuators: ret=%d\n", status, ret);
+
 
                 // Update the status
                 status = PadPortSettingMode;
@@ -170,5 +202,23 @@ namespace PS2Plus::Gamepad {
 
     PadPortStatus PadStatus::GetStatus() {
         return status;
+    }
+
+    void PadStatus::SetRumbleActuatorSmall(bool active) {
+        _actuators[port][0] = active ? 1 : 0;
+        padSetActDirect(port, slot, _actuators[port]);
+    }
+
+    void PadStatus::SetRumbleActuatorLargePower(uint8_t power) {
+        _actuators[port][1] = power;
+        padSetActDirect(port, slot, _actuators[port]);
+    }
+
+    bool PadStatus::IsRumbleActuatorSmallActive() {
+        return _actuators[port][0] != 0;
+    }
+
+    uint8_t PadStatus::GetRumbleActuatorLargePower() {
+        return _actuators[port][1];
     }
 }

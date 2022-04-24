@@ -18,6 +18,6 @@ void draw_controller_dpad_left(ImDrawList *draw_list, const ImVec2& center, floa
 void draw_controller_dpad_right(ImDrawList *draw_list, const ImVec2& center, float size, bool pressed);
 void draw_controller_dpad_up(ImDrawList *draw_list, const ImVec2& center, float size, bool pressed);
 void draw_controller_dpad_down(ImDrawList *draw_list, const ImVec2& center, float size, bool pressed);
-void draw_controller_joystick(ImDrawList *draw_list, const ImVec2& center, float size, bool pressed, ImU8 x, ImU8 y);
+void draw_controller_joystick(ImDrawList *draw_list, const ImVec2& center, float size, bool pressed, ImU8 x, ImU8 y, bool bordered = false, ImU32 border_color = IM_COL32_WHITE, bool disabled = false);
 void draw_controller_shoulder(ImDrawList *draw_list, const ImVec2& center, float size, bool pressed);
 void draw_controller_trigger(ImDrawList *draw_list, const ImVec2& center, float size, bool pressed);

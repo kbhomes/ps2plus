@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../drawing/drawing.h"
+#include "../gfx.h"
+#include "../pad.h"
 
-#include <libpad.h>
 #include <imgui/imgui.h>
-
 
 namespace PS2Plus::UI {
     enum WidgetGamePadIconType {
@@ -21,7 +21,7 @@ namespace PS2Plus::UI {
     };
 
     void GamePadIcon(WidgetGamePadIconType icon, float height = 0);
-    void GamePadVisualizer(padButtonStatus *pad, float width = 300.f, float height = 150.f);
+    void GamePadVisualizer(const char *id, PS2Plus::Gamepad::PadStatus &pad, const ImVec2& size = { 300.f, 150.f }, bool disabled = false);
     void WindowOverlay(float alpha = 0.75);
     void WindowOverlay(ImU32 color);
     void MouseCursor();

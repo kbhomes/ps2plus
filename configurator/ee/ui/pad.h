@@ -13,6 +13,7 @@ namespace PS2Plus::Gamepad {
         PadPortStopped,
         PadPortOpening,
         PadPortSettingMode,
+        PadPortSettingActuators,
         PadPortReady,
         PadPortError,
         PadPortDisconnected,
@@ -35,6 +36,10 @@ namespace PS2Plus::Gamepad {
         uint8_t GetJoystickAxisRaw(JoystickAxis axis);
         float GetJoystickAxis(JoystickAxis axis);
         PadPortStatus GetStatus();
+        void SetRumbleActuatorSmall(bool active);
+        void SetRumbleActuatorLargePower(uint8_t power);
+        bool IsRumbleActuatorSmallActive();
+        uint8_t GetRumbleActuatorLargePower();
     };
 
     void Initialize();

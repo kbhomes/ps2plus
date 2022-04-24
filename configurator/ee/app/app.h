@@ -10,6 +10,7 @@ extern bool dialog_displaying;
 
 void app_display(ImGuiIO &io, configurator_state *state);
 void app_section_information(ImGuiIO &io, configurator_state *state);
+void app_section_test(ImGuiIO &io, configurator_state *state);
 void app_section_configuration(ImGuiIO &io, configurator_state *state);
 void app_section_firmware(ImGuiIO &io, configurator_state *state);
 void app_section_about(ImGuiIO &io, configurator_state *state);

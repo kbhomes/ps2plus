@@ -42,8 +42,4 @@ void app_section_information(ImGuiIO &io, configurator_state *state) {
     }
     
     ImGui::Separator();
-    
-    // Gamepad tester
-    ImGui::Indent(50);
-    PS2Plus::UI::GamePadVisualizer(&state->pad_status.pad, ImGui::GetWindowWidth() * 0.73, ImGui::GetWindowHeight() * 0.40);
 }

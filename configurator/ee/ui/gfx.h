@@ -1,6 +1,7 @@
 #ifndef UI_GFX_H
 #define UI_GFX_H
 
+#include <imgui/imgui.h>
 #include <gsKit.h>
 #include <stdint.h>
 #include <tamtypes.h>
@@ -11,6 +12,12 @@ namespace PS2Plus::Graphics {
     void BeginFrame(uint64_t color = GS_SETREG_RGBA(0, 0, 0, 0xFF));
     void EndFrame();
     void UpdateGamepad(const PS2Plus::Gamepad::PadStatus& pad);
+
+    ImFont *GetFontPlayStationLarge();
+
+    void PauseGamepadNav();
+    void ResumeGamepadNav();
+    bool IsGamepadNavActive();
 };
 
 #endif /* UI_GFX_H */
