@@ -81,10 +81,9 @@ void app_section_test(ImGuiIO &io, configurator_state *state) {
             const char *icon_left_joystick = (is_testing && joystick_active) ? ICON_PLAYSTATION_LEFT_STICK_ALT : ICON_PLAYSTATION_LEFT_STICK;
             const char *icon_dpad = (is_testing && dpad_active) ? ICON_PLAYSTATION_DS3_DPAD_FULL_ALT : ICON_PLAYSTATION_DS3_DPAD_FULL;
 
-            const ImVec4& disabled_color = ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled);
-            const ImVec4& standard_color = ImGui::GetStyleColorVec4(ImGuiCol_Text);
-            const ImVec4& triangle_color = is_testing ? ICON_PLAYSTATION_COLOR_TRIANGLE : disabled_color;
-            const ImVec4& text_color = is_testing ? standard_color : disabled_color;
+            const ImVec4& triangle_color = is_testing ? ICON_PLAYSTATION_COLOR_TRIANGLE : ImGui::GetStyleColorVec4(ImGuiCol_Text);
+
+            ImGui::BeginDisabled(!is_testing);
 
             ImGui::TableNextRow();
             ImGui::TableNextColumn(); 
@@ -97,18 +96,26 @@ void app_section_test(ImGuiIO &io, configurator_state *state) {
             ImGui::TableNextRow();
             ImGui::TableNextColumn(); 
             ImGui::TextColored(triangle_color, icon_triangle_button); ImGui::SameLine(0.f, 0.f); 
-            ImGui::TextColored(text_color, " + "); ImGui::SameLine(0.f, 0.f); 
-            ImGui::TextColored(text_color, icon_left_joystick);
+            ImGui::Text(" + "); ImGui::SameLine(0.f, 0.f); 
+            ImGui::Text(icon_left_joystick);
             ImGui::TableNextColumn(); 
-            ImGui::TextColored(text_color, "Actuate large rumble motor");
+            ImGui::Text("Actuate large rumble motor"); ImGui::SameLine();
+            ImGui::SetWindowFontScale(0.7f);
+            ImGui::ProgressBar((float)state->pad_status.GetRumbleActuatorLargePower() / 0xFF);
+            ImGui::SetWindowFontScale(1.f);
 
             ImGui::TableNextRow();
             ImGui::TableNextColumn(); 
             ImGui::TextColored(triangle_color, icon_triangle_button); ImGui::SameLine(0.f, 0.f); 
-            ImGui::TextColored(text_color, " + "); ImGui::SameLine(0.f, 0.f); 
-            ImGui::TextColored(text_color, icon_dpad);
+            ImGui::Text(" + "); ImGui::SameLine(0.f, 0.f); 
+            ImGui::Text(icon_dpad);
             ImGui::TableNextColumn(); 
-            ImGui::TextColored(text_color, "Actuate small rumble motor");
+            ImGui::Text("Actuate small rumble motor"); ImGui::SameLine();
+            ImGui::SetWindowFontScale(0.7f);
+            ImGui::ProgressBar(state->pad_status.IsRumbleActuatorSmallActive() ? 1.f : 0.f);
+            ImGui::SetWindowFontScale(1.f);
+            
+            ImGui::EndDisabled();
 
             ImGui::EndTable();
         }
