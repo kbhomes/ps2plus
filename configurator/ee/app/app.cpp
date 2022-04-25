@@ -77,6 +77,7 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         if (ImGui::BeginTabBar("Sections")) {
             // Control buttons on the ends have transparent backgrounds
             ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_Text, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
             ImGui::BeginDisabled(!PS2Plus::Graphics::IsGamepadNavActive());
             if (ImGui::TabItemButton(ICON_PLAYSTATION_L1_BUTTON_ALT, ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_NoTooltip)) {
                 active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
@@ -86,7 +87,15 @@ void app_display(ImGuiIO &io, configurator_state *state) {
                 active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
             }
             ImGui::EndDisabled();
+            ImGui::PopStyleColor(/* ImGuiCol_Text */);
             ImGui::PopStyleColor(/* ImGuiCol_Tab */);
+
+            // Indicate disabled tabs
+            ImGui::PushStyleColor(ImGuiCol_Tab, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Tab) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabActive, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabActive) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabHovered, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabHovered) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabUnfocused, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocused) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocusedActive) : ImVec4(0, 0, 0, 0));
 
             if (PS2Plus::Graphics::IsGamepadNavActive()) {
                 if (state->pad_status.IsButtonPressed(PAD_L1)) {
@@ -134,6 +143,8 @@ void app_display(ImGuiIO &io, configurator_state *state) {
                 ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
                 ImGui::EndTabItem();
             }
+
+            ImGui::PopStyleColor(5 /* ImGuiCol_Tab/TabActive/TabHovered/TabUnfocused/TabUnfocusedActive */);
 
             ImGui::EndTabBar();
         }
