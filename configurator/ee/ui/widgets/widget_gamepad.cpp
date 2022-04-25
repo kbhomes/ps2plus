@@ -56,6 +56,8 @@ void PS2Plus::UI::GamePadVisualizer(const char *id, PS2Plus::Gamepad::PadStatus 
     bool is_pad_r1 = disabled ? false : pad.IsButtonDown(PAD_R1);
     bool is_pad_r2 = disabled ? false : pad.IsButtonDown(PAD_R2);
     bool is_pad_r3 = disabled ? false : pad.IsButtonDown(PAD_R3);
+    bool is_pad_start = disabled ? false : pad.IsButtonDown(PAD_START);
+    bool is_pad_select = disabled ? false : pad.IsButtonDown(PAD_SELECT);
     uint8_t pad_js_left_x = disabled ? 0x7F : pad.GetJoystickAxisRaw(JSLeftX);
     uint8_t pad_js_left_y = disabled ? 0x7F : pad.GetJoystickAxisRaw(JSLeftY);
     uint8_t pad_js_right_x = disabled ? 0x7F : pad.GetJoystickAxisRaw(JSRightX);
@@ -96,6 +98,11 @@ void PS2Plus::UI::GamePadVisualizer(const char *id, PS2Plus::Gamepad::PadStatus 
     ImVec2 right_shoulder_center = local_pos + ImVec2(tile_x * 31.5, tile_y * 4.5); 
     ImGui::SetCursorPos(right_shoulder_center + ImVec2(0, tile_y * 1)); ImGui::Text(is_pad_r1 ? ICON_PLAYSTATION_R1_BUTTON_ALT : ICON_PLAYSTATION_R1_BUTTON);
     ImGui::SetCursorPos(right_shoulder_center + ImVec2(0, tile_y * -1)); ImGui::Text(is_pad_r2 ? ICON_PLAYSTATION_R2_BUTTON_ALT : ICON_PLAYSTATION_R2_BUTTON);
+
+    // Draw the start/select buttons
+    ImVec2 start_select_center = local_pos + ImVec2(tile_x * 35 * 0.5f, tile_y * 8.5); 
+    ImGui::SetCursorPos(start_select_center + ImVec2(tile_x * 2.5, 0)); ImGui::Text(is_pad_start ? ICON_PLAYSTATION_START_BUTTON_LABEL_ALT : ICON_PLAYSTATION_START_BUTTON_LABEL);
+    ImGui::SetCursorPos(start_select_center + ImVec2(tile_x * -2.5, 0)); ImGui::Text(is_pad_select ? ICON_PLAYSTATION_SELECT_BUTTON_LABEL_ALT : ICON_PLAYSTATION_SELECT_BUTTON_LABEL);
 
     // Draw the left/right joysticks
     ImVec2 joystick_left_center = ImVec2(p.x + aspect_size.x*5/13, p.y + aspect_size.y*0.75);

@@ -38,4 +38,16 @@ void app_section_about(ImGuiIO &io, configurator_state *state) {
         : ICON_PLAYSTATION_SQUARE_BUTTON); 
     ImGui::SameLine(); 
     ImGui::Text("Mark");
+
+    ImGui::Text(state->pad_status.IsButtonDown(PAD_START) 
+        ? ICON_PLAYSTATION_START_BUTTON_ALT
+        : ICON_PLAYSTATION_START_BUTTON); 
+    ImGui::SameLine(); 
+    ImGui::Text("Start");
+
+    ImGui::Text(state->pad_status.IsButtonDown(PAD_SELECT) 
+        ? ICON_PLAYSTATION_SELECT_BUTTON_ALT 
+        : ICON_PLAYSTATION_SELECT_BUTTON); 
+    ImGui::SameLine(); 
+    ImGui::Text("Select");
 }

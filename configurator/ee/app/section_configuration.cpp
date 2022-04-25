@@ -38,8 +38,8 @@ void show_button_remap_combo(const char *combo_id, ps2plus_controller_digital_bu
         { DBR2, ICON_PLAYSTATION_R2_BUTTON }, 
         { DBL3, ICON_PLAYSTATION_L3_BUTTON }, 
         { DBR3, ICON_PLAYSTATION_R3_BUTTON }, 
-        { DBStart, "ST" },
-        { DBSelect, "SL" },
+        { DBStart, ICON_PLAYSTATION_START_BUTTON_LABEL },
+        { DBSelect, ICON_PLAYSTATION_SELECT_BUTTON_LABEL },
     };
     ps2plus_controller_digital_button current_remapped = (ps2plus_controller_digital_button)*p_button_remapping;
     bool is_remapped = (current_remapped != button_id);
@@ -143,9 +143,9 @@ void app_configuration_button_remapping(ImGuiIO &io, configurator_state *state) 
         ImGui::TableNextColumn(); show_button_remap_combo("##RemapL3", DBL3, p_button_remappings[DBL3]);
         ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_R3_BUTTON); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
         ImGui::TableNextColumn(); show_button_remap_combo("##RemapR3", DBR3, p_button_remappings[DBR3]);
-        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text("ST" " " ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_START_BUTTON_LABEL); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
         ImGui::TableNextColumn(); show_button_remap_combo("##RemapST", DBStart, p_button_remappings[DBStart]);
-        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text("SL" " " ICON_FK_LONG_ARROW_RIGHT);
+        ImGui::TableNextColumn(); ImGui::AlignTextToFramePadding(); ImGui::Text(ICON_PLAYSTATION_SELECT_BUTTON_LABEL); ImGui::SameLine(); ImGui::Text(ICON_FK_LONG_ARROW_RIGHT);
         ImGui::TableNextColumn(); show_button_remap_combo("##RemapSL", DBSelect, p_button_remappings[DBSelect]);
 
         ImGui::EndTable();
