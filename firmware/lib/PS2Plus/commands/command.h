@@ -21,6 +21,7 @@ typedef struct command_processor {
 } command_processor;
 
 // Controller command processors
+#if defined(PS2PLUS_FIRMWARE)
 extern command_processor command_controller_initialize_pressure_sensor;
 extern command_processor command_controller_button_inclusions;
 extern command_processor command_controller_main_polling;
@@ -32,10 +33,10 @@ extern command_processor command_controller_device_descriptor_47;
 extern command_processor command_controller_device_descriptor_4c;
 extern command_processor command_controller_map_motors;
 extern command_processor command_controller_configure_analog_response;
+#endif
 
 // PS2+ configuration command processors
 extern command_processor command_ps2plus_get_version;
-
 #if defined(PS2PLUS_FIRMWARE)
 extern command_processor command_ps2plus_get_configuration;
 extern command_processor command_ps2plus_set_configuration;

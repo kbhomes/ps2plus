@@ -12,7 +12,7 @@ typedef struct {
   /**
    * @brief Current status of the bootloader's update process
    * 
-   * Defaults to "error" if the update process has not yet started.
+   * Defaults to "pending" if the update process has not yet started.
    */
   ps2plus_bootloader_status status;
   

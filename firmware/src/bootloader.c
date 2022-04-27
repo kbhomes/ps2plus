@@ -2,50 +2,52 @@
 
 #include "main.h"
 
-#include <xc.h>
+static unsigned long millis_init;
+static bool is_updating;
 
 void main_init(volatile controller_state *state) {
-  GIE = 0;
-  
-//  puts("[bootloader] Initializing");
-//  printf("[bootloader] Erasing firmware: %02X\n", platform_bootloader_calculate_firmware_checksum());
-//  
-//  // Infinite loop!
-//  while (true) { }
-  
-  puts("[bootloader] Waiting one second for firmware update signal");
-  platform_timing_sleep(1000);
-  
-  if (platform_controller_read_digital_button(DBTriangle)) {
-    puts("[bootloader] Remaining in bootloader");
-  } else {
-    // Transfer execution to the firmware
-    puts("[bootloader] Transferring execution to firmware");
-    platform_bootloader_execute_firmware();
-  }
+  puts("[bootloader] Waiting 1 second for firmware update signal");
+  millis_init = platform_timing_millis();
+  is_updating = false;
 }
 
 void main_loop(volatile controller_state *state) {
-//  puts("[bootloader] Loop...");
+  unsigned long millis_now = platform_timing_millis();
 
-//  if (!state->bootloader.update.ready) {
-//    return;
-//  }
-//  
-//  if (state->bootloader.update.record_type == BLRecordTypeStart) {
-//    state->bootloader.status = BLStatusOk;
-//  } else if (state->bootloader.update.record_type == BLRecordTypeEnd) {
-//    // TODO: Reboot the controller
-//  } else if (state->bootloader.update.record_type == BLRecordTypeData) {
-//    // TODO: Check data validity with checksum
-//    // TODO: Check address validity with bootloader ranges
-//    // TODO: Check first instruction validity with expected jump instruction
-//    // TODO: Write data to program memory
-//    state->bootloader.status = BLStatusOk;
-//  }
-//  
-//  // Mark this update as processed
-//  state->bootloader.update.ready = false;
+  printf("MS: %lu\n", millis_now);
+  
+  if (!is_updating && millis_now - millis_init > 1000ul) {
+    // Transfer execution to the firmware
+    puts("[bootloader] Didn't receive update signal in 1 second, transferring execution to firmware");
+    platform_bootloader_execute_firmware();
+  }
+  
+  if (!is_updating && state->bootloader.update.ready) {
+    // Bootloader received an update signal, so remain here
+    puts("[bootloader] Received update signal, remaining in bootloader");
+    is_updating = true;
+  }
+  
+  if (!state->bootloader.update.ready) {
+    // Nothing required until this update is ready
+    return;
+  }
+  
+  if (state->bootloader.update.record.type == BLRecordTypeStart) {
+    state->bootloader.status = BLStatusOk;
+  } else if (state->bootloader.update.record.type == BLRecordTypeEnd) {
+    // Reboot the controller now that the firmware is updated
+    platform_reset();
+  } else if (state->bootloader.update.record.type == BLRecordTypeData) {
+    // TODO: Check data validity with checksum
+    // TODO: Check address validity with bootloader ranges
+    // TODO: Check first instruction validity with expected jump instruction
+    // TODO: Write data to program memory
+    state->bootloader.status = BLStatusOk;
+  }
+  
+  // Mark this update as processed
+  state->bootloader.update.ready = false;
 }
 
 #endif

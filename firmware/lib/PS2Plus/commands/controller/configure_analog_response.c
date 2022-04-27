@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 const uint8_t CAR_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x5A };
@@ -30,3 +32,5 @@ command_processor command_controller_configure_analog_response = {
     .initialize = &car_initialize,
     .process = &car_process,
 };
+
+#endif

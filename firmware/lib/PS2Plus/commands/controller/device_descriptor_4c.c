@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 const uint8_t DD4C_CONSTANT_BYTES[2][5] = { 
@@ -42,3 +44,5 @@ command_processor command_controller_device_descriptor_4c = {
     .initialize = &dd4c_initialize,
     .process = &dd4c_process,
 };
+
+#endif

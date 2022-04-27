@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 const uint8_t CONFIG_MODE_RESPONSE_BYTES[6] = { 0x00 };
@@ -71,3 +73,5 @@ command_processor command_controller_enter_exit_config = {
   .initialize = &mp_initialize,
   .process = &mp_process,
 };
+
+#endif

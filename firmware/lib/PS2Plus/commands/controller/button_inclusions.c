@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 const uint8_t BI_ANALOG_INCLUSION_BYTES[6] = { 0xFF, 0xFF, 0x03, 0x00, 0x00, 0x5A };
@@ -28,3 +30,5 @@ command_processor command_controller_button_inclusions = {
     .initialize = &bi_initialize,
     .process = &bi_process,
 };
+
+#endif

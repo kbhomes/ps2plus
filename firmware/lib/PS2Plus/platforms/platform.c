@@ -38,3 +38,8 @@ void platform_memory_write_array(size_t address, uint8_t *src, size_t count) {
     platform_memory_write(address++, *src++);
   }
 }
+
+void platform_spi_playstation_ack_write(uint8_t value) {
+  platform_spi_playstation_ack();
+  platform_spi_playstation_write(value);
+}

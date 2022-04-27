@@ -1,5 +1,6 @@
 #include "command.h"
 
+#if defined(PS2PLUS_FIRMWARE)
 /**
  * @brief Processors for PlayStation 2 controller commands
  * 
@@ -22,6 +23,7 @@ command_processor *command_controller_processors[] = {
   NULL,
   &command_controller_configure_analog_response,     // 4Fh
 };
+#endif
 
 /**
  * @brief Processors for PS2+ configuration commands
@@ -32,6 +34,7 @@ command_processor *command_controller_processors[] = {
  */
 command_processor *command_ps2plus_processors[] = {
 #if defined(PS2PLUS_FIRMWARE)
+  // Firmware requires support for all configuration-related commands
   &command_ps2plus_get_version,                    // 70h
   &command_ps2plus_get_configuration,              // 71h
   &command_ps2plus_set_configuration,              // 72h
@@ -41,6 +44,7 @@ command_processor *command_ps2plus_processors[] = {
   &command_ps2plus_reboot_controller,              // 7Dh
   NULL, NULL,                                      // 7Eh - 7Fh
 #elif defined(PS2PLUS_BOOTLOADER)
+  // Bootloader only needs to support version and bootloader-specific commands
   &command_ps2plus_get_version,                                                  // 70h
   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,  // 71h - 7Dh
   &command_ps2plus_bootloader_update_firmware_data,                              // 7Eh
@@ -54,7 +58,11 @@ command_processor *command_ps2plus_processors[] = {
  */
 command_processor **command_processors[] = {
   NULL, NULL, NULL, NULL,
-  command_controller_processors,                               // 40h - 4Fh
+#if defined(PS2PLUS_FIRMWARE)
+  command_controller_processors,                               // 40h - 4Fh (firmware))
+#elif defined(PS2PLUS_BOOTLOADER)
+  NULL,                                                        // 40h - 4Fh (bootloader)
+#endif
   NULL, NULL,
   command_ps2plus_processors,                                  // 70h - 7Fh
   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,

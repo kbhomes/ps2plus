@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 command_result mm_initialize(volatile command_packet *packet, controller_state *state) {
@@ -40,3 +42,5 @@ command_processor command_controller_map_motors = {
     .initialize = &mm_initialize,
     .process = &mm_process,
 };
+
+#endif

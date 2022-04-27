@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 command_result sdam_initialize(volatile command_packet *packet, controller_state *state) {
@@ -32,3 +34,5 @@ command_processor command_controller_switch_digital_analog_mode = {
     .initialize = &sdam_initialize,
     .process = &sdam_process,
 };
+
+#endif

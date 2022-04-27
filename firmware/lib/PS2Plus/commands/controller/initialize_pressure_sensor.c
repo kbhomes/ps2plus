@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 const uint8_t IPS_RESPONSE_BYTES[6] = { 0x00, 0x00, 0x02, 0x00, 0x00, 0x5A };
@@ -23,3 +25,5 @@ command_processor command_controller_initialize_pressure_sensor = {
     .initialize = &ips_initialize,
     .process = &ips_process,
 };
+
+#endif

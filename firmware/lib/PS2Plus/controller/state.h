@@ -27,7 +27,13 @@ typedef struct {
     primitive_data /* uint16_t */ bootloader;
 #endif
   } versions;
+
+  /**
+   * @brief Mode identifier sent in all SPI communication
+   */
+  uint8_t mode;
   
+#ifdef PS2PLUS_FIRMWARE
   /**
    * @brief Current button and joystick input
    */
@@ -50,11 +56,6 @@ typedef struct {
   bool config_mode;
 
   /**
-   * @brief Mode identifier combining analog and config statuses
-   */
-  uint8_t mode;
-
-  /**
    * @brief Rumble motor information for the small motor (FFh = on)
    */
   controller_rumble_motor rumble_motor_small;
@@ -64,7 +65,6 @@ typedef struct {
    */
   controller_rumble_motor rumble_motor_large;
 
-#ifdef PS2PLUS_FIRMWARE
   /**
    * @brief Custom configuration information, persisted in internal storage
    */

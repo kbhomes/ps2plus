@@ -1,3 +1,5 @@
+#ifdef PS2PLUS_FIRMWARE
+
 #include "../command.h"
 
 const uint8_t DD47_CONSTANT_BYTES[5] = { 0x00, 0x02, 0x00, 0x01, 0x00 };
@@ -27,3 +29,5 @@ command_processor command_controller_device_descriptor_47 = {
     .initialize = &dd47_initialize,
     .process = &dd47_process,
 };
+
+#endif
