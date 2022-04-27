@@ -28,6 +28,7 @@ void main_init(volatile controller_state *state) {
   puts("[bootloader] Waiting 1 second for firmware update signal");
   millis_init = platform_timing_millis();
   is_updating = false;
+  is_waiting = false;
   is_wait_combo_pressed = check_wait_combo();
 }
 
