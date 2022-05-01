@@ -10,13 +10,15 @@ int _start(int argc, char * argv[]) {
         return MODULE_NO_RESIDENT_END;
 
     static ps2plman_rpc_command_handler handlers[NUM_PS2PLUS_RPC_COMMANDS] = {
-        NULL,                                    // PS2Plus_Init,
-        &command_get_version,                    // PS2Plus_GetVersion,
-        &command_get_configuration,              // PS2Plus_GetConfiguration,
-        &command_set_configuration,              // PS2Plus_SetConfiguration,
-        &command_disable_enable_configuration,   // PS2Plus_DisableEnableConfiguration,
-        &command_restore_configuration_defaults, // PS2Plus_RestoreConfigurationDefaults,
-        &command_reboot_controller,              // PS2Plus_RebootController,
+        NULL,                                               // PS2Plus_Init,
+        &command_get_version,                               // PS2Plus_GetVersion,
+        &command_get_configuration,                         // PS2Plus_GetConfiguration,
+        &command_set_configuration,                         // PS2Plus_SetConfiguration,
+        &command_disable_enable_configuration,              // PS2Plus_DisableEnableConfiguration,
+        &command_restore_configuration_defaults,            // PS2Plus_RestoreConfigurationDefaults,
+        &command_reboot_controller,                         // PS2Plus_RebootController,
+        &command_bootloader_update_firmware_data,           // PS2Plus_BootloaderUpdateFirmwareData,
+        &command_bootloader_query_firmware_update_status,   // PS2Plus_BootloaderQueryFirmwareUpdateStatus,
     };
 
     ps2plman_rpc_init(handlers);

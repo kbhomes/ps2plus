@@ -255,6 +255,7 @@ void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
       break;
 
     case StatusUpdating:
+    case StatusUpdatePending:
       progress = (float)state->current_controller->update.last_record_index / state->current_controller->update.total_records;
       label = "Updating controller";
       status = PS2Plus::UI::StatusType_Loading;
@@ -277,7 +278,7 @@ void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
   ImGui::SetCursorPos((ImGui::GetWindowSize() - totalStatusSize) * 0.5f);
   PS2Plus::UI::StatusText(label, status);
 
-  if (state->current_controller->update.status == StatusUpdating) {
+  if (state->current_controller->update.status == StatusUpdating || state->current_controller->update.status == StatusUpdatePending) {
     float windowWidth = ImGui::GetWindowSize().x;
     float progressPadding = windowWidth * 0.1f;
     ImGui::SetCursorPos(ImGui::GetCursorPos() + ImVec2(progressPadding, 0));

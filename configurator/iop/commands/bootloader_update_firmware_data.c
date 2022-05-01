@@ -26,11 +26,11 @@ void command_bootloader_update_firmware_data(ps2plman_rpc_packet *packet) {
     tx_[3] = (command->record.target_address >> 16) & 0xFF;
     tx_[4] = (command->record.target_address >> 24) & 0xFF;
     tx_[5] = command->record.data_length;
-    tx_[6 + command->record.data_length];
+    tx_[6 + command->record.data_length] = command->record.data_checksum;
     for (size_t i = 0; i < command->record.data_length; i++) {
         tx_[6 + i] = command->record.data[i];
     }
 
     // Transmit the value
-    packet->ok = ps2plman_spi_transmit_mock(0x7E, tx_, rx_, 6 + command->record.data_length, rx_mock_bootloader_update_firmware_data);
+    packet->ok = ps2plman_spi_transmit_mock(0x7E, tx_, rx_, 6 + command->record.data_length + 1, rx_mock_bootloader_update_firmware_data);
 }

@@ -10,6 +10,7 @@ typedef enum {
     StatusPending,
     StatusRebooting,
     StatusUpdating,
+    StatusUpdatePending,
     StatusCompleted,
     StatusFailed
 } configurator_ps2plus_controller_update_status;

@@ -18,7 +18,7 @@ IRX_OBJS = \
 EE_BIN = $(BUILDDIR)/ps2plman.elf
 EE_INCS += -I./ -Ilib -I../common -I../..
 EE_LIBS += -lpatches -lpad -lfileXio
-EE_CXXFLAGS += -std=gnu++11
+EE_CXXFLAGS += -std=gnu++17
 
 EE_OBJS = $(addprefix $(BUILDDIR)/, $(patsubst %.c, %.o, $(patsubst %.cpp, %.o, $(SRCFILES))))
 

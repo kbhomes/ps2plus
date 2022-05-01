@@ -30,4 +30,5 @@ private:
     uint8_t _configurationVersion;
 
     static const std::vector<std::string> _testFilenames;
+    static const std::vector<std::string> _testFirmware;
 };

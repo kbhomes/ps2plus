@@ -58,7 +58,7 @@ void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
 }
 
 void app_display(ImGuiIO &io, configurator_state *state) {
-    static int active_tab = 1;
+    static int active_tab = 0;
     static int tab_count = 5;
 
     // Full screen "window" that can't be moved or resized
