@@ -36,7 +36,7 @@
             ],
             "compilerPath": "/usr/local/ps2dev/ee/bin/mips64r5900el-ps2-elf-g++",
             "cStandard": "c99",
-            "cppStandard": "c++03",
+            "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-x64",
             "configurationProvider": "ms-vscode.makefile-tools"
         },

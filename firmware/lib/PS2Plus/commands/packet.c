@@ -47,8 +47,16 @@ void command_packet_step(volatile command_packet *packet, volatile controller_st
   } else if (packet->completed) {
     command_processor *processor = (command_processor *)packet->processor;
 
-    if (processor != NULL && processor->finalize != NULL) {
-      processor->finalize(packet, state);
+    if (processor != NULL) {
+      // MPLAB XC8 compiler seems to have a bug with incorrectly optimizing out
+      // calls to the finalize function, thinking that it's always NULL. This
+      // is a hacky workaround to tell XC8 that the finalizer pointer *will*
+      // have a value and therefore can't be removed.
+      // See: https://www.microchip.com/forums/m1062107.aspx
+      command_processor_finalize_func finalizer = (processor->finalize != NULL)
+          ? processor->finalize
+          : &command_processor_finalize_dummy;
+      finalizer(packet, state);
     }
   }
   

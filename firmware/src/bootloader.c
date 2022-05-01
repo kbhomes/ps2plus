@@ -15,6 +15,37 @@ static bool is_waiting;
 // waiting indefinitely has been held since startup.
 static bool is_wait_combo_pressed;
 
+static void print_hex_array(const uint8_t *array, size_t length) {
+  for (size_t i = 0; i < length; i++) {
+    printf("%02X ", array[i]);
+  }
+}
+
+static void print_checksum_calculation(ps2plus_bootloader_update_record *record) {
+  uint8_t checksum = 0;
+  
+  // Compute the checksum on all relevant components of the record
+  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)(record->target_address & 0xFF), (uint8_t)(checksum + (uint8_t)(record->target_address & 0xFF)));
+  checksum += record->target_address & 0xFF;
+  
+  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 8) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 8) & 0xFF)));
+  checksum += (record->target_address >> 8) & 0xFF;
+  
+  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 16) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 16) & 0xFF)));
+  checksum += (record->target_address >> 16) & 0xFF;
+  
+  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 24) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 24) & 0xFF)));
+  checksum += (record->target_address >> 24) & 0xFF;
+  
+  printf("[cs] %02X + %02X -> %02X\n", checksum, record->data_length, (uint8_t)(checksum + record->data_length));
+  checksum += record->data_length;
+  
+  for (int i = 0; i < record->data_length && i < sizeof(record->data); i++) {
+    printf("[cs] %02X + %02X -> %02X\n", checksum, record->data[i], (uint8_t)(checksum + record->data[i]));
+    checksum += record->data[i];
+  }
+}
+
 bool check_wait_combo() {
   return (
     platform_controller_read_digital_button(DBL1) &&
@@ -37,6 +68,13 @@ void main_loop(volatile controller_state *state) {
     // Check if the user is still pressing the wait combo
     is_wait_combo_pressed = is_wait_combo_pressed && check_wait_combo();
 
+    // Check if an update has been signaled
+    if (state->bootloader.update.ready) {
+      // Bootloader received an update signal, so remain here
+      puts("[bootloader] Received update signal, remaining in bootloader");
+      is_updating = true;
+    }
+
     // Check if the one-second wait has expired
     if (platform_timing_millis() - millis_init > 1000ul) {
       if (is_wait_combo_pressed) {
@@ -49,13 +87,6 @@ void main_loop(volatile controller_state *state) {
         platform_bootloader_execute_firmware();
       }
     }
-
-    // Check if an update has been signaled
-    if (state->bootloader.update.ready) {
-      // Bootloader received an update signal, so remain here
-      puts("[bootloader] Received update signal, remaining in bootloader");
-      is_updating = true;
-    }
   }
   
   if (!state->bootloader.update.ready) {
@@ -63,17 +94,49 @@ void main_loop(volatile controller_state *state) {
     return;
   }
   
-  if (state->bootloader.update.record.type == BLRecordTypeStart) {
+  volatile ps2plus_bootloader_update_record *record = &state->bootloader.update.record;
+  
+  if (record->type == BLRecordTypeStart) {
     state->bootloader.status = BLStatusOk;
-  } else if (state->bootloader.update.record.type == BLRecordTypeEnd) {
+  } else if (record->type == BLRecordTypeEnd) {
     // Reboot the controller now that the firmware is updated
     platform_reset();
-  } else if (state->bootloader.update.record.type == BLRecordTypeData) {
-    // TODO: Check data validity with checksum
-    // TODO: Check address validity with bootloader ranges
-    // TODO: Check first instruction validity with expected jump instruction
-    // TODO: Write data to program memory
-    state->bootloader.status = BLStatusOk;
+  } else if (record->type == BLRecordTypeData) {
+    bool ok = true;
+    bool checksum_validity = ps2plus_bootloader_update_record_validate_checksum(record);
+    platform_bootloader_update_record_address_validity address_validity = platform_bootloader_validate_update_record_address(record);
+    
+    if (ok && !checksum_validity) {
+      state->bootloader.error = BEInvalidChecksum;
+      state->bootloader.status = BLStatusError;
+      ok = false;
+      
+      puts("[bootloader] Checksum calculation:");
+      print_checksum_calculation(record);
+      
+      puts("[bootloader] Calculated checksum did not match:");
+      printf("  Expected checksum: 0x%X\n", record->data_checksum);
+      printf("  Calculated checksum: 0x%X\n", ps2plus_bootloader_update_record_calculate_checksum(record));
+      printf("  Target address: 0x%lX\n", record->target_address);
+      printf("  Data length: 0x%X\n", record->data_length);
+      printf("  Data: "); print_hex_array(record->data, record->data_length); puts("");
+    } 
+    
+    if (ok && address_validity == BLAddressInvalid) {
+      state->bootloader.error = BEInvalidAddress;
+      state->bootloader.status = BLStatusError;
+      ok = false;
+    } 
+    
+    if (ok && address_validity == BLAddressValid && !platform_bootloader_flash_update_record(record)) {
+      state->bootloader.error = BEUnspecifiedError;
+      state->bootloader.status = BLStatusError;
+      ok = false;
+    }
+    
+    if (ok) { 
+      state->bootloader.status = BLStatusOk;
+    }
   }
   
   // Mark this update as processed

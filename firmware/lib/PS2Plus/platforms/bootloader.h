@@ -5,6 +5,12 @@
 #include <stdint.h>
 #include <shared/bootloader.h>
 
+typedef enum {
+  BLAddressInvalid,
+  BLAddressValid,
+  BLAddressIgnore,
+} platform_bootloader_update_record_address_validity;
+
 /**
  * @brief Function pointer type used to point to the start address of the firmware
  */
@@ -20,7 +26,7 @@ void platform_bootloader_execute_firmware(void);
  * 
  * If the target address falls into the bootloader address range, this will return false.
  */
-bool platform_bootloader_validate_update_record_address(ps2plus_bootloader_update_record *record);
+platform_bootloader_update_record_address_validity platform_bootloader_validate_update_record_address(ps2plus_bootloader_update_record *record);
 
 /**
  * @brief Flashes the update record to program memory

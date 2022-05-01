@@ -13,12 +13,20 @@ typedef enum {
   CRError,
 } command_result;
 
+typedef command_result (*command_processor_initialize_func)(volatile command_packet *packet, controller_state *);
+typedef command_result (*command_processor_process_func)(volatile command_packet *packet, controller_state *);
+typedef void (*command_processor_finalize_func)(volatile command_packet *packet, controller_state *);
+
 typedef struct command_processor {
   uint8_t id;
-  command_result (*initialize)(volatile command_packet *packet, controller_state *);
-  command_result (*process)(volatile command_packet *packet, controller_state *);
-  void (*finalize)(volatile command_packet *packet, controller_state *);
+  command_processor_initialize_func initialize;
+  command_processor_process_func process;
+  command_processor_finalize_func finalize;
 } command_processor;
+
+static void command_processor_finalize_dummy(volatile command_packet *packet, controller_state *state) {
+  return;
+}
 
 // Controller command processors
 #if defined(PS2PLUS_FIRMWARE)

@@ -3,7 +3,7 @@
 #include "pic18f46k42_platform.h"
 
 #define PIC_FLASH_BLOCK_SIZE    128
-#define PIC_FLASH_END_ADDRESS   0x010000
+#define PIC_FLASH_END_ADDRESS   0x10000
 
 // Firmware "jump vector"
 platform_bootloader_execute_firmware_function execute_firmware_function = PIC_FIRMWARE_BASE;
@@ -129,12 +129,21 @@ void platform_bootloader_execute_firmware(void) {
   execute_firmware_function();
 }
 
-bool platform_bootloader_validate_update_record_address(ps2plus_bootloader_update_record *record) {
-  return record->target_address >= 0x4000 && record->target_address < 0x10000;
+platform_bootloader_update_record_address_validity platform_bootloader_validate_update_record_address(ps2plus_bootloader_update_record *record) {
+  if (record->target_address < PIC_FIRMWARE_BASE) {
+    // Writes in the bootloader are invalid
+    return BLAddressInvalid;
+  } else if (record->target_address >= PIC_FLASH_END_ADDRESS) {
+    // Writes past flash memory (typically configuration IDs or device words) are ignored
+    return BLAddressIgnore;
+  } else {
+    // Writes in non-bootloader flash memory are valid
+    return BLAddressValid;
+  }
 }
 
 bool platform_bootloader_flash_update_record(ps2plus_bootloader_update_record *record) {
-  
+  pic_flash_write_bytes(record->target_address, record->data, record->data_length);
 }
 
 void print_range(uint32_t start, uint32_t end) {

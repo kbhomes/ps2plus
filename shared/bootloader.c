@@ -10,7 +10,7 @@ uint8_t ps2plus_bootloader_update_record_calculate_checksum(ps2plus_bootloader_u
   checksum += (record->target_address >> 24) & 0xFF;
   checksum += record->data_length;
   
-  for (int i = 0; i < sizeof(record->data); i++) {
+  for (int i = 0; i < record->data_length && i < sizeof(record->data); i++) {
     checksum += record->data[i];
   }
   
