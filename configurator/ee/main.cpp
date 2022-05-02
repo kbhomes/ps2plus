@@ -14,7 +14,6 @@
 #include "app/app.h"
 
 #include "state.h"
-#include "ui/custom_font.h"
 #include "ui/drawing/drawing.h"
 #include "ui/gfx.h"
 #include "ui/pad.h"

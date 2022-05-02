@@ -6,13 +6,18 @@
 
 #include "fonts/forkawesome.h"
 #include "fonts/playstation.h"
-#include "custom_font.h"
 #include "drawing/drawing.h"
 #include "widgets/widget.h"
+#include "../util/resource.h"
 
 static GSGLOBAL *gsGlobal;
 static bool hires;
 static ImFont *fontPlayStationLarge;
+
+// External font resources
+RESOURCE_EXTERNS(fonts_cousine_regular_ttf);
+RESOURCE_EXTERNS(fonts_forkawesome_subset_ttf);
+RESOURCE_EXTERNS(fonts_playstation_ttf);
 
 void initializeGsKit() {
     // TODO: Can't get hires to work on my PS2 :(
@@ -75,11 +80,11 @@ void initializeImGui() {
     // this, oversampling can be disabled on fonts, and fonts should have glyph ranges minimized to only
     // characters that are used.
 
-    // Add the PlayStation font in large format (this is a new font)
+    // Add the default font
     {
         ImFontConfig config;
         config.OversampleH = config.OversampleV = 1;
-        io.Fonts->AddFontFromMemoryCompressedTTF(custom_font_compressed_data, custom_font_compressed_size, 18.f, &config);
+        io.Fonts->AddFontFromMemoryTTF(RESOURCE_POINTER(fonts_cousine_regular_ttf), RESOURCE_SIZE(fonts_cousine_regular_ttf), 18.f, &config);
     }
 
     // Add the PlayStation font
@@ -90,7 +95,7 @@ void initializeImGui() {
         config.GlyphMinAdvanceX = 18.0f; // Use if you want to make the icon monospaced
         config.GlyphOffset = ImVec2(0.f, 3.f);
         static const ImWchar icon_ranges[] = { ICON_PLAYSTATION_GLYPH_MIN, ICON_PLAYSTATION_GLYPH_MAX, 0 };
-        io.Fonts->AddFontFromMemoryCompressedTTF(ICON_PLAYSTATION_TTF_COMPRESSED_DATA, ICON_PLAYSTATION_TTF_COMPRESSED_SIZE, 20.f, &config, icon_ranges);
+        io.Fonts->AddFontFromMemoryTTF(RESOURCE_POINTER(fonts_playstation_ttf), RESOURCE_SIZE(fonts_playstation_ttf), 20.f, &config, icon_ranges);
     }
 
     // Add the ForkAwesome font
@@ -101,7 +106,7 @@ void initializeImGui() {
         config.GlyphMinAdvanceX = 36.0f; // Use if you want to make the icon monospaced
         config.GlyphOffset = ImVec2(0.f, 3.f);
         static const ImWchar icon_ranges[] = { ICON_FK_GLYPH_MIN, ICON_FK_GLYPH_MAX, 0 };
-        io.Fonts->AddFontFromMemoryCompressedTTF(ICON_FK_TTF_COMPRESSED_DATA, ICON_FK_TTF_COMPRESSED_SIZE, 18.f, &config, icon_ranges);
+        io.Fonts->AddFontFromMemoryTTF(RESOURCE_POINTER(fonts_forkawesome_subset_ttf), RESOURCE_SIZE(fonts_forkawesome_subset_ttf), 18.f, &config, icon_ranges);
     }
 
     // Add the PlayStation font in large format (this is a new font)
@@ -109,7 +114,7 @@ void initializeImGui() {
         ImFontConfig config;
         config.OversampleH = config.OversampleV = 1;
         static const ImWchar icon_ranges[] = { ICON_PLAYSTATION_GLYPH_MIN, ICON_PLAYSTATION_GLYPH_MAX, 0 };
-        fontPlayStationLarge = io.Fonts->AddFontFromMemoryCompressedTTF(ICON_PLAYSTATION_TTF_COMPRESSED_DATA, ICON_PLAYSTATION_TTF_COMPRESSED_SIZE, 28.f, &config, icon_ranges);
+        fontPlayStationLarge = io.Fonts->AddFontFromMemoryTTF(RESOURCE_POINTER(fonts_playstation_ttf), RESOURCE_SIZE(fonts_playstation_ttf), 28.f, &config, icon_ranges);
     }
 
     ImGuiStyle& style = ImGui::GetStyle();

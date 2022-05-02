@@ -3,10 +3,12 @@
 DEBUG = 1
 
 BUILDDIR = $(ROOTDIR)/build/$(PROJECTDIR)
-PROJECTDIR = $(ROOTDIR)/$(PROJECTDIR)
 
 SRCDIRS = ./ ../common ../../shared
 SRCFILES = $(foreach dir, $(SRCDIRS), $(shell find $(dir) -name '*.c' -o -name '*.cpp'))
+
+RESOURCEDIR = ./resources
+RESOURCEFILES = $(shell find $(RESOURCEDIR) -type f)
 
 IRX_OBJS = \
 	$(ROOTDIR)/build/$(PROJECTDIR)/ps2plman_irx.o \
@@ -21,6 +23,9 @@ EE_LIBS += -lpatches -lpad -lfileXio
 EE_CXXFLAGS += -std=gnu++17
 
 EE_OBJS = $(addprefix $(BUILDDIR)/, $(patsubst %.c, %.o, $(patsubst %.cpp, %.o, $(SRCFILES))))
+
+# Add all resource files into the compilation
+EE_OBJS += $(addprefix $(BUILDDIR)/, $(addsuffix .o, $(RESOURCEFILES)))
 
 # Add all required IRX files into the compilation
 EE_OBJS += $(IRX_OBJS)
@@ -40,6 +45,11 @@ EE_LDFLAGS += -g
 else
 EE_LDFLAGS += -s
 endif
+
+# Include resources as binary identifiers
+$(BUILDDIR)/$(RESOURCEDIR)/%.o: $(RESOURCEDIR)/%
+	mkdir -p $(BUILDDIR)/$(dir $<)
+	$(EE_LD) --relocatable --format binary -o $@ $<
 
 # Use C++ compiler for all files in this compilation
 $(BUILDDIR)/%.o: %.c
