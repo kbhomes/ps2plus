@@ -5,6 +5,13 @@
 #define PIC_FLASH_BLOCK_SIZE    128
 #define PIC_FLASH_END_ADDRESS   0x10000
 
+// Bitmask that can be and-ed with an address to get the offset of the address within its flash memory block
+#define PIC_FLASH_BLOCK_OFFSET_MASK   (PIC_FLASH_BLOCK_SIZE-1)
+
+// Bitmask that can be and-ed with an address to get the flash memory block that the address is a part of
+// (i.e.: address == ((address & PIC_FLASH_BLOCK_ADDRESS_MASK) + (address & PIC_FLASH_BLOCK_OFFSET_MASK))
+#define PIC_FLASH_BLOCK_ADDRESS_MASK  ((PIC_FLASH_END_ADDRESS-1) ^ PIC_FLASH_BLOCK_OFFSET_MASK)
+
 // Firmware "jump vector"
 platform_bootloader_execute_firmware_function execute_firmware_function = PIC_FIRMWARE_BASE;
 
@@ -55,7 +62,7 @@ bool pic_flash_write_block(uint32_t address, uint8_t *block) {
     return false;
   }
   
-  uint32_t blockStartAddr  = (uint32_t)(address & ((PIC_FLASH_END_ADDRESS-1) ^ (PIC_FLASH_BLOCK_SIZE-1)));
+  uint32_t blockStartAddr  = (uint32_t)(address & PIC_FLASH_BLOCK_ADDRESS_MASK);
 
   // Flash write must start at the beginning of a row
   if (address != blockStartAddr) {
@@ -87,32 +94,42 @@ bool pic_flash_write_block(uint32_t address, uint8_t *block) {
   return true;
 }
 
+// Function is marked as reentrant to allow recursion
 bool pic_flash_write_bytes(uint32_t address, uint8_t *bytes, size_t length) {
   static uint8_t buffer[PIC_FLASH_BLOCK_SIZE];
   
-  if (address + length > PIC_FLASH_END_ADDRESS) {
-    return false;
+  while (length) {
+    if (address + length > PIC_FLASH_END_ADDRESS) {
+      return false;
+    }
+
+    uint32_t blockStartAddr = (uint32_t)(address & PIC_FLASH_BLOCK_ADDRESS_MASK);
+    uint8_t offset = (uint8_t)(address & PIC_FLASH_BLOCK_OFFSET_MASK);
+    size_t written = 0;
+
+    // Entire row will be erased, read and save the existing data
+    for (int i = 0; i < PIC_FLASH_BLOCK_SIZE; i++) {
+      buffer[i] = pic_flash_read(blockStartAddr + i);
+    }
+
+    // Load bytes at offset
+    for (int j = 0; j < length && offset + j < PIC_FLASH_BLOCK_SIZE; j++) {
+      buffer[offset + j] = bytes[j];
+      written++;
+    }
+
+    // Writes buffer contents to current block
+    if (!pic_flash_write_block(blockStartAddr, buffer)) {
+      return false;
+    }
+
+    // Advance write pointers and resume the loop (if there is more data to write)
+    address += written;
+    bytes += written;
+    length -= written;
   }
   
-  if (length > PIC_FLASH_BLOCK_SIZE) {
-    return false;
-  }
-  
-  uint32_t blockStartAddr = (uint32_t)(address & ((PIC_FLASH_END_ADDRESS-1) ^ (PIC_FLASH_BLOCK_SIZE-1)));
-  uint8_t offset = (uint8_t)(address & (PIC_FLASH_BLOCK_SIZE-1));
-
-  // Entire row will be erased, read and save the existing data
-  for (int i = 0; i < PIC_FLASH_BLOCK_SIZE; i++) {
-    buffer[i] = pic_flash_read((blockStartAddr + i));
-  }
-
-  // Load bytes at offset
-  for (int j = 0; j < length; j++) {
-    buffer[offset + j] = bytes[j];
-  }
-
-  // Writes buffer contents to current block
-  return pic_flash_write_block(blockStartAddr, buffer);
+  return true;
 }
 
 bool pic_flash_write(uint32_t address, uint8_t byte) {
@@ -129,11 +146,21 @@ void platform_bootloader_execute_firmware(void) {
   execute_firmware_function();
 }
 
+bool platform_bootloader_erase_firmware(void) {
+  for (uint32_t block = PIC_FIRMWARE_BASE; block + PIC_FLASH_BLOCK_SIZE < PIC_FLASH_END_ADDRESS; block += PIC_FLASH_BLOCK_SIZE) {
+    if (!pic_flash_erase_block(block)) {
+      return false;
+    }
+  }
+  
+  return true;
+}
+
 platform_bootloader_update_record_address_validity platform_bootloader_validate_update_record_address(ps2plus_bootloader_update_record *record) {
   if (record->target_address < PIC_FIRMWARE_BASE) {
     // Writes in the bootloader are invalid
     return BLAddressInvalid;
-  } else if (record->target_address >= PIC_FLASH_END_ADDRESS) {
+  } else if (record->target_address + record->data_length >= PIC_FLASH_END_ADDRESS) {
     // Writes past flash memory (typically configuration IDs or device words) are ignored
     return BLAddressIgnore;
   } else {
@@ -161,34 +188,34 @@ void print_range(uint32_t start, uint32_t end) {
 }
 
 uint8_t platform_bootloader_calculate_firmware_checksum() {
-  // DEV: ERASE!
-  {
-    puts("[flash] Erasing firmware!");
-    
-    for (uint32_t block = PIC_FIRMWARE_BASE; block + PIC_FLASH_BLOCK_SIZE < PIC_FLASH_END_ADDRESS; block += PIC_FLASH_BLOCK_SIZE) {
-      pic_flash_erase_block(block);
-    }
-  }
-  
-  // DEV: WRITE!
-  {
-    puts("[flash] Writing individual byte: 0x7F at 0x4000");
-    pic_flash_write(0x4000, 0x7F);
-    
-    static char data[12] = "Hello World!";
-    puts("[flash] Writing multiple bytes: \"Hello World!\" at 0x4010");
-    pic_flash_write_bytes(0x4010, data, 12);
-    
-    static uint8_t empty_block[PIC_FLASH_BLOCK_SIZE] = {};
-    puts("[flash] Writing block: 128 zeroes at 0x4080");
-    pic_flash_write_block(0x4080, empty_block);
-  }
-  
-  // DEV: PRINT!
-  printf("[flash] First 256 bytes of bootloader:");
-  print_range(0x0000, 0x0100);
-  printf("[flash] First 256 bytes of firmware:");
-  print_range(0x4000, 0x4100);
+//  // DEV: ERASE!
+//  {
+//    puts("[flash] Erasing firmware!");
+//    
+//    for (uint32_t block = PIC_FIRMWARE_BASE; block + PIC_FLASH_BLOCK_SIZE < PIC_FLASH_END_ADDRESS; block += PIC_FLASH_BLOCK_SIZE) {
+//      pic_flash_erase_block(block);
+//    }
+//  }
+//  
+//  // DEV: WRITE!
+//  {
+//    puts("[flash] Writing individual byte: 0x7F at 0x4000");
+//    pic_flash_write(0x4000, 0x7F);
+//    
+//    static char data[12] = "Hello World!";
+//    puts("[flash] Writing multiple bytes: \"Hello World!\" at 0x4010");
+//    pic_flash_write_bytes(0x4010, data, 12);
+//    
+//    static uint8_t empty_block[PIC_FLASH_BLOCK_SIZE] = {};
+//    puts("[flash] Writing block: 128 zeroes at 0x4080");
+//    pic_flash_write_block(0x4080, empty_block);
+//  }
+//  
+//  // DEV: PRINT!
+//  printf("[flash] First 256 bytes of bootloader:");
+//  print_range(0x0000, 0x0100);
+//  printf("[flash] First 256 bytes of firmware:");
+//  print_range(0x4000, 0x4100);
   
   return 0;
 }

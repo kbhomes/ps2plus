@@ -55,6 +55,70 @@ bool check_wait_combo() {
   );
 }
 
+void handle_update_start_record(volatile controller_state *state) {
+  puts("[bootloader] Erasing firmware");
+  
+  // At the start, erase the device's firmware
+  if (platform_bootloader_erase_firmware()) {
+    state->bootloader.status = BLStatusOk;
+  } else {
+    state->bootloader.error = BEEraseFailed;
+    state->bootloader.status = BLStatusError;
+  }
+}
+
+void handle_update_data_record(volatile controller_state *state) {
+  puts("[bootloader] Handling update");
+  
+  volatile ps2plus_bootloader_update_record *record = &state->bootloader.update.record;
+  
+  bool ok = true;
+  bool checksum_validity = ps2plus_bootloader_update_record_validate_checksum(record);
+  platform_bootloader_update_record_address_validity address_validity = platform_bootloader_validate_update_record_address(record);
+
+  // Check the checksum
+  if (ok && !checksum_validity) {
+    state->bootloader.error = BEInvalidChecksum;
+    state->bootloader.status = BLStatusError;
+    ok = false;
+    
+    puts("[bootloader] Checksum calculation:");
+    print_checksum_calculation(record);
+
+    puts("[bootloader] Calculated checksum did not match:");
+    printf("  Expected checksum: 0x%X\n", record->data_checksum);
+    printf("  Calculated checksum: 0x%X\n", ps2plus_bootloader_update_record_calculate_checksum(record));
+    printf("  Target address: 0x%lX\n", record->target_address);
+    printf("  Data length: 0x%X\n", record->data_length);
+    printf("  Data: "); print_hex_array(record->data, record->data_length); puts("");
+  } 
+
+  // Check the target address
+  if (ok && address_validity == BLAddressInvalid) {
+    state->bootloader.error = BEInvalidAddress;
+    state->bootloader.status = BLStatusError;
+    ok = false;
+  } 
+
+  // Perform the flashing
+  if (ok && address_validity == BLAddressValid && !platform_bootloader_flash_update_record(record)) {
+    state->bootloader.error = BEUnspecifiedError;
+    state->bootloader.status = BLStatusError;
+    ok = false;
+  }
+
+  if (ok) { 
+    state->bootloader.status = BLStatusOk;
+  }
+}
+
+void handle_update_end_record(volatile controller_state *state) {
+  puts("[bootloader] Rebooting device");
+  
+  // Reboot the controller now that the firmware is updated
+  platform_reset();
+}
+
 void main_init(volatile controller_state *state) {
   puts("[bootloader] Waiting 1 second for firmware update signal");
   millis_init = platform_timing_millis();
@@ -94,49 +158,18 @@ void main_loop(volatile controller_state *state) {
     return;
   }
   
-  volatile ps2plus_bootloader_update_record *record = &state->bootloader.update.record;
-  
-  if (record->type == BLRecordTypeStart) {
-    state->bootloader.status = BLStatusOk;
-  } else if (record->type == BLRecordTypeEnd) {
-    // Reboot the controller now that the firmware is updated
-    platform_reset();
-  } else if (record->type == BLRecordTypeData) {
-    bool ok = true;
-    bool checksum_validity = ps2plus_bootloader_update_record_validate_checksum(record);
-    platform_bootloader_update_record_address_validity address_validity = platform_bootloader_validate_update_record_address(record);
-    
-    if (ok && !checksum_validity) {
-      state->bootloader.error = BEInvalidChecksum;
-      state->bootloader.status = BLStatusError;
-      ok = false;
+  switch (state->bootloader.update.record.type) {
+    case BLRecordTypeStart:
+      handle_update_start_record(state);
+      break;
       
-      puts("[bootloader] Checksum calculation:");
-      print_checksum_calculation(record);
+    case BLRecordTypeData:
+      handle_update_data_record(state);
+      break;
       
-      puts("[bootloader] Calculated checksum did not match:");
-      printf("  Expected checksum: 0x%X\n", record->data_checksum);
-      printf("  Calculated checksum: 0x%X\n", ps2plus_bootloader_update_record_calculate_checksum(record));
-      printf("  Target address: 0x%lX\n", record->target_address);
-      printf("  Data length: 0x%X\n", record->data_length);
-      printf("  Data: "); print_hex_array(record->data, record->data_length); puts("");
-    } 
-    
-    if (ok && address_validity == BLAddressInvalid) {
-      state->bootloader.error = BEInvalidAddress;
-      state->bootloader.status = BLStatusError;
-      ok = false;
-    } 
-    
-    if (ok && address_validity == BLAddressValid && !platform_bootloader_flash_update_record(record)) {
-      state->bootloader.error = BEUnspecifiedError;
-      state->bootloader.status = BLStatusError;
-      ok = false;
-    }
-    
-    if (ok) { 
-      state->bootloader.status = BLStatusOk;
-    }
+    case BLRecordTypeEnd:
+      handle_update_end_record(state);
+      break;
   }
   
   // Mark this update as processed

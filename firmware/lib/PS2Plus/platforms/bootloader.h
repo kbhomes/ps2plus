@@ -21,6 +21,11 @@ typedef void (*platform_bootloader_execute_firmware_function)(void);
  */
 void platform_bootloader_execute_firmware(void);
 
+/**
+ * @brief Erases the existing firmware on the device
+ */
+bool platform_bootloader_erase_firmware(void);
+
 /*
  * @brief Returns true if the update record has a valid target address
  * 

@@ -21,6 +21,7 @@ typedef enum {
   BEUnspecifiedError,
   BEInvalidChecksum,
   BEInvalidAddress,
+  BEEraseFailed,
 } ps2plus_bootloader_error;
 
 typedef struct {
