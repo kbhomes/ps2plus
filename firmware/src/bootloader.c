@@ -56,7 +56,7 @@ bool check_wait_combo() {
 }
 
 void handle_update_start_record(volatile controller_state *state) {
-  puts("[bootloader] Erasing firmware");
+//  puts("[bootloader] Erasing firmware");
   
   // At the start, erase the device's firmware
   if (platform_bootloader_erase_firmware()) {
@@ -68,7 +68,7 @@ void handle_update_start_record(volatile controller_state *state) {
 }
 
 void handle_update_data_record(volatile controller_state *state) {
-  puts("[bootloader] Handling update");
+//  puts("[bootloader] Handling update");
   
   volatile ps2plus_bootloader_update_record *record = &state->bootloader.update.record;
   
@@ -135,7 +135,7 @@ void main_loop(volatile controller_state *state) {
     // Check if an update has been signaled
     if (state->bootloader.update.ready) {
       // Bootloader received an update signal, so remain here
-      puts("[bootloader] Received update signal, remaining in bootloader");
+//      puts("[bootloader] Received update signal, remaining in bootloader");
       is_updating = true;
     }
 

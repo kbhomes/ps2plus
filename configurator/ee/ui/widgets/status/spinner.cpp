@@ -7,7 +7,7 @@
 
 #define RADIANS_CIRCLE (M_PI * 2)
 
-void PS2Plus::UI::Spinner(float size, ImU32 color) {
+void PS2Plus::UI::Spinner(float size, ImU32 color, float duration) {
     size *= 0.85;
     ImVec2 bb(size, size);
     
@@ -22,8 +22,7 @@ void PS2Plus::UI::Spinner(float size, ImU32 color) {
     float radius = size * 0.45f;
     int numSegments = 30;
 
-    float spinTime = 1.f; // seconds
-    float currentTimeProgress = fmodf(ImGui::GetTime(), spinTime) / spinTime;
+    float currentTimeProgress = fmodf(ImGui::GetTime(), duration) / duration;
     float startAngle =  RADIANS_CIRCLE * currentTimeProgress;
     float endAngle = startAngle + (RADIANS_CIRCLE * 0.75);
     draw_list->PathArcTo(center, radius, startAngle, endAngle, numSegments);

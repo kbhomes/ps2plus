@@ -20,13 +20,13 @@
 #include <ps2sdkapi.h>
 #include <libpad.h>
 #include <math.h>
+#include <time.h>
 
 // gsKit Data
 struct ImGui_ImplPs2Sdk_Data
 {
     GSGLOBAL* Global;
     u64 Time;
-    u16 PreviousButtons;
 
     ImGui_ImplPs2Sdk_Data()   { memset(this, 0, sizeof(*this)); }
 };
@@ -39,6 +39,11 @@ static ImGui_ImplPs2Sdk_Data* ImGui_ImplPs2Sdk_GetBackendData()
 }
 
 // Functions
+
+static float GetTime() 
+{
+    return (float)(clock()) / CLOCKS_PER_SEC;
+}
 
 static bool ImGui_ImplPs2Sdk_Init(GSGLOBAL* global)
 {
@@ -85,9 +90,11 @@ void ImGui_ImplPs2Sdk_NewFrame()
     // Update the framebuffer to handle resizing
     io.DisplaySize = ImVec2((float)bd->Global->Width, (float)bd->Global->Height);
     io.DisplayFramebufferScale = ImVec2(1.0, 1.0);
-
-    // TODO: Update the imgui DeltaTime from the PS2 clock
-    io.DeltaTime = (float)(1.0f / 60.0f);
+    
+    // Update time
+    float now = GetTime();
+    io.DeltaTime = now - bd->Time;
+    bd->Time = now;
 }
 
 void ImGui_ImplPs2Sdk_UpdateGamepad(const padButtonStatus *pad)

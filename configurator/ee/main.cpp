@@ -22,6 +22,7 @@
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h>
 #include <io_common.h>
+#include <time.h>
 
 bool is_reading_ps2_state = false;
 bool should_mock = false;
@@ -127,6 +128,10 @@ void update_controllers() {
     PS2Plus::Gamepad::Start();
 }
 
+float get_time() {
+    return (float)(clock()) / CLOCKS_PER_SEC;
+}
+
 void handle_update() {
     configurator_ps2plus_controller *controller = state.current_controller;
     if (!controller || !controller->connected) {
@@ -148,71 +153,84 @@ void handle_update() {
       - Prepare for rebooted controller
     */
 
-    float dt = ImGui::GetTime() - controller->update.last_check_time;
-    int ret;
-    ps2plus_bootloader_status bl_status;
-    ps2plus_bootloader_error bl_error;
+    // We want to fill up as much time as possible in the frame with update commands,
+    // but we don't want to bring the UI down to < 5fps.
+    float max_frame_time = 1.0 / 5;
+    float frame_start = get_time();
+
+    while (get_time() - frame_start < max_frame_time) {
+        float dt_check = get_time() - controller->update.last_check_time;
+        int ret;
+        ps2plus_bootloader_status bl_status;
+        ps2plus_bootloader_error bl_error;
         
-    if (controller->update.status == StatusPending) {
-        controller->update.status = StatusRebooting;
-        controller->update.last_check_time = ImGui::GetTime();
-        PS2Plus::Gamepad::Stop();
+        if (controller->update.status == StatusPending) {
+            controller->update.status = StatusRebooting;
+            controller->update.last_check_time = get_time();
+            PS2Plus::Gamepad::Stop();
 
-        // Begin rebooting the controller
-        printf("[handle_update] ps2plman_reboot_controller() = %d\n", ps2plman_reboot_controller());
-    } else if (controller->update.status == StatusRebooting) {
-        // Check if the controller is in `BLStatusPending` mode, indicating the bootloader can accept firmware updates
-        ret = ps2plman_bootloader_query_firmware_update_status(&bl_status, &bl_error);
-        printf("[handle_update] ps2plman_bootloader_query_firmware_update_status(&bl_status, &bl_error) = %d\n", ret);
-
-        if (bl_status == BLStatusPending) {
-            printf("[handle_update] Ready to update!\n");
-            controller->update.status = StatusUpdating;
-            controller->update.last_check_time = ImGui::GetTime();
-            controller->update.last_record_index = 0;
-            controller->update.total_records = controller->update.firmware->GetRecords().size();
-        } else if (dt > 1.f) {
-            printf("[handle_update] Timed out waiting for bootloader ready\n");
-            controller->update.status = StatusFailed;
-            PS2Plus::Gamepad::Start();
-        }
-    } else if (controller->update.status == StatusUpdating) {
-        controller->update.status = StatusUpdatePending;
-        controller->update.last_check_time = ImGui::GetTime();
-
-        // Send the current record
-        ps2plus_bootloader_update_record *record = controller->update.firmware->GetRecords()[controller->update.last_record_index].get();
-        ret = ps2plman_bootloader_update_firmware_data(record);
-        printf("[handle_update] ps2plman_bootloader_update_firmware_data(record) = %d\n", ret);
-    } else if (controller->update.status == StatusUpdatePending) {
-        if (controller->update.last_record_index + 1 == controller->update.total_records) {
-            // Final record won't have a response
-            controller->update.status = StatusCompleted;
-            controller->update.last_check_time = ImGui::GetTime();
-            PS2Plus::Gamepad::Start();
-        } else {
-            // Check if the controller is in `BLStatusOk` mode, indicating the bootloader can accept the next record
+            // Begin rebooting the controller
+            printf("[handle_update] ps2plman_reboot_controller() = %d\n", ps2plman_reboot_controller());
+        } else if (controller->update.status == StatusRebooting) {
+            // Check if the controller is in `BLStatusPending` mode, indicating the bootloader can accept firmware updates
             ret = ps2plman_bootloader_query_firmware_update_status(&bl_status, &bl_error);
             printf("[handle_update] ps2plman_bootloader_query_firmware_update_status(&bl_status, &bl_error) = %d\n", ret);
 
-            if (bl_status == BLStatusOk) {
+            if (bl_status == BLStatusPending) {
+                printf("[handle_update] Ready to update!\n");
                 controller->update.status = StatusUpdating;
-                controller->update.last_check_time = ImGui::GetTime();
-                controller->update.last_record_index++;
-            } else if (bl_status == BLStatusError) {
-                printf("[handle_update] Error processing record %d: %d\n", controller->update.last_record_index, bl_error);
-                controller->update.status = StatusFailed;
-                PS2Plus::Gamepad::Start();
-            } else if (dt > 1.f) {
+                controller->update.last_check_time = get_time();
+                controller->update.last_record_index = 0;
+                controller->update.total_records = controller->update.firmware->GetRecords().size();
+            } else if (dt_check > 5.0) {
                 printf("[handle_update] Timed out waiting for bootloader ready\n");
                 controller->update.status = StatusFailed;
                 PS2Plus::Gamepad::Start();
             }
+        } else if (controller->update.status == StatusUpdating) {
+            controller->update.status = StatusUpdatePending;
+            controller->update.last_check_time = get_time();
+
+            // Send the current record
+            ps2plus_bootloader_update_record *record = controller->update.firmware->GetRecords()[controller->update.last_record_index].get();
+            ret = ps2plman_bootloader_update_firmware_data(record);
+            printf("[handle_update] ps2plman_bootloader_update_firmware_data(record) = %d\n", ret);
+        } else if (controller->update.status == StatusUpdatePending) {
+            if (controller->update.last_record_index + 1 == controller->update.total_records) {
+                // Final record won't have a response
+                controller->update.status = StatusCompleted;
+                controller->update.last_check_time = get_time();
+                PS2Plus::Gamepad::Start();
+            } else {
+                // Check if the controller is in `BLStatusOk` mode, indicating the bootloader can accept the next record
+                ret = ps2plman_bootloader_query_firmware_update_status(&bl_status, &bl_error);
+                printf("[handle_update] ps2plman_bootloader_query_firmware_update_status(&bl_status, &bl_error) = %d\n", ret);
+
+                if (ret == PS2PLMAN_RET_OK) {
+                    if (bl_status == BLStatusOk) {
+                        controller->update.status = StatusUpdating;
+                        controller->update.last_check_time = get_time();
+                        controller->update.last_record_index++;
+                    } else if (bl_status == BLStatusError) {
+                        printf("[handle_update] Error processing record %d: %d\n", controller->update.last_record_index, bl_error);
+                        controller->update.status = StatusFailed;
+                        PS2Plus::Gamepad::Start();
+                    } else if (dt_check > 5.0) {
+                        printf("[handle_update] Timed out waiting for bootloader ready\n");
+                        controller->update.status = StatusFailed;
+                        PS2Plus::Gamepad::Start();
+                    }
+                }
+            }
+        } else if (controller->update.status == StatusCompleted) {
+            // controller->update.status = StatusNone;
+            break;
+        } else if (controller->update.status == StatusFailed) {
+            // controller->update.status = StatusNone;
+            break;
+        } else {
+            break;
         }
-    } else if (controller->update.status == StatusCompleted) {
-        // controller->update.status = StatusNone;
-    } else if (controller->update.status == StatusFailed) {
-        // controller->update.status = StatusNone;
     }
 }
 

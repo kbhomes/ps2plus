@@ -79,9 +79,9 @@ bool ps2plman_spi_transmit(u8 command, u8 *tx_in, u8 *rx_out, size_t payload_siz
       memcpy(rx_out, rx_buffer + 3, payload_size);
   }
 
-  // Automatic 16ms delay after a transmission to allow the controller to register that the packet has completed.
-  // This seems to generally match the rate at which the console issues commands (approximately 60 Hz)
-  util_delay(16);
+  // Automatic delay after a transmission to allow the controller to register that the packet has completed
+  // and prevent the controller or the IOP from being overloaded. This corresponds to about ~120 FPS.
+  util_delay(8);
 
   // Minimal check of the RX validity based on its header
   return rx_buffer[0] == 0xFF && rx_buffer[2] == 0x5A;

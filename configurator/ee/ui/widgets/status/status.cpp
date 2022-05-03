@@ -26,7 +26,7 @@ void PS2Plus::UI::StatusText(const char *label, StatusType status, ...) {
             break;
 
         case StatusType_Loading:
-            PS2Plus::UI::Spinner(iconSize, ImGui::GetColorU32(ImGuiCol_FrameBgActive));
+            PS2Plus::UI::Spinner(iconSize, ImGui::GetColorU32(ImGuiCol_FrameBgActive), 4.f);
             break;
 
         default:
