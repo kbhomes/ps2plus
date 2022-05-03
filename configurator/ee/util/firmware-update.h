@@ -8,6 +8,7 @@
 
 #include <stdint.h>
 
+#include "resource.h"
 #include "../../../shared/bootloader.h"
 #include "../../../shared/versions.h"
 

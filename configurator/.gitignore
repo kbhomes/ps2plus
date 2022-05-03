@@ -1,3 +1,6 @@
+# Allow all resource files to be kept regardless of ignore rules
+!ee/resources/**/*
+
 #
 # NOTE! Please use 'git ls-files -i --exclude-standard -c'
 # command after changing this file, to see if there are
