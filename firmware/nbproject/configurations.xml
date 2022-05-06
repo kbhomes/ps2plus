@@ -4,48 +4,43 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <logicalFolder name="commands" displayName="commands" projectFiles="true">
-        <logicalFolder name="controller" displayName="controller" projectFiles="true">
-        </logicalFolder>
-        <logicalFolder name="ps2plus" displayName="ps2plus" projectFiles="true">
-        </logicalFolder>
-        <itemPath>lib/PS2Plus/commands/command.h</itemPath>
-        <itemPath>lib/PS2Plus/commands/packet.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="controller" displayName="controller" projectFiles="true">
-        <itemPath>lib/PS2Plus/controller/input.h</itemPath>
-        <itemPath>lib/PS2Plus/controller/state.h</itemPath>
-        <itemPath>lib/PS2Plus/controller/bootloader.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="platforms" displayName="platforms" projectFiles="true">
-        <logicalFolder name="arduino" displayName="arduino" projectFiles="true">
-          <itemPath>lib/PS2Plus/platforms/arduino/arduino_platform.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="native" displayName="native" projectFiles="true">
-        </logicalFolder>
-        <logicalFolder name="pic18f46k42" displayName="pic18f46k42" projectFiles="true">
-          <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_platform.h</itemPath>
-        </logicalFolder>
-        <itemPath>lib/PS2Plus/platforms/controller.h</itemPath>
-        <itemPath>lib/PS2Plus/platforms/memory.h</itemPath>
-        <itemPath>lib/PS2Plus/platforms/platform.h</itemPath>
-        <itemPath>lib/PS2Plus/platforms/spi_playstation.h</itemPath>
-        <itemPath>lib/PS2Plus/platforms/timing.h</itemPath>
-        <itemPath>lib/PS2Plus/platforms/bootloader.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="shared" displayName="shared" projectFiles="true">
-        <itemPath>../shared/config.h</itemPath>
-        <itemPath>../shared/controller.h</itemPath>
-        <itemPath>../shared/versions.h</itemPath>
-        <itemPath>../shared/primitive_data.h</itemPath>
-        <itemPath>../shared/bootloader.h</itemPath>
-      </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
+        <logicalFolder name="commands" displayName="commands" projectFiles="true">
+          <logicalFolder name="controller" displayName="controller" projectFiles="true">
+          </logicalFolder>
+          <logicalFolder name="ps2plus" displayName="ps2plus" projectFiles="true">
+          </logicalFolder>
+          <itemPath>src/commands/command.h</itemPath>
+          <itemPath>src/commands/packet.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="controller" displayName="controller" projectFiles="true">
+          <itemPath>src/controller/bootloader.h</itemPath>
+          <itemPath>src/controller/custom_config.h</itemPath>
+          <itemPath>src/controller/input.h</itemPath>
+          <itemPath>src/controller/state.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="platforms" displayName="platforms" projectFiles="true">
+          <logicalFolder name="arduino" displayName="arduino" projectFiles="true">
+            <itemPath>src/platforms/arduino/arduino_platform.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="native" displayName="native" projectFiles="true">
+            <itemPath>src/platforms/native/native_platform.h</itemPath>
+          </logicalFolder>
+          <logicalFolder name="pic18f46k42" displayName="pic18f46k42" projectFiles="true">
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_platform.h</itemPath>
+          </logicalFolder>
+          <itemPath>src/platforms/bootloader.h</itemPath>
+          <itemPath>src/platforms/controller.h</itemPath>
+          <itemPath>src/platforms/memory.h</itemPath>
+          <itemPath>src/platforms/platform.h</itemPath>
+          <itemPath>src/platforms/spi_playstation.h</itemPath>
+          <itemPath>src/platforms/timing.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
+          <itemPath>src/utilities/debounced_bool.h</itemPath>
+          <itemPath>src/utilities/latching_bool.h</itemPath>
+        </logicalFolder>
         <itemPath>src/main.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
-        <itemPath>lib/PS2Plus/utilities/debounced_bool.h</itemPath>
-        <itemPath>lib/PS2Plus/utilities/latching_bool.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -55,81 +50,77 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <logicalFolder name="lib" displayName="lib" projectFiles="true">
-        <logicalFolder name="PS2Plus" displayName="PS2Plus" projectFiles="true">
-          <logicalFolder name="commands" displayName="commands" projectFiles="true">
-            <logicalFolder name="controller" displayName="controller" projectFiles="true">
-              <itemPath>lib/PS2Plus/commands/controller/button_inclusions.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/configure_analog_response.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/device_descriptor_46.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/device_descriptor_47.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/device_descriptor_4c.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/initialize_pressure_sensor.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/main_polling_enter_exit_config.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/map_motors.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/status_info.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/controller/switch_digital_analog_mode.c</itemPath>
-            </logicalFolder>
-            <logicalFolder name="ps2plus" displayName="ps2plus" projectFiles="true">
-              <itemPath>lib/PS2Plus/commands/ps2plus/disable_enable_configuration.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/ps2plus/get_configuration.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/ps2plus/get_version.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/ps2plus/restore_configuration_defaults.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/ps2plus/set_configuration.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/ps2plus/bootloader_query_firmware_update_status.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/ps2plus/bootloader_update_firmware_data.c</itemPath>
-              <itemPath>lib/PS2Plus/commands/ps2plus/reboot_controller.c</itemPath>
-            </logicalFolder>
-            <itemPath>lib/PS2Plus/commands/command.c</itemPath>
-            <itemPath>lib/PS2Plus/commands/packet.c</itemPath>
-          </logicalFolder>
-          <logicalFolder name="controller" displayName="controller" projectFiles="true">
-            <itemPath>lib/PS2Plus/controller/custom_config.c</itemPath>
-            <itemPath>lib/PS2Plus/controller/input.c</itemPath>
-            <itemPath>lib/PS2Plus/controller/state.c</itemPath>
-          </logicalFolder>
-          <logicalFolder name="platforms" displayName="platforms" projectFiles="true">
-            <logicalFolder name="arduino" displayName="arduino" projectFiles="true">
-              <itemPath>lib/PS2Plus/platforms/arduino/arduino_controller.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/arduino/arduino_memory.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/arduino/arduino_platform.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/arduino/arduino_spi_playstation.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/arduino/arduino_timing.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/arduino/arduino_uart_serial.c</itemPath>
-            </logicalFolder>
-            <logicalFolder name="native" displayName="native" projectFiles="true">
-              <itemPath>lib/PS2Plus/platforms/native/native_controller.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/native/native_memory.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/native/native_platform.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/native/native_spi_playstation.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/native/native_timing.c</itemPath>
-            </logicalFolder>
-            <logicalFolder name="pic18f46k42" displayName="pic18f46k42" projectFiles="true">
-              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_controller.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_memory.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_platform.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_spi_playstation.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_timing.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_uart_serial.c</itemPath>
-              <itemPath>lib/PS2Plus/platforms/pic18f46k42/pic18f46k42_bootloader.c</itemPath>
-            </logicalFolder>
-            <itemPath>lib/PS2Plus/platforms/platform.c</itemPath>
-          </logicalFolder>
-          <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
-            <itemPath>lib/PS2Plus/utilities/debounced_bool.c</itemPath>
-            <itemPath>lib/PS2Plus/utilities/latching_bool.c</itemPath>
-          </logicalFolder>
-        </logicalFolder>
-      </logicalFolder>
       <logicalFolder name="shared" displayName="shared" projectFiles="true">
         <itemPath>../shared/primitive_data.c</itemPath>
         <itemPath>../shared/bootloader.c</itemPath>
         <itemPath>../shared/controller.c</itemPath>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
-        <itemPath>src/main.c</itemPath>
-        <itemPath>src/firmware.c</itemPath>
+        <logicalFolder name="commands" displayName="commands" projectFiles="true">
+          <logicalFolder name="controller" displayName="controller" projectFiles="true">
+            <itemPath>src/commands/controller/button_inclusions.c</itemPath>
+            <itemPath>src/commands/controller/configure_analog_response.c</itemPath>
+            <itemPath>src/commands/controller/device_descriptor_46.c</itemPath>
+            <itemPath>src/commands/controller/device_descriptor_47.c</itemPath>
+            <itemPath>src/commands/controller/device_descriptor_4c.c</itemPath>
+            <itemPath>src/commands/controller/initialize_pressure_sensor.c</itemPath>
+            <itemPath>src/commands/controller/main_polling_enter_exit_config.c</itemPath>
+            <itemPath>src/commands/controller/map_motors.c</itemPath>
+            <itemPath>src/commands/controller/status_info.c</itemPath>
+            <itemPath>src/commands/controller/switch_digital_analog_mode.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="ps2plus" displayName="ps2plus" projectFiles="true">
+            <itemPath>src/commands/ps2plus/bootloader_query_firmware_update_status.c</itemPath>
+            <itemPath>src/commands/ps2plus/bootloader_update_firmware_data.c</itemPath>
+            <itemPath>src/commands/ps2plus/disable_enable_configuration.c</itemPath>
+            <itemPath>src/commands/ps2plus/get_configuration.c</itemPath>
+            <itemPath>src/commands/ps2plus/get_version.c</itemPath>
+            <itemPath>src/commands/ps2plus/reboot_controller.c</itemPath>
+            <itemPath>src/commands/ps2plus/restore_configuration_defaults.c</itemPath>
+            <itemPath>src/commands/ps2plus/set_configuration.c</itemPath>
+          </logicalFolder>
+          <itemPath>src/commands/command.c</itemPath>
+          <itemPath>src/commands/packet.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="controller" displayName="controller" projectFiles="true">
+          <itemPath>src/controller/custom_config.c</itemPath>
+          <itemPath>src/controller/input.c</itemPath>
+          <itemPath>src/controller/state.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="platforms" displayName="platforms" projectFiles="true">
+          <logicalFolder name="arduino" displayName="arduino" projectFiles="true">
+            <itemPath>src/platforms/arduino/arduino_controller.c</itemPath>
+            <itemPath>src/platforms/arduino/arduino_memory.c</itemPath>
+            <itemPath>src/platforms/arduino/arduino_platform.c</itemPath>
+            <itemPath>src/platforms/arduino/arduino_spi_playstation.c</itemPath>
+            <itemPath>src/platforms/arduino/arduino_timing.c</itemPath>
+            <itemPath>src/platforms/arduino/arduino_uart_serial.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="native" displayName="native" projectFiles="true">
+            <itemPath>src/platforms/native/native_controller.c</itemPath>
+            <itemPath>src/platforms/native/native_memory.c</itemPath>
+            <itemPath>src/platforms/native/native_platform.c</itemPath>
+            <itemPath>src/platforms/native/native_spi_playstation.c</itemPath>
+            <itemPath>src/platforms/native/native_timing.c</itemPath>
+          </logicalFolder>
+          <logicalFolder name="pic18f46k42" displayName="pic18f46k42" projectFiles="true">
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_bootloader.c</itemPath>
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_controller.c</itemPath>
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_memory.c</itemPath>
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_platform.c</itemPath>
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_spi_playstation.c</itemPath>
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_timing.c</itemPath>
+            <itemPath>src/platforms/pic18f46k42/pic18f46k42_uart_serial.c</itemPath>
+          </logicalFolder>
+          <itemPath>src/platforms/platform.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="utilities" displayName="utilities" projectFiles="true">
+          <itemPath>src/utilities/debounced_bool.c</itemPath>
+          <itemPath>src/utilities/latching_bool.c</itemPath>
+        </logicalFolder>
         <itemPath>src/bootloader.c</itemPath>
+        <itemPath>src/firmware.c</itemPath>
+        <itemPath>src/main.c</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -196,7 +187,7 @@
         <property key="define-macros"
                   value="PLATFORM_PIC18F46K42;PLATFORM_MICROCONTROLLER=PIC18F46K42;PS2PLUS_FIRMWARE"/>
         <property key="disable-optimizations" value="false"/>
-        <property key="extra-include-directories" value="lib\PS2Plus;.."/>
+        <property key="extra-include-directories" value="src;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
@@ -278,7 +269,6 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
-        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="memories.aux" value="false"/>
         <property key="memories.bootflash" value="true"/>
@@ -798,6 +788,7 @@
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
         <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="firmware.download.all" value="false"/>
         <property key="hwtoolclock.frcindebug" value="false"/>
         <property key="lastid" value=""/>
         <property key="memories.aux" value="false"/>
@@ -1367,7 +1358,7 @@
         <property key="define-macros"
                   value="PLATFORM_PIC18F46K42;PLATFORM_MICROCONTROLLER=PIC18F46K42;PS2PLUS_BOOTLOADER"/>
         <property key="disable-optimizations" value="false"/>
-        <property key="extra-include-directories" value="lib\PS2Plus;.."/>
+        <property key="extra-include-directories" value="src;.."/>
         <property key="favor-optimization-for" value="-speed,+space"/>
         <property key="garbage-collect-data" value="true"/>
         <property key="garbage-collect-functions" value="true"/>
