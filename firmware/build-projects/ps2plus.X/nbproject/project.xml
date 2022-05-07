@@ -3,8 +3,8 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>PS2Plus</name>
-            <creation-uuid>872333e2-620e-4bb9-a14d-c9a4f29b633e</creation-uuid>
+            <name>ps2plus</name>
+            <creation-uuid>9dea78eb-4158-4bc0-9710-aa480ff1dced</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
             <cpp-extensions/>
@@ -13,17 +13,16 @@
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>src</sourceRootElem>
-                <sourceRootElem>lib</sourceRootElem>
-                <sourceRootElem>../shared</sourceRootElem>
+                <sourceRootElem>../../src</sourceRootElem>
+                <sourceRootElem>../../../shared</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
-                    <name>Firmware</name>
+                    <name>firmware_PIC18F46K42</name>
                     <type>2</type>
                 </confElem>
                 <confElem>
-                    <name>Bootloader</name>
+                    <name>bootloader_PIC18F46K42</name>
                     <type>2</type>
                 </confElem>
             </confList>

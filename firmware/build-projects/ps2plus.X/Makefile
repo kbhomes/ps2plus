@@ -42,6 +42,10 @@
 #
 # NOCDDL
 
+# Splits the configuration name (like `firmware_PIC18F46K42`) into parts 
+# in order to pull out the microcontroller name
+CONF_SPLIT=$(subst _, , $(CONF))
+MCU_NAME=$(word 2, $(CONF_SPLIT))
 
 # Environment 
 MKDIR=mkdir
@@ -57,8 +61,12 @@ build: .build-post
 # Add your pre 'build' code here...
 
 .build-post: .build-impl
-	# hexmate "dist/Bootloader/production/firmware.production.hex" "dist/Firmware/production/firmware.production.hex" -O"dist/ps2plus-firmware-bootloader-combined.hex"
-	
+	hexmate \
+	    $(CND_ARTIFACT_PATH_firmware_$(MCU_NAME)) \
+	    $(CND_ARTIFACT_PATH_bootloader_$(MCU_NAME)) \
+	    -O"dist/ps2plus-$(MCU_NAME)-test-firmware-bootloader-combined.hex"
+
+
 # clean
 clean: .clean-post
 
