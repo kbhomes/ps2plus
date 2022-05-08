@@ -52,6 +52,8 @@
         <itemPath>../../src/controller/input.h</itemPath>
         <itemPath>../../src/controller/state.c</itemPath>
         <itemPath>../../src/controller/state.h</itemPath>
+        <itemPath>../../src/controller/digital_button.h</itemPath>
+        <itemPath>../../src/controller/digital_button.c</itemPath>
       </logicalFolder>
       <logicalFolder name="platforms" displayName="platforms" projectFiles="true">
         <logicalFolder name="arduino" displayName="arduino" projectFiles="true">

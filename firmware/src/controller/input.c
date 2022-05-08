@@ -11,13 +11,16 @@ ps2plus_controller_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESS
 void controller_input_initialize(controller_input *input) {
   // Write each digital button value as an active-low bit
   for (int i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
-    debounced_init(&input->digital_buttons[i], true, DEBOUNCE_DIGITAL_BUTTON_MS);
+    digital_button_init(&input->digital_buttons[i]);
   }
 
   // Set mid-axis values for each joystick
   for (int j = 0; j < NUM_JOYSTICK_AXES; j++) {
     input->joysticks[j] = 0x7F;
   }
+  
+  // Start the analog button as off
+  digital_button_init(&input->analog_button);
 
   controller_input_recompute(input);
 }
@@ -27,8 +30,8 @@ uint16_t controller_input_as_digital(controller_input *input) {
 
   // Write each digital button value as an active-low bit
   for (int i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
-    int value = debounced_read(&input->digital_buttons[i]);
-    output |= (value << i);
+    int active_low = digital_button_is_down(&input->digital_buttons[i]) ? 0 : 1;
+    output |= (active_low << i);
   }
 
   return output;
@@ -54,7 +57,7 @@ void controller_input_recompute(controller_input *input) {
   // Store button pressure information (which will be converted to pure 00h or FFh)
   for (unsigned int b = 0; b < (sizeof(DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP) / sizeof(ps2plus_controller_digital_button)); b++) {
     ps2plus_controller_digital_button button = DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[b];
-    bool digital_value = debounced_read(&input->digital_buttons[button]);
-    input->button_data[index++] = (digital_value == false) ? 0xFF : 0x00;
+    bool button_down = digital_button_is_down(&input->digital_buttons[button]);
+    input->button_data[index++] = button_down ? 0xFF : 0x00;
   }
 }

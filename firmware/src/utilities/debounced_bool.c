@@ -18,7 +18,7 @@ bool debounced_update(debounced_bool *debounce, bool value) {
     // If the update value is the default state, immediately reset
     debounce->current_value = value;
     debounce->debounced_value = value;
-    debounce->last_debounce_time = value;
+    debounce->last_debounce_time = current_time;
   } else {
     if (value != debounce->current_value) {
       // If this is the first update, begin the debounce timer

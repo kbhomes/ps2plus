@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "digital_button.h"
 #include <shared/controller.h>
-#include <utilities/debounced_bool.h>
 
 #define NUM_PRESSURE_SENSITIVE_BUTTONS 12
 extern ps2plus_controller_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NUM_PRESSURE_SENSITIVE_BUTTONS];
@@ -14,7 +14,8 @@ extern ps2plus_controller_digital_button DIGITAL_BUTTON_TO_PRESSURE_INDEX_MAP[NU
  * @brief Input state of the emulated PS2 controller
  */
 typedef struct {
-  debounced_bool digital_buttons[NUM_DIGITAL_BUTTONS];
+  digital_button digital_buttons[NUM_DIGITAL_BUTTONS];
+  digital_button analog_button;
   uint8_t joysticks[NUM_JOYSTICK_AXES];
   uint8_t button_data[NUM_DIGITAL_BUTTONS/8 + NUM_JOYSTICK_AXES + NUM_PRESSURE_SENSITIVE_BUTTONS];
 } controller_input;

@@ -84,25 +84,25 @@ void apply_custom_configuration(volatile controller_state *state) {
       uint8_t js_left_x = state->input.joysticks[JSLeftX];
       uint8_t js_left_y = state->input.joysticks[JSLeftY];
       uint8_t threshold = state->custom_config.values.joystick_digital_threshold_left.uint8;
-      debounced_bool *dd_left = &state->input.digital_buttons[DDLeft];
-      debounced_bool *dd_right = &state->input.digital_buttons[DDRight];
-      debounced_bool *dd_up = &state->input.digital_buttons[DDUp];
-      debounced_bool *dd_down = &state->input.digital_buttons[DDDown];
+      digital_button *dd_left = &state->input.digital_buttons[DDLeft];
+      digital_button *dd_right = &state->input.digital_buttons[DDRight];
+      digital_button *dd_up = &state->input.digital_buttons[DDUp];
+      digital_button *dd_down = &state->input.digital_buttons[DDDown];
 
-      if (debounced_read(dd_left) && js_left_x < 0x7F - threshold) {
-        debounced_force(dd_left, false);
+      if (!digital_button_is_down(dd_left) && js_left_x < 0x7F - threshold) {
+        digital_button_update(dd_left, true);
       }
       
-      if (debounced_read(dd_right) && js_left_x > 0x80 + threshold) {
-        debounced_force(dd_right, false);
+      if (!digital_button_is_down(dd_right) && js_left_x > 0x80 + threshold) {
+        digital_button_update(dd_right, true);
       }
       
-      if (debounced_read(dd_up) && js_left_y < 0x7F - threshold) {
-        debounced_force(dd_up, false);
+      if (!digital_button_is_down(dd_up) && js_left_y < 0x7F - threshold) {
+        digital_button_update(dd_up, true);
       }
       
-      if (debounced_read(dd_down) && js_left_y > 0x80 + threshold) {
-        debounced_force(dd_down, false);
+      if (!digital_button_is_down(dd_down) && js_left_y > 0x80 + threshold) {
+        digital_button_update(dd_down, true);
       }
     }
     
@@ -110,25 +110,25 @@ void apply_custom_configuration(volatile controller_state *state) {
       uint8_t js_right_x = state->input.joysticks[JSRightX];
       uint8_t js_right_y = state->input.joysticks[JSRightY];
       uint8_t threshold = state->custom_config.values.joystick_digital_threshold_right.uint8;
-      debounced_bool *db_square = &state->input.digital_buttons[DBSquare];
-      debounced_bool *db_circle = &state->input.digital_buttons[DBCircle];
-      debounced_bool *db_triangle = &state->input.digital_buttons[DBTriangle];
-      debounced_bool *db_cross = &state->input.digital_buttons[DBCross];
+      digital_button *db_square = &state->input.digital_buttons[DBSquare];
+      digital_button *db_circle = &state->input.digital_buttons[DBCircle];
+      digital_button *db_triangle = &state->input.digital_buttons[DBTriangle];
+      digital_button *db_cross = &state->input.digital_buttons[DBCross];
 
-      if (debounced_read(db_square) && js_right_x < 0x7F - threshold) {
-        debounced_force(db_square, false);
+      if (!digital_button_is_down(db_square) && js_right_x < 0x7F - threshold) {
+        digital_button_update(db_square, true);
       }
       
-      if (debounced_read(db_circle) && js_right_x > 0x80 + threshold) {
-        debounced_force(db_circle, false);
+      if (!digital_button_is_down(db_circle) && js_right_x > 0x80 + threshold) {
+        digital_button_update(db_circle, true);
       }
       
-      if (debounced_read(db_triangle) && js_right_y < 0x7F - threshold) {
-        debounced_force(db_triangle, false);
+      if (!digital_button_is_down(db_triangle) && js_right_y < 0x7F - threshold) {
+        digital_button_update(db_triangle, true);
       }
       
-      if (debounced_read(db_cross) && js_right_y > 0x80 + threshold) {
-        debounced_force(db_cross, false);
+      if (!digital_button_is_down(db_cross) && js_right_y > 0x80 + threshold) {
+        digital_button_update(db_cross, true);
       }
     }
   }
@@ -144,15 +144,16 @@ void read_controller_input(volatile controller_state *state) {
       source = (ps2plus_controller_digital_button)state->custom_config.values.button_remapping[button].uint8;
     }
     
-    bool active_low_button_state = !platform_controller_read_digital_button(source);
-    debounced_force(&state->input.digital_buttons[button], active_low_button_state);
-    // debounced_update(&state->input.digital_buttons[button], active_low_button_state);
+     digital_button_update(&state->input.digital_buttons[button], platform_controller_read_digital_button(source));
   }
 
   // Read joystick values
   for (ps2plus_controller_joystick_axis joystick = 0; joystick < NUM_JOYSTICK_AXES; joystick++) {
     state->input.joysticks[joystick] = platform_controller_read_joystick(joystick);
   }
+  
+  // Update the analog button
+  digital_button_update(&state->input.analog_button, platform_controller_read_analog_button());
   
   // Apply custom configuration
   if (state->custom_config.enabled) {
@@ -165,6 +166,11 @@ void update_controller(volatile controller_state *state) {
   read_controller_input(state);
   controller_input_recompute(&state->input);
   controller_state_update_mode(state);
+  
+  // If analog mode isn't locked, allow switching between digital and analog
+  if (!state->analog_mode_locked && digital_button_is_pressed(&state->input.analog_button)) {
+    state->analog_mode = (state->analog_mode == CMDigital) ? CMAnalog : CMDigital;
+  }
   
   // Update the analog mode LED
   platform_controller_set_analog_led(state->analog_mode == CMAnalog || state->analog_mode == CMAnalogFull);

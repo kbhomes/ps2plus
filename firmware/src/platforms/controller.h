@@ -21,6 +21,13 @@ bool platform_controller_read_digital_button(ps2plus_controller_digital_button b
 uint8_t platform_controller_read_joystick(ps2plus_controller_joystick_axis joystick_axis);
 
 /**
+ * @brief Reads the digital value of the analog toggle button
+ * @return true if the analog toggle button is currently being pressed
+ * @return false otherwise
+ */
+bool platform_controller_read_analog_button();
+
+/**
  * @brief Enable or disable the controller's analog LED
  * 
  * @param active Whether to enable or disable the LED

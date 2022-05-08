@@ -22,6 +22,7 @@ const pic_digital_io_pin DIGITAL_BUTTON_PINS[NUM_DIGITAL_BUTTONS] = {
   PIC_DIGITAL_IO_PIN(A, 6), // Square
 };
 
+const pic_digital_io_pin PIN_ANALOG_BUTTON = PIC_DIGITAL_IO_PIN(A, 1);
 const pic_digital_io_pin PIN_LED_ANALOG_MODE = PIC_DIGITAL_IO_PIN(B, 4);
 const pic_digital_io_pin PIN_MOTOR_SMALL = PIC_DIGITAL_IO_PIN(A, 0);
 const pic_digital_io_pin PIN_MOTOR_LARGE = PIC_DIGITAL_IO_PIN(B, 5);
@@ -39,6 +40,7 @@ void pic18f46k42_setup_wired_controller() {
     pic_digital_io_pin_mode(&DIGITAL_BUTTON_PINS[i], PICPinMode_InputPullup);
   }
   
+  pic_digital_io_pin_mode(&PIN_ANALOG_BUTTON, PICPinMode_InputPullup);
   pic_digital_io_pin_mode(&PIN_LED_ANALOG_MODE, PICPinMode_Output);
   pic_digital_io_pin_mode(&PIN_MOTOR_SMALL, PICPinMode_Output);
   pic_digital_io_pin_mode(&PIN_MOTOR_LARGE, PICPinMode_Output);
@@ -59,6 +61,10 @@ void pic18f46k42_setup_wired_controller() {
 
 bool platform_controller_read_digital_button(ps2plus_controller_digital_button button) {
   return pic_digital_io_pin_read(&DIGITAL_BUTTON_PINS[button]) == PIC_DIGITAL_LOW;
+}
+
+bool platform_controller_read_analog_button() {
+  return pic_digital_io_pin_read(&PIN_ANALOG_BUTTON) == PIC_DIGITAL_LOW;
 }
 
 uint8_t platform_controller_read_joystick(ps2plus_controller_joystick_axis joystick_axis) {
