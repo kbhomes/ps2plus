@@ -52,4 +52,6 @@ void controller_state_reset(controller_state *state) {
 #elif defined(PS2PLUS_BOOTLOADER)
   state->mode = 0xBB;
 #endif
+  
+  state->last_communication_time = UINT64_MAX;
 }

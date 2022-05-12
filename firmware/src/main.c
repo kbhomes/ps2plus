@@ -7,6 +7,7 @@ volatile command_packet packet;
 
 void interrupt_handler() {
   command_packet_step(&packet, &state, platform_spi_playstation_read());
+  state.last_communication_time = platform_timing_millis();
 }
 
 void handle_transmission() {

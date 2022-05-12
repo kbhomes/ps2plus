@@ -4,6 +4,8 @@
 
 #include <math.h>
 
+#define CONTROLLER_WATCHDOG_MILLIS 1000
+
 void check_configuration_version(volatile controller_state *state) {
   // If the stored configuration version does not match this firmware's version, reset
   // all custom configuration and save it back to storage
@@ -180,6 +182,20 @@ void update_controller(volatile controller_state *state) {
   platform_controller_set_motor_large(state->rumble_motor_large.mapping == 0x01 ? state->rumble_motor_large.value : 0x00);
 }
 
+void check_watchdog_timer(volatile controller_state *state) {
+  if (state->last_communication_time == UINT64_MAX) {
+    return;
+  }
+  
+  uint64_t now = platform_timing_millis();
+  uint64_t delta = now - state->last_communication_time;
+  
+  if (delta > CONTROLLER_WATCHDOG_MILLIS) {
+    puts("[firmware] Watchdog: resetting controller state");
+    controller_state_reset(state);
+  }
+}
+
 void main_init(volatile controller_state *state) {
   puts("[firmware] Initializing");
   debug_versions_dump(state);
@@ -191,6 +207,7 @@ void main_init(volatile controller_state *state) {
 
 void main_loop(volatile controller_state *state) {
   update_controller(state);
+  check_watchdog_timer(state);
 }
 
 #endif

@@ -33,6 +33,15 @@ typedef struct {
    */
   uint8_t mode;
   
+  /**
+   * @brief Time (milliseconds) of the last communication packet from the console
+   * 
+   * Used as a "watchdog timer" to reset the controller state if the console
+   * hasn't communicated recently enough. A value of UINT64_MAX indicates that
+   * the state has already been reset.
+   */
+  uint64_t last_communication_time;
+  
 #ifdef PS2PLUS_FIRMWARE
   /**
    * @brief Current button and joystick input

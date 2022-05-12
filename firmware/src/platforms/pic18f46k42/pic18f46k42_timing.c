@@ -2,7 +2,7 @@
 
 #include "pic18f46k42_platform.h"
 
-volatile unsigned long current_millis;
+volatile uint64_t current_millis;
 
 void __interrupt(irq(IRQ_TMR0), base(PIC_IVT_BASE)) pic18f46k42_interrupt_timer() {
   TMR0IF = 0;
@@ -35,7 +35,7 @@ void pic18f46k42_setup_timing() {
   T0EN = 1;
 }
 
-unsigned long platform_timing_millis(void) {
+uint64_t platform_timing_millis(void) {
   return current_millis;
 }
 
