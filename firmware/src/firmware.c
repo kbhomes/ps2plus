@@ -174,6 +174,10 @@ void update_controller(volatile controller_state *state) {
   
   // Update the analog mode LED
   platform_controller_set_analog_led(state->analog_mode == CMAnalog || state->analog_mode == CMAnalogFull);
+  
+  // Update the rumble motors
+  platform_controller_set_motor_small(state->rumble_motor_small.mapping == 0x00 && state->rumble_motor_small.value == 0xFF);
+  platform_controller_set_motor_large(state->rumble_motor_large.mapping == 0x01 ? state->rumble_motor_large.value : 0x00);
 }
 
 void main_init(volatile controller_state *state) {

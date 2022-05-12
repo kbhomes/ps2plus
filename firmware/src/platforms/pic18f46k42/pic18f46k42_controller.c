@@ -88,4 +88,13 @@ void platform_controller_set_analog_led(bool active) {
   pic_digital_io_pin_write(&PIN_LED_ANALOG_MODE, active);
 }
 
+
+void platform_controller_set_motor_large(uint8_t power) {
+  pic_digital_io_pin_write(&PIN_MOTOR_LARGE, power >= 0x40);
+}
+
+void platform_controller_set_motor_small(bool active) {
+    pic_digital_io_pin_write(&PIN_MOTOR_SMALL, active);
+}
+
 #endif

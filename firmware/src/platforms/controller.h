@@ -34,4 +34,20 @@ bool platform_controller_read_analog_button();
  */
 void platform_controller_set_analog_led(bool active);
 
+/**
+ * @brief Enable or disable the controller's large motor
+ * 
+ * TODO: The large motor supports power levels between 0x00 and 0xFF, corresponding
+ *       to the voltage range between 0V and MP (~7-8V, provided by the console).
+ *       Current implementation of the large motor only supports outputting either
+ *       off or maximum (if `power` >= 0x40). This method should eventually allow
+ *       outputting on the full voltage range.
+ */
+void platform_controller_set_motor_large(uint8_t power);
+
+/**
+ * @brief Enable or disable the controller's small motor (either full power or off)
+ */
+void platform_controller_set_motor_small(bool active);
+
 #endif /* PLATFORMS_CONTROLLER_H */
