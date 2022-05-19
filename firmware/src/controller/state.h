@@ -78,6 +78,16 @@ typedef struct {
    * @brief Custom configuration information, persisted in internal storage
    */
   controller_custom_config custom_config;
+  
+  /**
+   * @brief Time (milliseconds) of when the configuration reset combo was first held down.
+   * 
+   * A value of UINT64_MAX means the button combo is not currently being held down.
+   * This is set to the current time when the user first presses the button combo down.
+   * After a certain time threshold, the combo is considered fulfilled and the user's
+   * custom configuration is reset.
+   */
+  uint64_t last_configuration_reset_combo_time;
 #endif
   
 #ifdef PS2PLUS_BOOTLOADER

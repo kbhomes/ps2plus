@@ -5,14 +5,14 @@
 #include <math.h>
 
 #define CONTROLLER_WATCHDOG_MILLIS 1000
+#define CONTROLLER_CONFIGURATION_RESET_MILLIS 5000
 
 void check_configuration_version(volatile controller_state *state) {
   // If the stored configuration version does not match this firmware's version, reset
   // all custom configuration and save it back to storage
   if (state->custom_config.configuration_version != VERSION_CONFIGURATION) {
     puts("[firmware] Resetting config due to mismatching versions");
-    controller_custom_config_initialize(&state->custom_config);
-    controller_custom_config_save(&state->custom_config);
+    controller_custom_config_erase(&state->custom_config);
   }
 }
 
@@ -174,8 +174,13 @@ void update_controller(volatile controller_state *state) {
     state->analog_mode = (state->analog_mode == CMDigital) ? CMAnalog : CMDigital;
   }
   
-  // Update the analog mode LED
-  platform_controller_set_analog_led(state->analog_mode == CMAnalog || state->analog_mode == CMAnalogFull);
+  // Update the analog mode LED -- but only if the configuration reset button combo isn't attempting to drive it
+  // TODO: Replace this check with a state field, in case we want to make the analog LED a more generic information
+  //       communication mechanism (maybe `bool is_led_controlled`) used by systems other than the analog indicator
+  //       and the configuration reset button combo.
+  if (state->last_configuration_reset_combo_time == UINT64_MAX) {
+    platform_controller_set_analog_led(state->analog_mode == CMAnalog || state->analog_mode == CMAnalogFull);
+  }
   
   // Update the rumble motors
   platform_controller_set_motor_small(state->rumble_motor_small.mapping == 0x00 && state->rumble_motor_small.value == 0xFF);
@@ -196,6 +201,46 @@ void check_watchdog_timer(volatile controller_state *state) {
   }
 }
 
+void check_configuration_reset_combo(volatile controller_state *state) {
+  bool reset_timer_active = state->last_configuration_reset_combo_time != UINT64_MAX;
+  bool reset_combo_down = (
+    platform_controller_read_digital_button(DBTriangle) &&
+    platform_controller_read_digital_button(DBL1) &&
+    platform_controller_read_digital_button(DBL2) &&
+    platform_controller_read_digital_button(DBR1) &&
+    platform_controller_read_digital_button(DBR2)
+  );
+  
+  if (reset_combo_down) {
+    if (reset_timer_active) {
+      uint64_t delta = platform_timing_millis() - state->last_configuration_reset_combo_time;
+      
+      // If enough time has elapsed that the combo is fulfilled, then flash the LED to signal
+      // to the user that the time threshold has been satisfied
+      if (delta >= CONTROLLER_CONFIGURATION_RESET_MILLIS) {
+        // Cycle the LED every 250ms
+        platform_controller_set_analog_led(delta % 250 >= 125);
+      }
+    } else {
+      // Combo is newly held down so begin the timer
+      puts("[firmware] Configuration reset button combo identified");
+      state->last_configuration_reset_combo_time = platform_timing_millis();
+    }
+  } else if (reset_timer_active) {
+    uint64_t delta = platform_timing_millis() - state->last_configuration_reset_combo_time;
+
+    // If the threshold has elapsed by the time the user lets go of the combo,
+    // consider the combo fulfilled and reset the configuration
+    if (delta >= CONTROLLER_CONFIGURATION_RESET_MILLIS) {
+      puts("[firmware] Resetting config due to button combo");
+      controller_custom_config_erase(&state->custom_config);
+    }
+    
+    // Reset the timer
+    state->last_configuration_reset_combo_time = UINT64_MAX;
+  }
+}
+
 void main_init(volatile controller_state *state) {
   puts("[firmware] Initializing");
   debug_versions_dump(state);
@@ -208,6 +253,7 @@ void main_init(volatile controller_state *state) {
 void main_loop(volatile controller_state *state) {
   update_controller(state);
   check_watchdog_timer(state);
+  check_configuration_reset_combo(state);
 }
 
 #endif

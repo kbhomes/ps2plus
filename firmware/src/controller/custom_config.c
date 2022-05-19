@@ -80,4 +80,9 @@ void controller_custom_config_save(controller_custom_config *config) {
   platform_memory_write(CONFIGURATION_ADDRESS(joystick_digital_threshold_right), config->values.joystick_digital_threshold_right.uint8);
 }
 
+void controller_custom_config_erase(controller_custom_config *config) {
+  controller_custom_config_initialize(config);
+  controller_custom_config_save(config);
+}
+
 #endif

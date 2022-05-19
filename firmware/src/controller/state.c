@@ -49,6 +49,7 @@ void controller_state_reset(controller_state *state) {
   state->rumble_motor_small.value = 0x00;
   state->rumble_motor_large.mapping = 0xFF;
   state->rumble_motor_large.value = 0x00;
+  state->last_configuration_reset_combo_time = UINT64_MAX;
 #elif defined(PS2PLUS_BOOTLOADER)
   state->mode = 0xBB;
 #endif
