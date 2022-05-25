@@ -1,0 +1,37 @@
+from source_utilities import *
+
+# Import the platform and target information
+Import('platform')
+Import('target')
+
+# Create the environment with the platform and its toolchain
+env = Environment(tools=platform.toolchain.tools)
+platform.toolchain.setup_env(env)
+platform.setup_env_for_target(env, target)
+
+# Add preprocessor defines
+env.Append(CPPDEFINES=[
+    # This define switches between firmware targets (i.e.: firmware and bootloader)
+    'PS2PLUS_' + target.upper(),
+    
+    # This define specifies which microcontroller is being built -- it selects which
+    # platform abstraction support to build
+    'PLATFORM_' + platform.name,
+
+    # This define puts the microcontroller name as a version number in the binary
+    'PLATFORM_MICROCONTROLLER=' + platform.name,
+])
+
+# Add include directories
+env.Append(CPPPATH=[
+    './src',
+    '#/'
+])
+
+# Collect the source files we care about
+sources = GlobRecursive(env, 'src/**/*.c')
+shared_sources = GlobRecursiveExternal(env, '../', 'shared/**/*.c')
+
+# Compile the target
+output = env.Program(target, sources + shared_sources)
+Return('output')

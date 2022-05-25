@@ -1,4 +1,9 @@
-
+# SCons
+build-scons
+.sconsign.dblite
+config.log
+.sconf_temp
+__pycache__
 
 ### C/C++ ###
 *.d
