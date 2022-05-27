@@ -1,5 +1,8 @@
+from vscode import VSCodeProperties
+
 class AbstractFirmwareToolchain:
     name: str
+    vscode_properties: VSCodeProperties
 
     # On Windows, without this override, all C compiler flags use MSVC-style syntax.
     tools = ['cc', 'gnulink', 'ar']
@@ -9,13 +12,34 @@ class AbstractFirmwareToolchain:
     
 class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
     name = 'MicrochipXC8Toolchain'
+    vscode_properties = VSCodeProperties(
+        c_standard='c99',
+        intellisense_mode='clang-x64',
+    )
+
+    # Additional parameters needed by this toolchain
     mcu: str
+    xc8_directory = 'C:/Program Files/Microchip/xc8/v2.36'
 
     def __init__(self, mcu):
         self.mcu = mcu
+        self.vscode_properties.additional_includes += [
+            f'{self.xc8_directory}/pic/include',
+            f'{self.xc8_directory}/pic/include/c99',
+            f'{self.xc8_directory}/pic/include/proc',
+        ]
+        self.vscode_properties.additional_defines += [
+            'HI_TECH_C',
+            '_PIC18',
+            '__CLANG__',
+            '__XC',
+            '__XC8',
+            f'_{self.chipname()}',
+            f'__{self.chipname()}'
+        ]
 
     def setup_env(self, env):
-        xc8_driver = 'C:/Program Files/Microchip/xc8/v2.36/bin/xc8-cc.exe',
+        xc8_driver = f'{self.xc8_directory}/bin/xc8-cc.exe',
         xc8_flags = ' '.join([
             '-mcpu=' + self.mcu,        # Target device for the compiler
             '-std=c99',                 # Compile as C99
@@ -35,3 +59,6 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
             # care about the HEX file it also generates as this is used for flashing.
             PROGSUFFIX='.hex',
         )
+
+    def chipname(self):
+        return self.mcu.removeprefix('PIC')

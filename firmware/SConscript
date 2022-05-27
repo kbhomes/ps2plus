@@ -5,7 +5,7 @@ Import('platform')
 Import('target')
 
 # Create the environment with the platform and its toolchain
-env = Environment(tools=platform.toolchain.tools)
+env = Environment(tools=(platform.toolchain.tools + ['vscode_c_cpp_properties']))
 platform.toolchain.setup_env(env)
 platform.setup_env_for_target(env, target)
 
@@ -24,7 +24,7 @@ env.Append(CPPDEFINES=[
 
 # Add include directories
 env.Append(CPPPATH=[
-    './src',
+    '#/firmware/src',
     '#/'
 ])
 
@@ -32,6 +32,11 @@ env.Append(CPPPATH=[
 sources = GlobRecursive(env, 'src/**/*.c')
 shared_sources = GlobRecursiveExternal(env, '../', 'shared/**/*.c')
 
+# Output the VSCode properties file
+vscode_configuration = env.VSCodeCCppPropertiesConfiguration( 
+    name=f'{platform.name}:{target}',
+    properties=platform.toolchain.vscode_properties)
+
 # Compile the target
 output = env.Program(target, sources + shared_sources)
-Return('output')
+Return('output', 'vscode_configuration')
