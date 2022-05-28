@@ -4,28 +4,40 @@ import firmware.targets
 import os
 
 env = Environment(tools=['vscode_c_cpp_properties'])
-outputs = []
 vscode_configurations = []
 
 for platform in firmware.platforms.ALL_PLATFORMS:
     firmware_outputs = {}
+    firmware_sources = set()
+
+    # Create a construction environment for this platform
+    platform_env = env.Clone(tools=(env['TOOLS'] + platform.toolchain.tools))
+    platform.toolchain.setup_env(platform_env)
 
     for target in firmware.targets.ALL_TARGETS:
+        # Create a construction environment for this target
+        build_env = platform_env.Clone()
+        platform.setup_env_for_target(build_env, target)
+        
         # Build the `firmware` sub-project, passing in platform and target information
-        # (e.g.: `PIC18F46K42`` platform and `bootloader` target)
-        output, vscode_configuration = SConscript('firmware/SConscript', 
+        # (e.g.: `PIC18F46K42`` platform and `bootloader` target). Sub-project will build
+        # its targets into the `build/{PLATFORM}/{TARGET}` folder.
+        output, sources, vscode_configuration = SConscript('firmware/SConscript', 
             variant_dir=os.path.join('build', platform.name, target), 
             duplicate=False, 
-            exports=['platform', 'target']
+            exports=['build_env', 'platform', 'target']
         )
 
         firmware_outputs[target] = output
+        firmware_sources |= set([os.path.join('firmware', path) for path in sources])
         vscode_configurations.append(vscode_configuration)
 
+    # Move each target's output file to the `dist` folder
     for target, output in firmware_outputs.items():
         InstallAs(f'dist/ps2plus-{platform.name}-{target}.hex', output)
 
-    for output in firmware_outputs.values():
-        outputs.append(output)
+    # Generate the IDE project(s), if any, for this platform
+    platform.generate_ide_project(platform_env, f'firmware/build-projects/{platform.name}', firmware_sources)
 
+# Generate VS Code autocompletion
 env.VSCodeCCppProperties('.vscode/c_cpp_properties.json', vscode_configurations)

@@ -1,3 +1,4 @@
+from mplabx import MPLABXProperties
 from vscode import VSCodeProperties
 
 class AbstractFirmwareToolchain:
@@ -12,9 +13,36 @@ class AbstractFirmwareToolchain:
     
 class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
     name = 'MicrochipXC8Toolchain'
+
+    # Projects using this toolchain can be edited in MPLAB X, so add the
+    # MPLAB X project generator tool to the environment
+    tools = AbstractFirmwareToolchain.tools + ['mplabx_nbproject']
+
     vscode_properties = VSCodeProperties(
         c_standard='c99',
         intellisense_mode='clang-x64',
+    )
+
+    mplabx_properties = MPLABXProperties(
+        toolchain='XC8',
+        toolchain_version='2.36',
+        compiler_properties={
+            'optimization-level': '-O2',
+            'warning-level': '-3',
+        },
+        linker_properties={
+            'clear-bss': 'true',
+            'display-class-usage': 'false',
+            'display-hex-usage': 'false',
+            'display-overall-usage': 'true',
+            'display-psect-usage': 'false',
+            'initialize-data': 'true',
+            'program-the-device-with-default-config-words': 'true',
+        },
+        xc8_properties={
+            'gcc-opt-driver-new': 'true',
+            'gcc-opt-std': '-std=c99',
+        }
     )
 
     # Additional parameters needed by this toolchain
@@ -23,6 +51,7 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
 
     def __init__(self, mcu):
         self.mcu = mcu
+        self.mplabx_properties.device = mcu
         self.vscode_properties.additional_includes += [
             f'{self.xc8_directory}/pic/include',
             f'{self.xc8_directory}/pic/include/c99',

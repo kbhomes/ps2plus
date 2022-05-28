@@ -1,16 +1,13 @@
+from pprint import pprint
 from source_utilities import *
 
-# Import the platform and target information
+# Import the build build_environment, platform, and target information
+Import('build_env')
 Import('platform')
 Import('target')
 
-# Create the environment with the platform and its toolchain
-env = Environment(tools=(platform.toolchain.tools + ['vscode_c_cpp_properties']))
-platform.toolchain.setup_env(env)
-platform.setup_env_for_target(env, target)
-
 # Add preprocessor defines
-env.Append(CPPDEFINES=[
+build_env.Append(CPPDEFINES=[
     # This define switches between firmware targets (i.e.: firmware and bootloader)
     'PS2PLUS_' + target.upper(),
     
@@ -23,20 +20,33 @@ env.Append(CPPDEFINES=[
 ])
 
 # Add include directories
-env.Append(CPPPATH=[
+build_env.Append(CPPPATH=[
     '#/firmware/src',
     '#/'
 ])
 
 # Collect the source files we care about
-sources = GlobRecursive(env, 'src/**/*.c')
-shared_sources = GlobRecursiveExternal(env, '../', 'shared/**/*.c')
+main_sources = GlobRecursive(build_env, 'src/**/*.c')
+main_headers = GlobRecursive(build_env, 'src/**/*.h')
+shared_sources = GlobRecursive(build_env, '../shared/**/*.c')
+shared_headers = GlobRecursive(build_env, '../shared/**/*.h')
 
-# Output the VSCode properties file
-vscode_configuration = env.VSCodeCCppPropertiesConfiguration( 
+# Compile sources to objects
+main_objects = build_env.Object(main_sources)
+shared_objects = [ExternalObject(build_env, '../', path) for path in shared_sources]
+objects = main_objects + shared_objects
+
+# Output the VSCode C/C++ configuration for this platform/target
+vscode_configuration = build_env.VSCodeCCppPropertiesConfiguration( 
     name=f'{platform.name}:{target}',
     properties=platform.toolchain.vscode_properties)
 
+# Add this platform/target to the platform's IDE project generation step (if any)
+platform.generate_ide_project_configuration_for_target(build_env, target)
+
 # Compile the target
-output = env.Program(target, sources + shared_sources)
-Return('output', 'vscode_configuration')
+output = build_env.Program(target, objects)
+
+# Send back source and header files
+sources = main_sources + main_headers + shared_sources + shared_headers
+Return('output', 'sources', 'vscode_configuration')
