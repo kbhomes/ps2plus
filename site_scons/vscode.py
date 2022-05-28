@@ -6,3 +6,4 @@ class VSCodeProperties:
     intellisense_mode: str
     additional_defines: list[str] = field(default_factory=list)
     additional_includes: list[str] = field(default_factory=list)
+    compiler_path: str = None

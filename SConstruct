@@ -40,4 +40,4 @@ for platform in firmware.platforms.ALL_PLATFORMS:
     platform.generate_ide_project(platform_env, f'firmware/build-projects/{platform.name}', firmware_sources)
 
 # Generate VS Code autocompletion
-env.VSCodeCCppProperties('.vscode/c_cpp_properties.json', vscode_configurations)
+env.AlwaysBuild(env.VSCodeCCppProperties('.vscode/c_cpp_properties.json', vscode_configurations))

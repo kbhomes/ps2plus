@@ -20,7 +20,7 @@ def build_vscode_c_cpp_properties_configuration(
         "name": name,
         "includePath": include_paths,
         "defines": defines,
-        "compilerPath": env['CC'][0],
+        "compilerPath": properties.compiler_path or env['CC'][0],
         "cStandard": properties.c_standard,
         "intelliSenseMode": properties.intellisense_mode,
     })

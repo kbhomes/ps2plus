@@ -20,7 +20,7 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
 
     vscode_properties = VSCodeProperties(
         c_standard='c99',
-        intellisense_mode='clang-x64',
+        intellisense_mode='linux-clang-x64',
     )
 
     mplabx_properties = MPLABXProperties(
@@ -49,7 +49,7 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
     mcu: str
     xc8_directory = 'C:/Program Files/Microchip/xc8/v2.36'
 
-    def __init__(self, mcu):
+    def __init__(self, mcu: str):
         self.mcu = mcu
         self.mplabx_properties.device = mcu
         self.vscode_properties.additional_includes += [
@@ -59,13 +59,21 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
         ]
         self.vscode_properties.additional_defines += [
             'HI_TECH_C',
-            '_PIC18',
             '__CLANG__',
             '__XC',
             '__XC8',
             f'_{self.chipname()}',
-            f'__{self.chipname()}'
+            f'__{self.chipname()}',
         ]
+
+        if mcu.startswith('PIC18'):
+            self.vscode_properties.additional_defines += [
+                '_PIC18',
+                '__PICC18__',
+            ]
+
+        # Point VS Code to the underlying clang executable so its IntelliSense is accurate (and doesn't default to MSVC)
+        self.vscode_properties.compiler_path = f'{self.xc8_directory}/pic/bin/clang.exe'
 
     def setup_env(self, env):
         xc8_driver = f'{self.xc8_directory}/bin/xc8-cc.exe',
