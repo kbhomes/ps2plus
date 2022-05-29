@@ -1,5 +1,7 @@
 from mplabx import MPLABXProperties
 from vscode import VSCodeProperties
+import os.path
+import shutil
 
 class AbstractFirmwareToolchain:
     name: str
@@ -47,9 +49,15 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
 
     # Additional parameters needed by this toolchain
     mcu: str
-    xc8_directory = 'C:/Program Files/Microchip/xc8/v2.36'
+
+    # Additional Microchip XC8 state
+    xc8_directory: str
+    xc8_driver: str
+    xc8_clang: str
 
     def __init__(self, mcu: str):
+        self.detect()
+
         self.mcu = mcu
         self.mplabx_properties.device = mcu
         self.vscode_properties.additional_includes += [
@@ -73,10 +81,9 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
             ]
 
         # Point VS Code to the underlying clang executable so its IntelliSense is accurate (and doesn't default to MSVC)
-        self.vscode_properties.compiler_path = f'{self.xc8_directory}/pic/bin/clang.exe'
+        self.vscode_properties.compiler_path = self.xc8_clang
 
     def setup_env(self, env):
-        xc8_driver = f'{self.xc8_directory}/bin/xc8-cc.exe',
         xc8_flags = ' '.join([
             '-mcpu=' + self.mcu,        # Target device for the compiler
             '-std=c99',                 # Compile as C99
@@ -86,10 +93,10 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
         ])
         
         env.Replace(
-            CC=xc8_driver,
+            CC=self.xc8_driver,
             CCFLAGS=xc8_flags,
             OBJSUFFIX='.p1',
-            LINK=xc8_driver,
+            LINK=self.xc8_driver,
             LINKFLAGS=xc8_flags,
             
             # Even though XC8 generates ELFs as the main executable, we really only
@@ -99,3 +106,12 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
 
     def chipname(self):
         return self.mcu.removeprefix('PIC')
+
+    def detect(self):
+        # Go up two directories from the XC8 driver program
+        self.xc8_directory = os.path.dirname(os.path.dirname(shutil.which('xc8-cc') or ''))
+        self.xc8_driver = f"\"{os.path.join(self.xc8_directory, 'bin', 'xc8-cc')}\""
+        self.xc8_clang = os.path.join(self.xc8_directory, 'pic', 'bin', 'clang')
+        
+        if not self.xc8_directory:
+            raise Exception('Could not find `xc8-cc[.exe]` on the path')

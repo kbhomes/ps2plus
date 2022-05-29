@@ -32,21 +32,14 @@ jobs:
           name: ps2plus-configurator.elf
           path: build/dist/PS2PLMAN.ELF
 
-  firmware-and-bootloader:
+  firmware-PIC18F46K42:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - name: Check out the code
+        uses: actions/checkout@v2
 
-      - name: Compile PS2+ firmware and bootloader
-        uses: kbhomes/mplabx-xc8-build-action@master
-        with:
-          project: firmware
-          configurations: Firmware Bootloader
-          post: >
-            echo "Combining firmware and bootloader HEX files";
-            /opt/mplabx/mplab_platform/bin/hexmate firmware/dist/Firmware/production/firmware.production.hex firmware/dist/Bootloader/production/firmware.production.hex > firmware/dist/ps2plus-firmware-bootloader-combined.hex;
-            mv firmware/dist/Firmware/production/firmware.production.hex firmware/dist/ps2plus-firmware.hex;
-            mv firmware/dist/Bootloader/production/firmware.production.hex firmware/dist/ps2plus-bootloader.hex;
+      - name: Run the Docker Compose build step
+        run: docker compose -f docker/docker-compose.yml run firmware-pic18f46k42
 
       - name: Get short SHA
         id: slug
@@ -55,17 +48,11 @@ jobs:
       - name: Upload firmware
         uses: actions/upload-artifact@v2
         with:
-          name: ps2plus-firmware.hex
-          path: firmware/dist/ps2plus-firmware.hex
+          name: ps2plus-PIC18F46K42-firmware.hex
+          path: dist/ps2plus-PIC18F46K42-firmware.hex
 
       - name: Upload bootloader
         uses: actions/upload-artifact@v2
         with:
-          name: ps2plus-bootloader.hex
-          path: firmware/dist/ps2plus-bootloader.hex
-
-      - name: Upload combined firmware/bootloader
-        uses: actions/upload-artifact@v2
-        with:
-          name: ps2plus-firmware-bootloader-combined.hex
-          path: firmware/dist/ps2plus-firmware-bootloader-combined.hex
+          name: ps2plus-PIC18F46K42-bootloader.hex
+          path: dist/ps2plus-PIC18F46K42-bootloader.hex

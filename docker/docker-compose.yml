@@ -1,0 +1,13 @@
+services:
+  build-microchip-xc8:
+    build:
+      context: ../
+      dockerfile: docker/microchip-xc8.Dockerfile
+    image: ps2plus/build-microchip-xc8
+
+  firmware-pic18f46k42:
+    image: ps2plus/build-microchip-xc8
+    depends_on: [build-microchip-xc8]
+    volumes: [../:/project:bind]
+    working_dir: /project
+    command: scons -Q
