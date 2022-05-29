@@ -20,7 +20,7 @@ jobs:
       - name: Compile ps2plus-configurator
         run: |
           make
-          git config --global --add safe.directory *
+          git config --global --add safe.directory "*"
           git ls-files -i --exclude-standard -c
 
       - name: Get short SHA
