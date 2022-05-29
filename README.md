@@ -16,26 +16,27 @@ Under construction!
 
 ### Configurator
 
-[Guide for developing with PS2SDK and Docker](https://www.psx-place.com/threads/how-to-develop-ps2-homebrew-using-docker-containers.29907/)
+As with each firmware platform, there are two options for building the configurator app: using a local installation of the PS2SDK, or using this repository's Docker image.
 
-Build a Docker image with the PS2SDK toolchain:
+#### Local PS2SDK installation
 
-```
-docker build -t ps2plus .
-```
+(TBD)
 
-Start a Docker container with the created Docker image. It binds the repository's folder to the `/project` 
-path in the container and opens shell at that path.
+#### Repository Docker image
 
-```
-docker run -it -w /project -v ${PWD}:/project ps2plus sh
-```
-
-Build the application:
+The configurator can be built locally using the same infrastructure that the GitHub CI build system uses. With [Docker](https://www.docker.com/products/docker-desktop/) installed, the following will directly build the configurator application:
 
 ```
-make -C configurator
+docker compose -f docker/docker-compose.yml run configurator
 ```
+
+On the first run, this command will build the Docker image and then immediately build the configurator, which will be available as `dist/PS2PLMAN.elf`. On future runs, the Docker image will be cached. To obtain an interactive shell into the Docker image in order to control the build step:
+
+```
+docker compose -f docker/docker-compose.yml run configurator sh
+```
+
+From within the interactive shell, you can run `make` to build the configurator and `make clean` to clear the build.
 
 ## Development
     
