@@ -1,10 +1,26 @@
 services:
+  # Base build services
+  build-ps2sdk:
+    build:
+      context: ../
+      dockerfile: docker/ps2sdk.Dockerfile
+    image: ps2plus/build-ps2sdk
+
   build-microchip-xc8:
     build:
       context: ../
       dockerfile: docker/microchip-xc8.Dockerfile
     image: ps2plus/build-microchip-xc8
 
+  # Configurator build target
+  configurator:
+    image: ps2plus/build-ps2sdk
+    depends_on: [build-ps2sdk]
+    volumes: [../:/project:bind]
+    working_dir: /project
+    command: make
+
+  # Firmware build targets
   firmware-pic18f46k42:
     image: ps2plus/build-microchip-xc8
     depends_on: [build-microchip-xc8]

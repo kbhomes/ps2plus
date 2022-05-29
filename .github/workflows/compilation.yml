@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ps2plus-configurator.elf
-          path: build/dist/PS2PLMAN.ELF
+          path: dist/PS2PLMAN.ELF
 
   firmware-PIC18F46K42:
     runs-on: ubuntu-latest
