@@ -1,29 +1,31 @@
-services:
-  # Base build services
+# Common project configuration settings
+x-project-common: &project-common
+  volumes: ["../:/project:bind"]  # Project root folder (`../`) will be bound as `/project` in the container
+  working_dir: /project           # Container will automatically start in the `/project` directory
+
+# Toolchains required by the subprojects in this application
+x-toolchains: &toolchains
+  # Base toolchain image for PS2 application development
   build-ps2sdk:
-    build:
-      context: ../
-      dockerfile: docker/ps2sdk.Dockerfile
+    build: { context: '../', dockerfile: 'docker/ps2sdk.Dockerfile' }
     image: ps2plus/build-ps2sdk
 
+  # Base toolchain image for firmware using the Microchip XC8 compiler
   build-microchip-xc8:
-    build:
-      context: ../
-      dockerfile: docker/microchip-xc8.Dockerfile
+    build: { context: '../', dockerfile: 'docker/microchip-xc8.Dockerfile' }
     image: ps2plus/build-microchip-xc8
 
-  # Configurator build target
+services:
+  <<: *toolchains
+  
   configurator:
+    <<: *project-common
     image: ps2plus/build-ps2sdk
     depends_on: [build-ps2sdk]
-    volumes: [../:/project:bind]
-    working_dir: /project
     command: make
 
-  # Firmware build targets
-  firmware-pic18f46k42:
+  firmware-pic18f46k42: # Microchip PIC18F46K42, using the XC8 compiler toolchain
+    <<: *project-common
     image: ps2plus/build-microchip-xc8
     depends_on: [build-microchip-xc8]
-    volumes: [../:/project:bind]
-    working_dir: /project
     command: scons -Q
