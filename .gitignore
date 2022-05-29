@@ -1,3 +1,11 @@
+# Build projects for the firmware sub-project are generated using the 
+# SCons build system and should not be committed.
+firmware/build-projects/
+
+# ------------------------------------------
+# Ignored paths related to external tooling:
+# ------------------------------------------
+
 # SCons
 build-scons
 .sconsign.dblite
