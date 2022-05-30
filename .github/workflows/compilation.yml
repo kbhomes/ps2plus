@@ -33,27 +33,39 @@ jobs:
           name: ps2plus-configurator.elf
           path: dist/PS2PLMAN.ELF
 
-  firmware-PIC18F46K42:
+  bootloader-and-firmware:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: 
+          - PIC18F46K42
     steps:
       - name: Check out the code
         uses: actions/checkout@v2
 
+      - name: Generate the appropriate Docker Compose service name
+        id: service-name
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: firmware-${{ matrix.platform }}
+
       - name: Run the Docker Compose build step
-        run: docker compose -f docker/docker-compose.yml run firmware-pic18f46k42
+        run: docker compose -f docker/docker-compose.yml run ${{ steps.service-name.outputs.lowercase }}
+        shell: bash
 
       - name: Get short SHA
         id: slug
         run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+        shell: bash
 
       - name: Upload firmware
         uses: actions/upload-artifact@v2
         with:
-          name: ps2plus-PIC18F46K42-firmware.hex
-          path: dist/ps2plus-PIC18F46K42-firmware.hex
+          name: ps2plus-${{ matrix.platform }}-firmware.hex
+          path: dist/ps2plus-${{ matrix.platform }}-firmware.hex
 
       - name: Upload bootloader
         uses: actions/upload-artifact@v2
         with:
-          name: ps2plus-PIC18F46K42-bootloader.hex
-          path: dist/ps2plus-PIC18F46K42-bootloader.hex
+          name: ps2plus-${{ matrix.platform }}-bootloader.hex
+          path: dist/ps2plus-${{ matrix.platform }}-bootloader.hex
