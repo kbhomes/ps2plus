@@ -12,6 +12,9 @@ RUN dpkg --add-architecture i386 && \
 # Install the SCons build tool
 RUN pip3 install scons
 
+# Fix Git repository settings (used to determine version numbers)
+RUN git config --global --add safe.directory /project
+
 # Download and install XC8
 RUN wget -nv -O /tmp/xc8 "https://ww1.microchip.com/downloads/en/DeviceDoc/xc8-v${XC8_VERSION}-full-install-linux-x64-installer.run" && \
     chmod +x /tmp/xc8 && \
