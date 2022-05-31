@@ -250,7 +250,7 @@ int main(int argc, char **argv) {
     // Mock the controllers
     if (should_mock) {
         state.current_controller->connected = true;
-        state.current_controller->versions.firmware = 30;
+        state.current_controller->versions.firmware = VERSION64(1, 12, 0, VERSION_METADATA_DEV);
         state.current_controller->versions.configuration = 1;
         strncpy(state.current_controller->versions.microcontroller, "PIC18F46K42", 12);
         

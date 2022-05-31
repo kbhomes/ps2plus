@@ -19,7 +19,7 @@ typedef struct {
     int port;
     bool connected;
     struct {
-        uint16_t firmware;
+        uint64_t firmware;
         char microcontroller[33];
         uint16_t configuration;
     } versions;

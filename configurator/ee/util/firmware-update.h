@@ -18,7 +18,7 @@ public:
     ~FirmwareUpdate();
 
     const std::vector<std::shared_ptr<ps2plus_bootloader_update_record>> GetRecords();
-    uint16_t GetFirmwareVersion();
+    uint64_t GetFirmwareVersion();
     const std::string GetMicrocontrollerVersion();
     uint8_t GetConfigurationVersion();
 
@@ -26,7 +26,7 @@ public:
 
 private:
     std::vector<std::shared_ptr<ps2plus_bootloader_update_record>> _records;
-    uint16_t _firmwareVersion;
+    uint64_t _firmwareVersion;
     std::string _microcontrollerVersion;
     uint8_t _configurationVersion;
 

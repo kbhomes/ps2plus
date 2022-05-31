@@ -43,15 +43,15 @@ int ps2plman_get_version(uint8_t id, primitive_data *out) {
   return PS2PLMAN_RET_OK;
 }
 
-int ps2plman_get_firmware_version(uint16_t *out) {
+int ps2plman_get_firmware_version(uint64_t *out) {
   int ret = ps2plman_get_version(0x00, &response);
 
-  if (response.type != PDT_Uint16) {
+  if (response.type != PDT_Uint64) {
     return PS2PLMAN_RET_ERROR_INCORRECT_TYPE;
   } 
   
   if (out) {
-    *out = response.uint16;
+    *out = response.uint64;
   }
 
   return ret;

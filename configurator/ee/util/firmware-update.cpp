@@ -226,7 +226,7 @@ const vector<shared_ptr<ps2plus_bootloader_update_record>> FirmwareUpdate::GetRe
     return _records;
 }
 
-uint16_t FirmwareUpdate::GetFirmwareVersion() {
+uint64_t FirmwareUpdate::GetFirmwareVersion() {
     return _firmwareVersion;
 }
 

@@ -10,6 +10,7 @@
 #include "ui/widgets/status/status.h"
 #include <ui/widgets/wizard/wizard.h>
 #include <util/firmware-update.h>
+#include <util/versions.h>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui_internal.h>
@@ -112,8 +113,8 @@ void wizard_choose_update(ImGuiIO &io, configurator_state *state) {
 }
 
 void wizard_review_update(ImGuiIO &io, configurator_state *state) {
-  uint16_t versionFirmwareCurrent = state->current_controller->versions.firmware;
-  uint16_t versionFirmwareUpdate = firmwareUpdate->GetFirmwareVersion();
+  uint64_t versionFirmwareCurrent = state->current_controller->versions.firmware;
+  uint64_t versionFirmwareUpdate = firmwareUpdate->GetFirmwareVersion();
   FirmwareUpdateType versionFirmwareUpdateType = 
       (versionFirmwareUpdate > versionFirmwareCurrent) ? Upgrade :
       (versionFirmwareUpdate < versionFirmwareCurrent) ? Downgrade :
@@ -140,7 +141,7 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
     ImGui::TableNextColumn(); 
     ImGui::Text("Firmware");
     ImGui::TableNextColumn(); 
-    ImGui::Text("%d", state->current_controller->versions.firmware);
+    ImGui::Text("%s", format_version(state->current_controller->versions.firmware).c_str());
     ImGui::TableNextColumn(); 
     if (versionFirmwareUpdateType == Upgrade)
       PS2Plus::UI::Icons::Arrow(ImGui::GetFontSize(), COLOR_SUCCESS, ImGuiDir_Up);
@@ -149,7 +150,7 @@ void wizard_review_update(ImGuiIO &io, configurator_state *state) {
     else if (versionFirmwareUpdateType == NoChange)
       PS2Plus::UI::Icons::Warning(ImGui::GetFontSize(), COLOR_WARNING);
     ImGui::SameLine();
-    ImGui::Text("%d", firmwareUpdate->GetFirmwareVersion());
+    ImGui::Text("%s", format_version(firmwareUpdate->GetFirmwareVersion()).c_str());
 
     ImGui::TableNextRow(); 
     ImGui::TableNextColumn(); ImGui::Text("Microcontroller");

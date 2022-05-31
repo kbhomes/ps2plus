@@ -25,7 +25,7 @@ int ps2plman_init();
 
 // Get version commands
 int ps2plman_get_version(uint8_t id, primitive_data *out);
-int ps2plman_get_firmware_version(uint16_t *out);
+int ps2plman_get_firmware_version(uint64_t *out);
 int ps2plman_get_microcontroller_version(char *out, size_t *size, size_t max_size);
 int ps2plman_get_configuration_version(uint16_t *out);
 
