@@ -14,7 +14,8 @@ typedef enum primitive_data_type {
   PDT_Uint8 = 0x02,
   PDT_Uint16 = 0x03,
   PDT_Uint32 = 0x04,
-  PDT_Array = 0x05,
+  PDT_Uint64 = 0x05,
+  PDT_Array = 0x06,
   PDT_Unknown = 0xFF
 } primitive_data_type;
 
@@ -30,6 +31,7 @@ typedef struct primitive_data {
     uint8_t uint8;
     uint16_t uint16;
     uint32_t uint32;
+    uint64_t uint64;
     primitive_data_array array;
   };
 } primitive_data;
@@ -38,6 +40,7 @@ void primitive_data_initialize_boolean(primitive_data *pd, bool value);
 void primitive_data_initialize_uint8(primitive_data *pd, uint8_t value);
 void primitive_data_initialize_uint16(primitive_data *pd, uint16_t value);
 void primitive_data_initialize_uint32(primitive_data *pd, uint32_t value);
+void primitive_data_initialize_uint64(primitive_data *pd, uint64_t value);
 void primitive_data_initialize_array(primitive_data *pd, uint8_t *value, uint8_t length);
 size_t primitive_data_length(primitive_data *pd);
 void primitive_data_serialize(primitive_data *pd, uint8_t *out);
@@ -49,6 +52,7 @@ extern const primitive_data primitive_data_boolean_default;
 extern const primitive_data primitive_data_uint8_default;
 extern const primitive_data primitive_data_uint16_default;
 extern const primitive_data primitive_data_uint32_default;
+extern const primitive_data primitive_data_uint64_default;
 extern const primitive_data primitive_data_array_default;
 
 

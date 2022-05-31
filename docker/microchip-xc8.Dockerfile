@@ -4,7 +4,7 @@ ARG XC8_VERSION=2.36
 
 RUN dpkg --add-architecture i386 && \
   apt-get update && \
-  apt-get install -y libc6:i386 libx11-6:i386 libxext6:i386 libstdc++6:i386 libexpat1:i386 wget sudo make python3 python3-pip && \
+  apt-get install -y libc6:i386 libx11-6:i386 libxext6:i386 libstdc++6:i386 libexpat1:i386 wget sudo make git python3 python3-pip && \
   apt-get clean && \
   apt-get autoremove && \
   rm -rf /var/lib/apt/lists/*

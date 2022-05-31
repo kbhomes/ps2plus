@@ -1,0 +1,8 @@
+{
+    "version": {
+        "firmware":     { "major": 0, "minor": 0, "patch": 0 },
+        "bootloader":   { "major": 0, "minor": 0, "patch": 0 },
+        "configurator": { "major": 0, "minor": 0, "patch": 0 },
+        "configuration": 1
+    }
+}

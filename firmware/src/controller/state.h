@@ -20,11 +20,11 @@ typedef struct {
 typedef struct {
   struct {
 #if defined(PS2PLUS_FIRMWARE)
-    primitive_data /* uint16_t */ firmware;
+    primitive_data /* uint64_t */ firmware;
     primitive_data /* array(char[32]) */ microcontroller;
     primitive_data /* uint16_t */ configuration;
 #elif defined(PS2PLUS_BOOTLOADER)
-    primitive_data /* uint16_t */ bootloader;
+    primitive_data /* uint64_t */ bootloader;
 #endif
   } versions;
 
@@ -100,7 +100,7 @@ typedef struct {
 
 void controller_state_initialize(controller_state *);
 void controller_state_update_mode(controller_state *);
-void controller_state_set_versions(controller_state *, uint16_t firmware, const char microcontroller[32], uint16_t configuration, uint16_t bootloader);
+void controller_state_set_versions(controller_state *, uint64_t firmware, const char microcontroller[32], uint16_t configuration, uint64_t bootloader);
 void controller_state_reset(controller_state *);
 
 #endif /* CONTROLLER_STATE_H */

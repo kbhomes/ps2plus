@@ -29,13 +29,13 @@ void controller_state_update_mode(controller_state *state) {
 #endif
 }
 
-void controller_state_set_versions(controller_state *state, uint16_t firmware, const char microcontroller[32], uint16_t configuration, uint16_t bootloader) {
+void controller_state_set_versions(controller_state *state, uint64_t firmware, const char microcontroller[32], uint16_t configuration, uint64_t bootloader) {
 #if defined(PS2PLUS_FIRMWARE)
-  primitive_data_initialize_uint16(&state->versions.firmware, firmware);
+  primitive_data_initialize_uint64(&state->versions.firmware, firmware);
   primitive_data_initialize_array(&state->versions.microcontroller, microcontroller, strlen(microcontroller));
   primitive_data_initialize_uint16(&state->versions.configuration, configuration);
 #elif defined (PS2PLUS_BOOTLOADER)
-  primitive_data_initialize_uint16(&state->versions.bootloader, bootloader);
+  primitive_data_initialize_uint64(&state->versions.bootloader, bootloader);
 #endif
 }
 

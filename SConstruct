@@ -1,10 +1,17 @@
 # Build utilities specific to this project, in the `site_scons` folder
 import firmware.platforms
 import firmware.targets
+import versions
 import os
+from pprint import pprint
 
 env = Environment(tools=['vscode_c_cpp_properties'])
 vscode_configurations = []
+
+# Read PS2+ versions from the `ps2plus.json` manifest (with command-line overrides)
+# and add them to the C compilation environment
+ps2plus_versions = versions.setup_env(env)
+pprint(ps2plus_versions)
 
 for platform in firmware.platforms.ALL_PLATFORMS:
     firmware_outputs = {}

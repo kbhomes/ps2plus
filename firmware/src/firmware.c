@@ -3,6 +3,7 @@
 #include "main.h"
 
 #include <math.h>
+#include <inttypes.h>
 
 #define CONTROLLER_WATCHDOG_MILLIS 1000
 #define CONTROLLER_CONFIGURATION_RESET_MILLIS 5000
@@ -17,7 +18,7 @@ void check_configuration_version(volatile controller_state *state) {
 }
 
 void debug_versions_dump(volatile controller_state *state) {
-  printf("[version] Firmware = %u\n", VERSION_FIRMWARE);
+  printf("[version] Firmware = " PRIu64 "\n", VERSION_FIRMWARE);
   printf("[version] Microcontroller = %s\n", VERSION_MICROCONTROLLER);
   printf("[version] Configuration = %u\n", VERSION_CONFIGURATION);
 }
