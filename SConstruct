@@ -41,7 +41,7 @@ for platform in firmware.platforms.ALL_PLATFORMS:
 
     # Move each target's output file to the `dist` folder
     for target, output in firmware_outputs.items():
-        InstallAs(f'dist/ps2plus-{platform.name}-{target}.hex', output)
+        InstallAs(f'dist/ps2plus-{platform.name}-{target}-{getattr(ps2plus_versions, target)}.hex', output)
 
     # Generate the IDE project(s), if any, for this platform
     platform.generate_ide_project(platform_env, f'firmware/build-projects/{platform.name}', firmware_sources)

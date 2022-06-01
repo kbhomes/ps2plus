@@ -1,10 +1,6 @@
 name: CI
 
-on:
-  push:
-  pull_request:
-  repository_dispatch:
-    types: [run_build]
+on: push
 
 jobs:
   configurator:
@@ -30,7 +26,7 @@ jobs:
       - name: Upload output file
         uses: actions/upload-artifact@v2
         with:
-          name: ps2plus-configurator.elf
+          name: configurator
           path: dist/PS2PLMAN.ELF
 
   bootloader-and-firmware:
@@ -49,23 +45,54 @@ jobs:
         with:
           string: firmware-${{ matrix.platform }}
 
-      - name: Run the Docker Compose build step
-        run: docker compose -f docker/docker-compose.yml run ${{ steps.service-name.outputs.lowercase }}
+      - name: Compile the `latest` version (via Docker Compose)
+        run: VERSION_METADATA=latest docker compose -f docker/docker-compose.yml run ${{ steps.service-name.outputs.lowercase }}
         shell: bash
 
-      - name: Get short SHA
-        id: slug
-        run: echo "::set-output name=sha8::$(echo ${GITHUB_SHA} | cut -c1-8)"
+      - name: Compile the tagged version, if necessary (via Docker Compose)
+        run: docker compose -f docker/docker-compose.yml run ${{ steps.service-name.outputs.lowercase }}
+        if: startsWith(github.ref, 'refs/tags/')
         shell: bash
 
       - name: Upload firmware
         uses: actions/upload-artifact@v2
         with:
-          name: ps2plus-${{ matrix.platform }}-firmware.hex
-          path: dist/ps2plus-${{ matrix.platform }}-firmware.hex
+          name: firmware
+          path: dist/ps2plus-${{ matrix.platform }}-firmware-*.hex
 
       - name: Upload bootloader
         uses: actions/upload-artifact@v2
         with:
-          name: ps2plus-${{ matrix.platform }}-bootloader.hex
-          path: dist/ps2plus-${{ matrix.platform }}-bootloader.hex
+          name: bootloader
+          path: dist/ps2plus-${{ matrix.platform }}-bootloader-*.hex
+
+  release:
+    needs: [configurator, bootloader-and-firmware]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: Delete the `latest` tag and release, if existing
+        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        with:
+          delete_release: true
+          tag_name: latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release the `latest` version
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Development build
+          tag_name: "latest"
+          prerelease: true
+          files: |
+            bootloader/*-latest.hex
+            firmware/*-latest.hex
+            configurator/*.elf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

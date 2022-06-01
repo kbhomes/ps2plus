@@ -28,4 +28,4 @@ services:
     <<: *project-common
     image: ps2plus/build-microchip-xc8
     depends_on: [build-microchip-xc8]
-    command: scons -Q
+    command: scons -Q --version-firmware-metadata=${VERSION_METADATA} --version-bootloader-metadata=${VERSION_METADATA} --version-configurator-metadata=${VERSION_METADATA}

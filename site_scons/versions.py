@@ -1,4 +1,3 @@
-from importlib.metadata import metadata
 from SCons.Script import *
 from dataclasses import dataclass
 from enum import Enum
@@ -10,10 +9,16 @@ class VersionMetadata(Enum):
     TYPE_DEV = 1
     TYPE_LATEST = 2
 
+    @classmethod
+    def fromstr(cls, value):
+        if value == 'dev':      return VersionMetadata.TYPE_DEV
+        if value == 'latest':   return VersionMetadata.TYPE_LATEST
+        else:                   return VersionMetadata.TYPE_NONE
+
     def __str__(self) -> str:
-        if self == VersionMetadata.TYPE_NONE: return ''
-        if self == VersionMetadata.TYPE_DEV: return 'dev'
-        if self == VersionMetadata.TYPE_LATEST: return 'latest'
+        if self == VersionMetadata.TYPE_NONE:       return ''
+        if self == VersionMetadata.TYPE_DEV:        return 'dev'
+        if self == VersionMetadata.TYPE_LATEST:     return 'latest'
 
     def __repr__(self) -> str:
         return str(self)
@@ -66,6 +71,14 @@ def setup_env(env):
                         action='store',
                         metavar=str(default),
                         default=default)
+
+            AddOption(f'--version-{target}-metadata',
+                    dest=f'version_{target}_metadata',
+                    nargs=1,
+                    type='str',
+                    action='store',
+                    metavar='dev',
+                    default='dev')
         else:
             AddOption(f'--version-{target}',
                     dest=f'version_{target}',
@@ -80,16 +93,19 @@ def setup_env(env):
             major=GetOption('version_firmware_major'),
             minor=GetOption('version_firmware_minor'),
             patch=GetOption('version_firmware_patch'),
+            metadata=VersionMetadata.fromstr(GetOption('version_firmware_metadata')),
         ),
         bootloader=Version(
             major=GetOption('version_bootloader_major'),
             minor=GetOption('version_bootloader_minor'),
             patch=GetOption('version_bootloader_patch'),
+            metadata=VersionMetadata.fromstr(GetOption('version_bootloader_metadata')),
         ),
         configurator=Version(
             major=GetOption('version_configurator_major'),
             minor=GetOption('version_configurator_minor'),
             patch=GetOption('version_configurator_patch'),
+            metadata=VersionMetadata.fromstr(GetOption('version_configurator_metadata')),
         ),
         configuration=GetOption('version_configuration'),
     )
