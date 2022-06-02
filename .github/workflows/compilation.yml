@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Check out entire history, including tags (required for versioning)
 
       - name: Compile the `latest` version (via Docker Compose)
         run: VERSION_METADATA=latest docker compose -f docker/docker-compose.yml run configurator
@@ -44,6 +46,8 @@ jobs:
     steps:
       - name: Check out the code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Check out entire history, including tags (required for versioning)
 
       - name: Generate the appropriate Docker Compose service name
         id: service-name
