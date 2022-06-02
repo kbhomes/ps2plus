@@ -13,16 +13,27 @@ jobs:
         run: VERSION_METADATA=latest docker compose -f docker/docker-compose.yml run configurator
         shell: bash
 
+      - name: Upload `latest` configurator
+        uses: actions/upload-artifact@v2
+        with:
+          name: configurator-latest
+          path: dist/configurator/*
+
+      - name: Delete `latest` files
+        run: rm -rf dist/configurator
+        shell: bash
+
       - name: Compile the tagged version, if necessary (via Docker Compose)
         run: VERSION_METADATA= docker compose -f docker/docker-compose.yml run configurator
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
 
-      - name: Upload configurator
+      - name: Upload versioned configurator, if necessary
         uses: actions/upload-artifact@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: configurator
-          path: dist/configurator/*.elf
+          name: configurator-release
+          path: dist/configurator/*
 
   bootloader-and-firmware:
     runs-on: ubuntu-latest
@@ -44,22 +55,40 @@ jobs:
         run: VERSION_METADATA=latest docker compose -f docker/docker-compose.yml run ${{ steps.service-name.outputs.lowercase }}
         shell: bash
 
+      - name: Upload `latest` firmware
+        uses: actions/upload-artifact@v2
+        with:
+          name: firmware-latest
+          path: dist/firmware/*
+
+      - name: Upload `latest` bootloader
+        uses: actions/upload-artifact@v2
+        with:
+          name: bootloader-latest
+          path: dist/firmware/*
+
+      - name: Delete `latest` files
+        run: rm -rf dist/firmware
+        shell: bash
+
       - name: Compile the tagged version, if necessary (via Docker Compose)
         run: docker compose -f docker/docker-compose.yml run ${{ steps.service-name.outputs.lowercase }}
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
 
-      - name: Upload firmware
+      - name: Upload versioned firmware, if necessary
         uses: actions/upload-artifact@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: firmware
-          path: dist/firmware/ps2plus-${{ matrix.platform }}-firmware-*.hex
+          name: firmware-release
+          path: dist/firmware/*.hex
 
-      - name: Upload bootloader
+      - name: Upload versioned bootloader, if necessary
         uses: actions/upload-artifact@v2
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: bootloader
-          path: dist/firmware/ps2plus-${{ matrix.platform }}-bootloader-*.hex
+          name: bootloader-release
+          path: dist/firmware/*.hex
 
   release:
     needs: [configurator, bootloader-and-firmware]
@@ -86,8 +115,8 @@ jobs:
           tag_name: "latest"
           prerelease: true
           files: |
-            bootloader/*-latest.hex
-            firmware/*-latest.hex
-            configurator/*-latest.elf
+            bootloader-latest/*
+            firmware-latest/*
+            configurator-latest/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
