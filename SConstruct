@@ -69,7 +69,8 @@ if 'dist/firmware' in BUILD_TARGETS:
         # ZIP up all platform files
         Zip(
             target=f'dist/firmware/ps2plus-{platform.name}-{combined_version}.zip',
-            source=(list(firmware_dists.values()) + [combined_target])
+            source=(list(firmware_dists.values()) + [combined_target]),
+            ZIPROOT='dist/firmware',
         )
 
         # Generate the IDE project(s), if any, for this platform
