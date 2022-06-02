@@ -53,13 +53,13 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: firmware
-          path: dist/ps2plus-${{ matrix.platform }}-firmware-*.hex
+          path: dist/firmware/ps2plus-${{ matrix.platform }}-firmware-*.hex
 
       - name: Upload bootloader
         uses: actions/upload-artifact@v2
         with:
           name: bootloader
-          path: dist/ps2plus-${{ matrix.platform }}-bootloader-*.hex
+          path: dist/firmware/ps2plus-${{ matrix.platform }}-bootloader-*.hex
 
   release:
     needs: [configurator, bootloader-and-firmware]
