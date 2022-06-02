@@ -20,7 +20,7 @@ jobs:
           path: dist/configurator/*
 
       - name: Delete `latest` files
-        run: rm -rf dist/configurator
+        run: sudo rm -rf dist/configurator
         shell: bash
 
       - name: Compile the tagged version, if necessary (via Docker Compose)
@@ -68,7 +68,7 @@ jobs:
           path: dist/firmware/*
 
       - name: Delete `latest` files
-        run: rm -rf dist/firmware
+        run: sudo rm -rf dist/firmware
         shell: bash
 
       - name: Compile the tagged version, if necessary (via Docker Compose)
