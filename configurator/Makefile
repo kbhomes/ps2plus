@@ -10,7 +10,9 @@ BUILDDIR=$(ROOTDIR)/build/$(PROJECTDIR)
 BUILDDIR_EE=$(BUILDDIR)/ee
 BUILDDIR_IOP=$(BUILDDIR)/iop
 
-EEFILES=$(BUILDDIR_EE)/ps2plman.elf
+EE_OUT=$(BUILDDIR_EE)/ps2plman.elf
+EE_DIST=$(ROOTDIR)/$(DISTDIR)/ps2plus-configurator-$(VERSION).elf
+
 IRXFILES=iomanX.irx fileXio.irx freepad.irx freesio2.irx
 EE_IRX_OBJS = $(addprefix $(BUILDDIR_EE)/, $(addsuffix _irx.o, $(basename $(IRXFILES))))
 EE_IRX_OBJS += ps2plman_irx.o
@@ -22,11 +24,8 @@ VARIABLES=DEBUG=$(DEBUG)
 TARGETS = iop builtins ee
 
 all: $(TARGETS)
-	mkdir -p $(ROOTDIR)/dist;
-	@for file in $(EEFILES); do \
-		new=`echo $${file/*\//}|tr "[:lower:]" "[:upper:]"`; \
-		ps2-packer $$file $(ROOTDIR)/dist/$$new; \
-	done;
+	mkdir -p $(ROOTDIR)/$(DISTDIR);
+	ps2-packer $(EE_OUT) $(EE_DIST);
 
 ee:
 	mkdir -p $(BUILDDIR_EE)

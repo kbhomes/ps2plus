@@ -7,7 +7,7 @@ tools:
 	$(MAKE) -c tools ROOTDIR=$(ROOTDIR) PROJECTDIR=tools
 
 configurator:
-	$(MAKE) -C configurator ROOTDIR=$(ROOTDIR) PROJECTDIR=configurator
+	$(MAKE) -C configurator ROOTDIR=$(ROOTDIR) PROJECTDIR=configurator DISTDIR=dist/configurator
 
 release:
 #	tools/firmware-version-helper --firmware-hex "firmware/dist/Firmware/production/firmware.production.hex" > build/dist/ps2plus.firmware-only.hex

@@ -113,5 +113,6 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
         self.xc8_driver = f"\"{os.path.join(self.xc8_directory, 'bin', 'xc8-cc')}\""
         self.xc8_clang = os.path.join(self.xc8_directory, 'pic', 'bin', 'clang')
         
-        if not self.xc8_directory:
-            raise Exception('Could not find `xc8-cc[.exe]` on the path')
+        # TODO: Make toolchains optional (for other platforms), but fail the build when required?
+        # if not self.xc8_directory:
+        #     raise Exception('Could not find `xc8-cc[.exe]` on the path')
