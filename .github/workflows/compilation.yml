@@ -59,13 +59,13 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: firmware-latest
-          path: dist/firmware/*
+          path: dist/firmware/*-firmware-*.hex
 
       - name: Upload `latest` bootloader
         uses: actions/upload-artifact@v2
         with:
           name: bootloader-latest
-          path: dist/firmware/*
+          path: dist/firmware/*-botloader-*.hex
 
       - name: Delete `latest` files
         run: sudo rm -rf dist/firmware
@@ -81,7 +81,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: firmware-release
-          path: dist/firmware/*.hex
+          path: dist/firmware/*-botloader-*.hex
 
       - name: Upload versioned bootloader, if necessary
         uses: actions/upload-artifact@v2
