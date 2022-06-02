@@ -59,17 +59,11 @@ jobs:
         run: VERSION_METADATA=latest docker compose -f docker/docker-compose.yml run ${{ steps.service-name.outputs.lowercase }}
         shell: bash
 
-      - name: Upload `latest` firmware
+      - name: Upload `latest` combined firmware/bootloader
         uses: actions/upload-artifact@v2
         with:
-          name: firmware-latest
-          path: dist/firmware/*-firmware-*.hex
-
-      - name: Upload `latest` bootloader
-        uses: actions/upload-artifact@v2
-        with:
-          name: bootloader-latest
-          path: dist/firmware/*-bootloader-*.hex
+          name: firmware-bootloader-latest
+          path: dist/firmware/*.zip
 
       - name: Delete `latest` files
         run: sudo rm -rf dist/firmware
@@ -80,19 +74,12 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
 
-      - name: Upload versioned firmware, if necessary
+      - name: Upload versioned combined firmware/bootloader, if necessary
         uses: actions/upload-artifact@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: firmware-release
-          path: dist/firmware/*-firmware-*.hex
-
-      - name: Upload versioned bootloader, if necessary
-        uses: actions/upload-artifact@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          name: bootloader-release
-          path: dist/firmware/*-bootloader-*.hex
+          name: firmware-bootloader-release
+          path: dist/firmware/*.zip
 
   release:
     needs: [configurator, bootloader-and-firmware]
@@ -119,8 +106,7 @@ jobs:
           tag_name: "latest"
           prerelease: true
           files: |
-            bootloader-latest/*
-            firmware-latest/*
+            firmware-bootloader-latest/*
             configurator-latest/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

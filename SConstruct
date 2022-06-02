@@ -16,9 +16,9 @@ pprint(ps2plus_versions)
 # Build the configurator application (by calling `make`)
 if 'dist/configurator' in BUILD_TARGETS:
     env.AlwaysBuild(env.Command(
-        'dist/configurator', 
-        'configurator', 
-        f'make -C configurator ROOTDIR=`pwd` PROJECTDIR="$SOURCE" DISTDIR="$TARGET" VERSION="{ps2plus_versions.configurator}"',
+        target='dist/configurator', 
+        source='configurator', 
+        action=f'make -C configurator ROOTDIR=`pwd` PROJECTDIR="$SOURCE" DISTDIR="$TARGET" VERSION="{ps2plus_versions.configurator}"',
         ENV=os.environ,
     ))
 
@@ -27,6 +27,7 @@ if 'dist/firmware' in BUILD_TARGETS:
     for platform in firmware.platforms.ALL_PLATFORMS:
         firmware_outputs = {}
         firmware_sources = set()
+        firmware_dists = {}
 
         # Create a construction environment for this platform
         platform_env = env.Clone(tools=(env['TOOLS'] + platform.toolchain.tools))
@@ -52,7 +53,24 @@ if 'dist/firmware' in BUILD_TARGETS:
 
         # Move each target's output file to the `dist` folder
         for target, output in firmware_outputs.items():
-            InstallAs(f'dist/firmware/ps2plus-{platform.name}-{target}-{getattr(ps2plus_versions, target)}.hex', output)
+            firmware_dists[target] = InstallAs(
+                target=f'dist/firmware/ps2plus-{platform.name}-{target}-{getattr(ps2plus_versions, target)}.hex', 
+                source=output
+            )
+
+        # Merge the different targets into a single combined image
+        combined_version = '-'.join([f'{target}-{getattr(ps2plus_versions, target)}' for target in firmware_dists.keys()])
+        combined_target = platform_env.Command(
+            target=f'dist/firmware/ps2plus-{platform.name}-combined-{combined_version}.hex',
+            source=firmware_dists.values(),
+            action='python3 tools/hex-tools/merge.py --overlap=ignore $SOURCES -o $TARGET'
+        )
+
+        # ZIP up all platform files
+        Zip(
+            target=f'dist/firmware/ps2plus-{platform.name}-{combined_version}.zip',
+            source=(list(firmware_dists.values()) + [combined_target])
+        )
 
         # Generate the IDE project(s), if any, for this platform
         platform.generate_ide_project(platform_env, f'firmware/build-projects/{platform.name}', firmware_sources)
