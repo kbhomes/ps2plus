@@ -17,7 +17,7 @@ void dec_finalize(volatile command_packet *packet, controller_state *state) {
   state->custom_config.enabled = (packet->command_byte != 0x00);
 }
 
-command_processor command_ps2plus_disable_enable_configuration = {
+const command_processor command_ps2plus_disable_enable_configuration = {
     .id = 0x73,
     .initialize = &dec_initialize,
     .process = &dec_process,

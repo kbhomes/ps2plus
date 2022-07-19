@@ -29,7 +29,7 @@ command_result sdam_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor command_controller_switch_digital_analog_mode = {
+const command_processor command_controller_switch_digital_analog_mode = {
     .id = 0x44,
     .initialize = &sdam_initialize,
     .process = &sdam_process,

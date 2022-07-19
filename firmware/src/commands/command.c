@@ -8,7 +8,7 @@
  * command processor can be obtained by taking the lower nibble of the command ID and 
  * indexing into this array.
  */
-command_processor *command_controller_processors[] = {
+const command_processor *command_controller_processors[] = {
   &command_controller_initialize_pressure_sensor,    // 40h
   &command_controller_button_inclusions,             // 41h
   &command_controller_main_polling,                  // 42h
@@ -32,7 +32,7 @@ command_processor *command_controller_processors[] = {
  * These commands get PS2+ status information, get/set configuration values, and enable
  * firmware updates. These commands have a 7 as the higher nibble.
  */
-command_processor *command_ps2plus_processors[] = {
+const command_processor *command_ps2plus_processors[] = {
 #if defined(PS2PLUS_FIRMWARE)
   // Firmware requires support for all configuration-related commands
   &command_ps2plus_get_version,                    // 70h
@@ -56,7 +56,7 @@ command_processor *command_ps2plus_processors[] = {
  * @brief Two-dimensional table of polling commands indexed first by the upper nibble and
  *        then by the lower nibble of the command ID.
  */
-command_processor **command_processors[] = {
+const command_processor **command_processors[] = {
   NULL, NULL, NULL, NULL,
 #if defined(PS2PLUS_FIRMWARE)
   command_controller_processors,                               // 40h - 4Fh (firmware))
@@ -68,13 +68,13 @@ command_processor **command_processors[] = {
   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 };
 
-command_processor *command_find_processor(uint8_t id) {
+const command_processor *command_find_processor(uint8_t id) {     
   // Identify the indices into the command processor table
   uint8_t upper_nibble = id >> 4;
   uint8_t lower_nibble = id & 0x0F;
 
   // Return the command processor for this command
-  command_processor **processors = command_processors[upper_nibble];
+  const command_processor **processors = command_processors[upper_nibble];
   if (processors) {
     return processors[lower_nibble];
   }

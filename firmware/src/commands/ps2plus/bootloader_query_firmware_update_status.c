@@ -33,7 +33,7 @@ command_result bqfus_process(volatile command_packet *packet, controller_state *
   return CRCompleted;
 }
 
-command_processor command_ps2plus_bootloader_query_firmware_update_status = {
+const command_processor command_ps2plus_bootloader_query_firmware_update_status = {
     .id = 0x7F,
     .initialize = &bqfus_initialize,
     .process = &bqfus_process,

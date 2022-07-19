@@ -25,7 +25,7 @@ command_result bi_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor command_controller_button_inclusions = {
+const command_processor command_controller_button_inclusions = {
     .id = 0x41,
     .initialize = &bi_initialize,
     .process = &bi_process,

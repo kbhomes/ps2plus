@@ -14,7 +14,7 @@ command_result rcd_process(volatile command_packet *packet, controller_state *st
   return CRCompleted;
 }
 
-command_processor command_ps2plus_restore_configuration_defaults = {
+const command_processor command_ps2plus_restore_configuration_defaults = {
     .id = 0x74,
     .initialize = &rcd_initialize,
     .process = &rcd_process,

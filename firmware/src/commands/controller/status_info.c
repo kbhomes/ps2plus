@@ -25,7 +25,7 @@ command_result si_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor command_controller_status_info = {
+const command_processor command_controller_status_info = {
     .id = 0x45,
     .initialize = &si_initialize,
     .process = &si_process,

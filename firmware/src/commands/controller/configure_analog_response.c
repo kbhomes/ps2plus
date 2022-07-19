@@ -27,7 +27,7 @@ command_result car_process(volatile command_packet *packet, controller_state *st
   return CRCompleted;
 }
 
-command_processor command_controller_configure_analog_response = {
+const command_processor command_controller_configure_analog_response = {
     .id = 0x4F,
     .initialize = &car_initialize,
     .process = &car_process,

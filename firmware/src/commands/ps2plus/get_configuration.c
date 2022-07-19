@@ -55,7 +55,7 @@ command_result gc_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor command_ps2plus_get_configuration = {
+const command_processor command_ps2plus_get_configuration = {
     .id = 0x71,
     .initialize = &gc_initialize,
     .process = &gc_process,

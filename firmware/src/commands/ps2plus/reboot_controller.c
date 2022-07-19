@@ -12,7 +12,7 @@ command_result rc_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor command_ps2plus_reboot_controller = {
+const command_processor command_ps2plus_reboot_controller = {
     .id = 0x7D,
     .initialize = &rc_initialize,
     .process = &rc_process,

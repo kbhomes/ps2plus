@@ -50,7 +50,7 @@ command_result bufd_finalize(volatile command_packet *packet, controller_state *
   return CRCompleted;
 }
 
-command_processor command_ps2plus_bootloader_update_firmware_data = {
+const command_processor command_ps2plus_bootloader_update_firmware_data = {
     .id = 0x7E,
     .initialize = &bufd_initialize,
     .process = &bufd_process,

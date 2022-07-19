@@ -37,7 +37,7 @@ command_result mm_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor command_controller_map_motors = {
+const command_processor command_controller_map_motors = {
     .id = 0x4D,
     .initialize = &mm_initialize,
     .process = &mm_process,

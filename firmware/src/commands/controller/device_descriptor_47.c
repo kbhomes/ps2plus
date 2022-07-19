@@ -24,7 +24,7 @@ command_result dd47_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor command_controller_device_descriptor_47 = {
+const command_processor command_controller_device_descriptor_47 = {
     .id = 0x47,
     .initialize = &dd47_initialize,
     .process = &dd47_process,

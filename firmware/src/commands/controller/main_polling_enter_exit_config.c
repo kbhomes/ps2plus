@@ -59,7 +59,7 @@ command_result mp_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor command_controller_main_polling = { 
+const command_processor command_controller_main_polling = { 
   .id = 0x42,
   .initialize = &mp_initialize,
   .process = &mp_process,
@@ -68,7 +68,7 @@ command_processor command_controller_main_polling = {
 // Since the polling behavior of the 43h command is nearly identical to the 42h command (main polling), 
 // its processing is implemented as part of the main polling command. Whether to actuate the rumble 
 // motors (as in 42h) or enter/exit config mode (as in 43h) is differented based on the command ID.
-command_processor command_controller_enter_exit_config = {
+const command_processor command_controller_enter_exit_config = {
   .id = 0x43,
   .initialize = &mp_initialize,
   .process = &mp_process,

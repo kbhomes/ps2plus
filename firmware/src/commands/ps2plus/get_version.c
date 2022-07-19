@@ -61,7 +61,7 @@ command_result gv_process(volatile command_packet *packet, controller_state *sta
   return CRCompleted;
 }
 
-command_processor command_ps2plus_get_version = {
+const command_processor command_ps2plus_get_version = {
     .id = 0x70,
     .initialize = &gv_initialize,
     .process = &gv_process,

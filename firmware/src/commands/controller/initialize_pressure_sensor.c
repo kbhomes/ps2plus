@@ -20,7 +20,7 @@ command_result ips_process(volatile command_packet *packet, controller_state *st
   return CRCompleted;
 }
 
-command_processor command_controller_initialize_pressure_sensor = {
+const command_processor command_controller_initialize_pressure_sensor = {
     .id = 0x40,
     .initialize = &ips_initialize,
     .process = &ips_process,

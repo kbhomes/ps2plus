@@ -39,7 +39,7 @@ command_result dd4c_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor command_controller_device_descriptor_4c = {
+const command_processor command_controller_device_descriptor_4c = {
     .id = 0x4C,
     .initialize = &dd4c_initialize,
     .process = &dd4c_process,

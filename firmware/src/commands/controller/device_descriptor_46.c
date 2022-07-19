@@ -39,7 +39,7 @@ command_result dd46_process(volatile command_packet *packet, controller_state *s
   return CRCompleted;
 }
 
-command_processor command_controller_device_descriptor_46 = {
+const command_processor command_controller_device_descriptor_46 = {
     .id = 0x46,
     .initialize = &dd46_initialize,
     .process = &dd46_process,
