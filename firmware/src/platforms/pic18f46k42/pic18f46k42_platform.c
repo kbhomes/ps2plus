@@ -10,6 +10,32 @@
 
 #include "pic18f46k42_platform.h"
 
+bool __debug_is_reset() {
+  bool reset_power = STATUSbits.TO && STATUSbits.PD && !PCON0bits.POR;
+  bool reset_brownout = STATUSbits.TO && STATUSbits.PD && !PCON0bits.BOR;
+  bool reset_mclr_normal = !PCON0bits.RMCLR;
+  bool reset_mclr_sleep = STATUSbits.TO && !STATUSbits.PD && !PCON0bits.RMCLR;
+  bool reset_wwdt_timeout = !STATUSbits.TO && !PCON0bits.RWDT;
+  bool reset_wwdt_violation = !PCON0bits.WDTWV;
+  bool reset_instruction = !PCON0bits.RI;
+  bool reset_stack_overflow = PCON0bits.STKOVF;
+  bool reset_stack_underflow = PCON0bits.STKUNF;
+  bool reset_memory_violation = !PCON1bits.MEMV;
+
+  return (
+    reset_power ||
+    reset_brownout ||
+    reset_mclr_normal ||
+    reset_mclr_sleep ||
+    reset_wwdt_timeout ||
+    reset_wwdt_violation ||
+    reset_instruction ||
+    reset_stack_overflow ||
+    reset_stack_underflow ||
+    reset_memory_violation
+  );
+}
+
 // Interrupt callback to the main program loop
 platform_interrupt_callback main_loop_callback = NULL;
 
