@@ -2,6 +2,14 @@
 
 #include "main.h"
 
+#if 0
+#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#define DEBUG_PUTS(...) puts(__VA_ARGS__)
+#else
+#define DEBUG_PRINTF(...)
+#define DEBUG_PUTS(...)
+#endif
+
 static unsigned long millis_init;
 
 // Tracking whether a firmware update was initiated before the bootloader has 
@@ -17,7 +25,7 @@ static bool is_wait_combo_pressed;
 
 static void print_hex_array(const uint8_t *array, size_t length) {
   for (size_t i = 0; i < length; i++) {
-    printf("%02X ", array[i]);
+    DEBUG_PRINTF("%02X ", array[i]);
   }
 }
 
@@ -25,23 +33,23 @@ static void print_checksum_calculation(ps2plus_bootloader_update_record *record)
   uint8_t checksum = 0;
   
   // Compute the checksum on all relevant components of the record
-  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)(record->target_address & 0xFF), (uint8_t)(checksum + (uint8_t)(record->target_address & 0xFF)));
+  DEBUG_PRINTF("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)(record->target_address & 0xFF), (uint8_t)(checksum + (uint8_t)(record->target_address & 0xFF)));
   checksum += record->target_address & 0xFF;
   
-  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 8) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 8) & 0xFF)));
+  DEBUG_PRINTF("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 8) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 8) & 0xFF)));
   checksum += (record->target_address >> 8) & 0xFF;
   
-  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 16) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 16) & 0xFF)));
+  DEBUG_PRINTF("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 16) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 16) & 0xFF)));
   checksum += (record->target_address >> 16) & 0xFF;
   
-  printf("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 24) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 24) & 0xFF)));
+  DEBUG_PRINTF("[cs] %02X + %02X -> %02X\n", checksum, (uint8_t)((record->target_address >> 24) & 0xFF), (uint8_t)(checksum + (uint8_t)((record->target_address >> 24) & 0xFF)));
   checksum += (record->target_address >> 24) & 0xFF;
   
-  printf("[cs] %02X + %02X -> %02X\n", checksum, record->data_length, (uint8_t)(checksum + record->data_length));
+  DEBUG_PRINTF("[cs] %02X + %02X -> %02X\n", checksum, record->data_length, (uint8_t)(checksum + record->data_length));
   checksum += record->data_length;
   
   for (int i = 0; i < record->data_length && i < sizeof(record->data); i++) {
-    printf("[cs] %02X + %02X -> %02X\n", checksum, record->data[i], (uint8_t)(checksum + record->data[i]));
+    DEBUG_PRINTF("[cs] %02X + %02X -> %02X\n", checksum, record->data[i], (uint8_t)(checksum + record->data[i]));
     checksum += record->data[i];
   }
 }
@@ -56,7 +64,7 @@ bool check_wait_combo() {
 }
 
 void handle_update_start_record(volatile controller_state *state) {
-//  puts("[bootloader] Erasing firmware");
+  DEBUG_PUTS("[bootloader] Erasing firmware");
   
   // At the start, erase the device's firmware
   if (platform_bootloader_erase_firmware()) {
@@ -68,7 +76,7 @@ void handle_update_start_record(volatile controller_state *state) {
 }
 
 void handle_update_data_record(volatile controller_state *state) {
-//  puts("[bootloader] Handling update");
+  DEBUG_PUTS("[bootloader] Handling update");
   
   volatile ps2plus_bootloader_update_record *record = &state->bootloader.update.record;
   
@@ -82,15 +90,14 @@ void handle_update_data_record(volatile controller_state *state) {
     state->bootloader.status = BLStatusError;
     ok = false;
     
-    puts("[bootloader] Checksum calculation:");
+    DEBUG_PUTS("[bootloader] Checksum calculation:");
     print_checksum_calculation(record);
-
-    puts("[bootloader] Calculated checksum did not match:");
-    printf("  Expected checksum: 0x%X\n", record->data_checksum);
-    printf("  Calculated checksum: 0x%X\n", ps2plus_bootloader_update_record_calculate_checksum(record));
-    printf("  Target address: 0x%lX\n", record->target_address);
-    printf("  Data length: 0x%X\n", record->data_length);
-    printf("  Data: "); print_hex_array(record->data, record->data_length); puts("");
+    DEBUG_PUTS("[bootloader] Calculated checksum did not match:");
+    DEBUG_PRINTF("  Expected checksum: 0x%X\n", record->data_checksum);
+    DEBUG_PRINTF("  Calculated checksum: 0x%X\n", ps2plus_bootloader_update_record_calculate_checksum(record));
+    DEBUG_PRINTF("  Target address: 0x%lX\n", record->target_address);
+    DEBUG_PRINTF("  Data length: 0x%X\n", record->data_length);
+    DEBUG_PRINTF("  Data: "); print_hex_array(record->data, record->data_length); DEBUG_PUTS("");
   } 
 
   // Check the target address
@@ -113,7 +120,7 @@ void handle_update_data_record(volatile controller_state *state) {
 }
 
 void handle_update_end_record(volatile controller_state *state) {
-  puts("[bootloader] Rebooting device");
+  DEBUG_PUTS("[bootloader] Rebooting device");
   
   // Reboot the controller now that the firmware is updated
   platform_reset();
@@ -135,7 +142,7 @@ void main_loop(volatile controller_state *state) {
     // Check if an update has been signaled
     if (state->bootloader.update.ready) {
       // Bootloader received an update signal, so remain here
-//      puts("[bootloader] Received update signal, remaining in bootloader");
+      puts("[bootloader] Received update signal, remaining in bootloader");
       is_updating = true;
     }
 
