@@ -1,6 +1,5 @@
 #include "command.h"
 
-#if defined(PS2PLUS_FIRMWARE)
 /**
  * @brief Processors for PlayStation 2 controller commands
  * 
@@ -9,6 +8,7 @@
  * indexing into this array.
  */
 const command_processor *command_controller_processors[] = {
+#if defined(PS2PLUS_FIRMWARE)
   &command_controller_initialize_pressure_sensor,    // 40h
   &command_controller_button_inclusions,             // 41h
   &command_controller_main_polling,                  // 42h
@@ -22,8 +22,15 @@ const command_processor *command_controller_processors[] = {
   &command_controller_map_motors,                    // 4Dh
   NULL,
   &command_controller_configure_analog_response,     // 4Fh
-};
+#elif defined(PS2PLUS_BOOTLOADER)
+  NULL, NULL,
+  &command_controller_main_polling,                  // 42h
+  NULL, NULL, NULL, NULL, 
+  NULL, NULL, NULL, NULL, 
+  NULL, NULL, NULL, NULL, 
+  NULL,
 #endif
+};
 
 /**
  * @brief Processors for PS2+ configuration commands
@@ -58,11 +65,7 @@ const command_processor *command_ps2plus_processors[] = {
  */
 const command_processor **command_processors[] = {
   NULL, NULL, NULL, NULL,
-#if defined(PS2PLUS_FIRMWARE)
-  command_controller_processors,                               // 40h - 4Fh (firmware))
-#elif defined(PS2PLUS_BOOTLOADER)
-  NULL,                                                        // 40h - 4Fh (bootloader)
-#endif
+  command_controller_processors,                               // 40h - 4Fh
   NULL, NULL,
   command_ps2plus_processors,                                  // 70h - 7Fh
   NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,

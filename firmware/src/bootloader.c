@@ -126,6 +126,20 @@ void handle_update_end_record(volatile controller_state *state) {
   platform_reset();
 }
 
+void read_controller_input(volatile controller_state *state) {
+  // Read digital buttons
+  for (ps2plus_controller_digital_button button = 0; button < NUM_DIGITAL_BUTTONS; button++) {
+    digital_button_update(&state->input.digital_buttons[button], platform_controller_read_digital_button(button));
+  }
+}
+
+void update_controller(volatile controller_state *state) {
+  // Recompute controller state
+  read_controller_input(state);
+  controller_input_recompute(&state->input);
+  controller_state_update_mode(state);
+}
+
 void main_init(volatile controller_state *state) {
   puts("[bootloader] Waiting 1 second for firmware update signal");
   millis_init = platform_timing_millis();
@@ -159,6 +173,8 @@ void main_loop(volatile controller_state *state) {
       }
     }
   }
+
+  update_controller(state);
   
   if (!state->bootloader.update.ready) {
     // Nothing required until this update is ready

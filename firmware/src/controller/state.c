@@ -4,9 +4,9 @@
 
 void controller_state_initialize(controller_state *state) {
   controller_state_reset(&state);
+  controller_input_initialize(&state->input);
   
 #if defined(PS2PLUS_FIRMWARE)
-  controller_input_initialize(&state->input);
   controller_custom_config_initialize(&state->custom_config);
 #elif defined(PS2PLUS_BOOTLOADER)
   state->bootloader.status = BLStatusPending;
@@ -25,7 +25,7 @@ void controller_state_update_mode(controller_state *state) {
     state->mode = 0x79;
   }
 #elif defined(PS2PLUS_BOOTLOADER)
-  state->mode = 0xBB;
+  state->mode = 0x41;
 #endif
 }
 
@@ -51,7 +51,7 @@ void controller_state_reset(controller_state *state) {
   state->rumble_motor_large.value = 0x00;
   state->last_configuration_reset_combo_time = UINT64_MAX;
 #elif defined(PS2PLUS_BOOTLOADER)
-  state->mode = 0xBB;
+  state->mode = 0x41;
 #endif
   
   state->last_communication_time = UINT64_MAX;

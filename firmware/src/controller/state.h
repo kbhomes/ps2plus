@@ -42,11 +42,12 @@ typedef struct {
    */
   uint64_t last_communication_time;
   
-#ifdef PS2PLUS_FIRMWARE
   /**
    * @brief Current button and joystick input
    */
   controller_input input;
+  
+#ifdef PS2PLUS_FIRMWARE
 
   /**
    * @brief Current digital/analog mode of the controller

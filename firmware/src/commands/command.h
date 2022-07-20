@@ -29,7 +29,6 @@ static void command_processor_finalize_dummy(volatile command_packet *packet, co
 }
 
 // Controller command processors
-#if defined(PS2PLUS_FIRMWARE)
 extern const command_processor command_controller_initialize_pressure_sensor;
 extern const command_processor command_controller_button_inclusions;
 extern const command_processor command_controller_main_polling;
@@ -41,20 +40,16 @@ extern const command_processor command_controller_device_descriptor_47;
 extern const command_processor command_controller_device_descriptor_4c;
 extern const command_processor command_controller_map_motors;
 extern const command_processor command_controller_configure_analog_response;
-#endif
 
 // PS2+ configuration command processors
 extern const command_processor command_ps2plus_get_version;
-#if defined(PS2PLUS_FIRMWARE)
 extern const command_processor command_ps2plus_get_configuration;
 extern const command_processor command_ps2plus_set_configuration;
 extern const command_processor command_ps2plus_disable_enable_configuration;
 extern const command_processor command_ps2plus_restore_configuration_defaults;
 extern const command_processor command_ps2plus_reboot_controller;
-#elif defined(PS2PLUS_BOOTLOADER)
 extern const command_processor command_ps2plus_bootloader_update_firmware_data;
 extern const command_processor command_ps2plus_bootloader_query_firmware_update_status;
-#endif
 
 /**
  * @brief Returns the command processor for the given command ID, or NULL if the 

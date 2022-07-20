@@ -1,5 +1,3 @@
-#ifdef PS2PLUS_FIRMWARE
-
 #include "../command.h"
 
 const uint8_t CONFIG_MODE_RESPONSE_BYTES[6] = { 0x00 };
@@ -10,6 +8,7 @@ struct {
 } memory;
 
 command_result mp_initialize(volatile command_packet *packet, controller_state *state) {
+#if defined(PS2PLUS_FIRMWARE)
   // Determines how much data will be sent back to the console depending on controller mode
   if (state->config_mode) {
     // In config mode, all zeroes are written
@@ -29,6 +28,11 @@ command_result mp_initialize(volatile command_packet *packet, controller_state *
       memory.response_length = 0;
     }
   }
+#elif defined(PS2PLUS_BOOTLOADER)
+  // For standard polling, simply write the controller data to the console one byte at a time
+  memory.response_data = state->input.button_data;
+  memory.response_length = 0;
+#endif
 
   return CRInitialized;
 }
@@ -36,6 +40,7 @@ command_result mp_initialize(volatile command_packet *packet, controller_state *
 command_result mp_process(volatile command_packet *packet, controller_state *state) {
   packet->write(memory.response_data[packet->data_index]);
   
+#if defined(PS2PLUS_FIRMWARE)
   if (packet->id == 0x42) {
     // Attempt to power the small/large motors, if necessary
     if (packet->command_index == 0 && state->rumble_motor_small.mapping == 0x00) {
@@ -50,6 +55,7 @@ command_result mp_process(volatile command_packet *packet, controller_state *sta
       state->config_mode = packet->command_byte == 0x01;
     }
   }
+#endif
 
   // If the final byte hasn't been written, mark this command as still processing
   if (packet->data_index + 1 != memory.response_length) {
@@ -73,5 +79,3 @@ const command_processor command_controller_enter_exit_config = {
   .initialize = &mp_initialize,
   .process = &mp_process,
 };
-
-#endif
