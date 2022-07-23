@@ -3,7 +3,7 @@
 #include <string.h>
 
 void controller_state_initialize(controller_state *state) {
-  controller_state_reset(&state);
+  controller_state_reset(state);
   controller_input_initialize(&state->input);
   
 #if defined(PS2PLUS_FIRMWARE)
