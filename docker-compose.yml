@@ -15,6 +15,11 @@ x-toolchains: &toolchains
     build: { context: './', dockerfile: 'docker/microchip-xc8.Dockerfile' }
     image: ps2plus/build-microchip-xc8
 
+  # Base toolchain image for firmware using a "native" compiler (i.e.: not cross-compiling for an embedded platform)
+  build-native:
+    build: { context: './', dockerfile: 'docker/native.Dockerfile' }
+    image: ps2plus/build-native
+
 services:
   <<: *toolchains
   
@@ -24,10 +29,14 @@ services:
     depends_on: [build-ps2sdk]
     command: scons -Q --version-configurator-metadata=${VERSION_METADATA-dev} dist/configurator
       
-
   firmware-pic18f46k42: # Microchip PIC18F46K42, using the XC8 compiler toolchain
     <<: *project-common
     image: ps2plus/build-microchip-xc8
     depends_on: [build-microchip-xc8]
     command: scons -Q --platform=PIC18F46K42 --version-firmware-metadata=${VERSION_METADATA-dev} --version-bootloader-metadata=${VERSION_METADATA-dev} dist/firmware
       
+  test-native: # Native platform unit tests
+    <<: *project-common
+    image: ps2plus/build-native
+    depends_on: [build-native]
+    command: scons -Q --platform=native --test dist/firmware

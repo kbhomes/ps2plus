@@ -81,8 +81,31 @@ jobs:
           name: firmware-bootloader-release
           path: dist/firmware/*.zip
 
-  release:
+  test:
     needs: [configurator, bootloader-and-firmware]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: 
+          - native
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Check out entire history, including tags (required for versioning)
+
+      - name: Generate the appropriate Docker Compose service name
+        id: service-name
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: test-${{ matrix.platform }}
+
+      - name: Run tests (via Docker Compose)
+        run: docker compose run ${{ steps.service-name.outputs.lowercase }}
+        shell: bash
+
+  release:
+    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifacts

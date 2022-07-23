@@ -3,10 +3,16 @@ import firmware.platforms
 import firmware.targets
 import versions
 import os
+import subprocess
+import sys
 from pprint import pprint
+
+# Type signature for platform/target/executable information for generated test runners
+TypeTestExecutableInformation = tuple[firmware.platforms.AbstractFirmwarePlatform, firmware.targets.Target, object]
 
 env = Environment(tools=['vscode_c_cpp_properties'])
 vscode_configurations = []
+test_targets: list[TypeTestExecutableInformation] = []
 
 # Read PS2+ versions from the `ps2plus.json` manifest (with command-line overrides)
 # and add them to the C compilation environment
@@ -78,8 +84,13 @@ if 'dist/firmware' in BUILD_TARGETS:
         # Move each target's output file to the `dist` folder
         for target, output in firmware_outputs.items():
             # Move non-distributable targets to another location
-            if not target.is_distributable:
-                env.Install(target=f'dist/firmware/misc-{platform.name}/', source=output)
+            if not target.is_distributable or target.is_test:
+                dist_output = env.Install(target=f'dist/firmware/misc-{platform.name}/', source=output)
+                
+                # Track all generated test targets
+                if target.is_test:
+                    test_targets.append((platform, target, dist_output))
+
                 continue
 
             firmware_dists[target] = InstallAs(
@@ -106,6 +117,18 @@ if 'dist/firmware' in BUILD_TARGETS:
 
         # Generate the IDE project(s), if any, for this platform
         platform.generate_ide_project(platform_env, f'firmware/build-projects/{platform.name}', firmware_sources)
+
+# Runs executable nodes, exiting the build if the executable fails
+def run_test_action(target, source, env):
+    for executable in env.Flatten([target]):
+        ret = subprocess.run(str(executable), stdout=sys.stdout).returncode
+        if ret:
+            env.Exit(ret)
+
+# If the `test` flag was passed, run any generated test targets
+if GetOption('test'):
+    for (platform, target, output) in test_targets:
+        env.AlwaysBuild(env.AddPostAction(output, run_test_action))
 
 # Generate VS Code autocompletion
 env.AlwaysBuild(env.VSCodeCCppProperties('.vscode/c_cpp_properties.json', vscode_configurations))

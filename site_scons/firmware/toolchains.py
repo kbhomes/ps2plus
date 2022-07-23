@@ -19,7 +19,14 @@ class NativeToolchain(AbstractFirmwareToolchain):
     vscode_properties = None
 
     def setup_env(self, env):
-        env.Replace(CFLAGS=['-g'])
+        env.Replace(
+            CFLAGS=[
+                '-g'       # Debugging symbols
+            ],
+            LIBS=[
+                'm'        # Link the math library for <math.h>
+            ]
+        )
     
 class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
     name = 'MicrochipXC8Toolchain'
