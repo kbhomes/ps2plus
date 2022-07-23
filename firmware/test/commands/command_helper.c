@@ -43,7 +43,7 @@ void helper_initialize() {
   helper_debug_enabled = false;
 }
 
-uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const uint8_t *command_bytes, size_t command_length) {
+uint8_t *helper_run_command(uint8_t command_id, const uint8_t *command_bytes, size_t command_length) {
   // Keep track of where the data output for this command begins
   int initial_index = output_index;
 
@@ -65,12 +65,12 @@ uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const u
   }
 
   // Initialize the command processor with the controller state
-  processor->initialize(&packet, state);
+  processor->initialize(&packet, &state);
 
   for (size_t i = 0; i < command_length; i++) {
     // All results should be `CRProcessing` (ongoing command), while the last should be `CRCompleted`
     command_result expected_result = (i + 1 == command_length) ? CRCompleted : CRProcessing;
-    command_result actual_result = processor->process(&packet, state);
+    command_result actual_result = processor->process(&packet, &state);
     TEST_ASSERT_EQUAL_MESSAGE(expected_result, actual_result, "Received unexpected command result status");
 
     // Allow the command processor to read and write the next byte
@@ -81,7 +81,7 @@ uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const u
 
   // If the processor has a finalize method, call it on the final byte
   if (processor->finalize != NULL) {
-    processor->finalize(&packet, state);
+    processor->finalize(&packet, &state);
   }
 
   if (helper_debug_enabled) {

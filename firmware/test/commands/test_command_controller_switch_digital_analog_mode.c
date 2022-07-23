@@ -11,7 +11,7 @@ void test_command_controller_switch_digital_analog_mode_set_digital() {
   state.analog_mode = CMAnalog;
   state.analog_mode_locked = false;
 
-  uint8_t *actual_output = helper_run_command(&state, SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_DIGITAL, SDAM_PAYLOAD_SIZE);
+  uint8_t *actual_output = helper_run_command(SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_DIGITAL, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EACH_EQUAL_HEX8(0, actual_output, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EQUAL_MESSAGE(CMDigital, state.analog_mode, "Controller should be in digital mode");
   TEST_ASSERT_FALSE_MESSAGE(state.analog_mode_locked, "Controller should not have analog lock enabled");
@@ -21,7 +21,7 @@ void test_command_controller_switch_digital_analog_mode_set_analog() {
   state.analog_mode = CMDigital;
   state.analog_mode_locked = false;
 
-  uint8_t *actual_output = helper_run_command(&state, SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_ANALOG, SDAM_PAYLOAD_SIZE);
+  uint8_t *actual_output = helper_run_command(SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_ANALOG, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EACH_EQUAL_HEX8(0, actual_output, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EQUAL_MESSAGE(CMAnalog, state.analog_mode, "Controller should be in analog mode");
   TEST_ASSERT_FALSE_MESSAGE(state.analog_mode_locked, "Controller should not have analog lock enabled");
@@ -31,7 +31,7 @@ void test_command_controller_switch_digital_analog_mode_set_analog_with_lock() {
   state.analog_mode = CMDigital;
   state.analog_mode_locked = false;
 
-  uint8_t *actual_output = helper_run_command(&state, SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_ANALOG_WITH_LOCK, SDAM_PAYLOAD_SIZE);
+  uint8_t *actual_output = helper_run_command(SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_ANALOG_WITH_LOCK, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EACH_EQUAL_HEX8(0, actual_output, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EQUAL_MESSAGE(CMAnalog, state.analog_mode, "Controller should be in analog mode");
   TEST_ASSERT_TRUE_MESSAGE(state.analog_mode_locked, "Controller should have analog lock enabled");
@@ -43,8 +43,8 @@ void test_command_controller_switch_digital_analog_mode_toggling_removes_pressur
   state.analog_mode = CMAnalogFull;
   state.analog_mode_locked = false;
 
-  uint8_t *first_output = helper_run_command(&state, SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_DIGITAL, SDAM_PAYLOAD_SIZE);
-  uint8_t *second_output = helper_run_command(&state, SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_ANALOG, SDAM_PAYLOAD_SIZE);
+  uint8_t *first_output = helper_run_command(SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_DIGITAL, SDAM_PAYLOAD_SIZE);
+  uint8_t *second_output = helper_run_command(SDAM_COMMAND_ID, SDAM_PAYLOAD_SET_ANALOG, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EACH_EQUAL_HEX8(0, first_output, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EACH_EQUAL_HEX8(0, second_output, SDAM_PAYLOAD_SIZE);
   TEST_ASSERT_EQUAL_MESSAGE(CMAnalog, state.analog_mode, "Controller should be in analog mode");

@@ -5,6 +5,8 @@
 #include <platforms/platform.h>
 #include <stdio.h>
 
+extern controller_state state;
+
 /**
  * @brief Reset the command output buffer (useful if testing multiple commands in sequence)
  */
@@ -31,7 +33,7 @@ void helper_initialize();
  * @return uint8_t* Byte array of length `command_length` as written by the command processor
  * }
  */
-uint8_t *helper_run_command(controller_state *state, uint8_t command_id, const uint8_t *command_bytes, size_t command_length);
+uint8_t *helper_run_command(uint8_t command_id, const uint8_t *command_bytes, size_t command_length);
 
 void helper_print_hex_array(const uint8_t *array, size_t length); 
 void helper_print_binary_byte(uint8_t value);
