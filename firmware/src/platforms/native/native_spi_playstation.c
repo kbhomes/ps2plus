@@ -2,19 +2,23 @@
 
 #include "native_platform.h"
 
-bool platform_spi_selected() {
+void platform_spi_playstation_ack() {
+
+}
+
+bool platform_spi_playstation_selected() {
   return false;
 }
 
-bool platform_spi_data_available() {
+bool platform_spi_playstation_data_available() {
   return false;
 }
 
-uint8_t platform_spi_read() {
+uint8_t platform_spi_playstation_read() {
   return 0;
 }
 
-void platform_spi_write(uint8_t value) {
+void platform_spi_playstation_write(uint8_t value) {
 
 }
 

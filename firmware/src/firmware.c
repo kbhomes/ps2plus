@@ -18,12 +18,12 @@ void check_configuration_version(volatile controller_state *state) {
 }
 
 void debug_versions_dump(volatile controller_state *state) {
-  printf("[version] Firmware = " PRIu64 "\n", VERSION_FIRMWARE);
+  printf("[version] Firmware = %d.%d.%d\n", VERSION_MAJOR(VERSION_FIRMWARE), VERSION_MINOR(VERSION_FIRMWARE), VERSION_PATCH(VERSION_FIRMWARE));
   printf("[version] Microcontroller = %s\n", VERSION_MICROCONTROLLER);
   printf("[version] Configuration = %u\n", VERSION_CONFIGURATION);
 }
 
-inline float clampf(float min, float max, float value) {
+static inline float clampf(float min, float max, float value) {
   return fmaxf(min, fminf(max, value));
 }
 

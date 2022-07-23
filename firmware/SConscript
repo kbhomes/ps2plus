@@ -1,23 +1,32 @@
 from pprint import pprint
+from firmware import targets
 from source_utilities import *
 
 # Import the build build_environment, platform, and target information
 Import('build_env')
 Import('platform')
 Import('target')
+print(f'Building platform "{platform.name}" for target "{target.name}"')
 
 # Add preprocessor defines
-build_env.Append(CPPDEFINES=[
-    # This define switches between firmware targets (i.e.: firmware and bootloader)
-    'PS2PLUS_' + target.upper(),
-    
+additional_defines = [
     # This define specifies which microcontroller is being built -- it selects which
     # platform abstraction support to build
-    'PLATFORM_' + platform.name,
+    'PLATFORM_' + platform.name.upper(),
 
     # This define puts the microcontroller name as a version number in the binary
-    'PLATFORM_MICROCONTROLLER=' + platform.name,
-])
+    'PLATFORM_MICROCONTROLLER=' + platform.name
+]
+
+# Add defines for the current target
+additional_defines += target.defines
+
+# For test targets, add standard test defines
+if target.is_test:
+    additional_defines += ['UNITY_INCLUDE_CONFIG_H']
+
+# Append the defines to the build environment
+build_env.Append(CPPDEFINES=additional_defines)
 
 # Add include directories
 build_env.Append(CPPPATH=[
@@ -36,17 +45,36 @@ main_objects = build_env.Object(main_sources)
 shared_objects = [ExternalObject(build_env, '../', path) for path in shared_sources]
 objects = main_objects + shared_objects
 
+# For the test target, also compile the `test` directory
+if target.is_test:
+    # Add the test directory 
+    build_env.Append(CPPPATH=['#/firmware/test'])
+    test_sources = GlobRecursive(build_env, 'test/**/*.c')
+    test_headers = GlobRecursive(build_env, 'test/**/*.h')
+    test_objects = build_env.Object(test_sources)
+    objects += test_objects
+else:
+    test_sources = []
+    test_headers = []
+
 # Output the VSCode C/C++ configuration for this platform/target
-vscode_configuration = build_env.VSCodeCCppPropertiesConfiguration( 
-    name=f'{platform.name}:{target}',
-    properties=platform.toolchain.vscode_properties)
+if platform.toolchain.vscode_properties:
+    vscode_configuration = build_env.VSCodeCCppPropertiesConfiguration( 
+        name=f'{platform.name}:{target.name}',
+        properties=platform.toolchain.vscode_properties)
+else:
+    vscode_configuration = None
 
 # Add this platform/target to the platform's IDE project generation step (if any)
 platform.generate_ide_project_configuration_for_target(build_env, target)
 
 # Compile the target
-output = build_env.Program(target, objects)
+output = build_env.Program(target.name, objects)
 
 # Send back source and header files
-sources = main_sources + main_headers + shared_sources + shared_headers
+sources = (
+    main_sources + main_headers + 
+    shared_sources + shared_headers + 
+    test_sources + test_headers
+)
 Return('output', 'sources', 'vscode_configuration')

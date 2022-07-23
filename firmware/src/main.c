@@ -1,3 +1,5 @@
+#ifndef PS2PLUS_TEST
+
 #include "main.h"
 
 #include <math.h>
@@ -36,3 +38,5 @@ int main(void) {
 
   return 0;
 }
+
+#endif

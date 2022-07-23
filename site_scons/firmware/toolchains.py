@@ -12,6 +12,14 @@ class AbstractFirmwareToolchain:
 
     def setup_env(self, env):
         pass
+
+class NativeToolchain(AbstractFirmwareToolchain):
+    name = 'NativeToolchain'
+    tools = ['mingw', 'gnulink']
+    vscode_properties = None
+
+    def setup_env(self, env):
+        env.Replace(CFLAGS=['-g'])
     
 class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
     name = 'MicrochipXC8Toolchain'

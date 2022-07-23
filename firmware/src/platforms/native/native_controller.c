@@ -10,8 +10,20 @@ uint8_t platform_controller_read_joystick(ps2plus_controller_joystick_axis joyst
   return 0x7F;
 }
 
+bool platform_controller_read_analog_button() {
+  return false;
+}
+
 void platform_controller_set_analog_led(bool active) {
   
+}
+
+void platform_controller_set_motor_large(uint8_t power) {
+  
+}
+
+void platform_controller_set_motor_small(bool active) {
+
 }
 
 #endif

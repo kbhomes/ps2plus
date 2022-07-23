@@ -29,5 +29,5 @@ services:
     <<: *project-common
     image: ps2plus/build-microchip-xc8
     depends_on: [build-microchip-xc8]
-    command: scons -Q --version-firmware-metadata=${VERSION_METADATA-dev} --version-bootloader-metadata=${VERSION_METADATA-dev} dist/firmware
+    command: scons -Q --platform=PIC18F46K42 --version-firmware-metadata=${VERSION_METADATA-dev} --version-bootloader-metadata=${VERSION_METADATA-dev} dist/firmware
       

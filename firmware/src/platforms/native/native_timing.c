@@ -6,7 +6,7 @@
 #include <time.h>
 #include <unistd.h>
 
-unsigned long platform_timing_millis() {
+uint64_t platform_timing_millis() {
   struct timespec now;
   clock_gettime(CLOCK_MONOTONIC, &now);
   return now.tv_sec * 1000 + lround(now.tv_nsec / 1e6);

@@ -9,4 +9,8 @@ void platform_init(platform_interrupt_callback callback) {
   main_loop_callback = callback;
 }
 
+void platform_reset(void) {
+  
+}
+
 #endif
