@@ -24,10 +24,10 @@ void UNITY_OUTPUT_CHAR(int);
 struct UNITY_STORAGE_T Unity;
 
 #ifdef UNITY_OUTPUT_COLOR
-const char UNITY_PROGMEM UnityStrOk[]                            = "\033[42mOK\033[0m";
-const char UNITY_PROGMEM UnityStrPass[]                          = "\033[42mPASS\033[0m";
-const char UNITY_PROGMEM UnityStrFail[]                          = "\033[41mFAIL\033[0m";
-const char UNITY_PROGMEM UnityStrIgnore[]                        = "\033[43mIGNORE\033[0m";
+const char UNITY_PROGMEM UnityStrOk[]                            = "\033[1;32mOK\033[0m";
+const char UNITY_PROGMEM UnityStrPass[]                          = "\033[1;32mPASS\033[0m";
+const char UNITY_PROGMEM UnityStrFail[]                          = "\033[1;31mFAIL\033[0m";
+const char UNITY_PROGMEM UnityStrIgnore[]                        = "\033[1;33mIGNORE\033[0m";
 #else
 const char UNITY_PROGMEM UnityStrOk[]                            = "OK";
 const char UNITY_PROGMEM UnityStrPass[]                          = "PASS";
@@ -61,10 +61,13 @@ const char UNITY_PROGMEM UnityStrErrShorthand[]                  = "Unity Shorth
 const char UNITY_PROGMEM UnityStrErrFloat[]                      = "Unity Floating Point Disabled";
 const char UNITY_PROGMEM UnityStrErrDouble[]                     = "Unity Double Precision Disabled";
 const char UNITY_PROGMEM UnityStrErr64[]                         = "Unity 64-bit Support Disabled";
-static const char UNITY_PROGMEM UnityStrBreaker[]                = "-----------------------";
+static const char UNITY_PROGMEM UnityStrBreaker[]                = "---------------------------------";
 static const char UNITY_PROGMEM UnityStrResultsTests[]           = " Tests ";
 static const char UNITY_PROGMEM UnityStrResultsFailures[]        = " Failures ";
 static const char UNITY_PROGMEM UnityStrResultsIgnored[]         = " Ignored ";
+static const char UNITY_PROGMEM UnityStrSuiteName[]              = "Suite: ";
+static const char UNITY_PROGMEM UnityStrResultsLabel[]           = "Results: ";
+static const char UNITY_PROGMEM UnityStrStatusLabel[]            = "Status: ";
 #ifndef UNITY_EXCLUDE_DETAILS
 static const char UNITY_PROGMEM UnityStrDetail1Name[]            = UNITY_DETAIL1_NAME " ";
 static const char UNITY_PROGMEM UnityStrDetail2Name[]            = " " UNITY_DETAIL2_NAME " ";
@@ -523,10 +526,15 @@ static void UnityTestResultsBegin(const char* file, const UNITY_LINE_TYPE line)
     UnityPrint(Unity.CurrentTestName);
     UNITY_OUTPUT_CHAR(':');
 #else
+   UNITY_TEST_RESULT_PREFIX();
+#ifndef UNITY_EXCLUDE_FILE_IN_TEST_RESULT
     UnityPrint(file);
     UNITY_OUTPUT_CHAR(':');
+#endif
+#ifndef UNITY_EXCLUDE_LINE_NUMBER_IN_TEST_RESULT
     UnityPrintNumber((UNITY_INT)line);
     UNITY_OUTPUT_CHAR(':');
+#endif
     UnityPrint(Unity.CurrentTestName);
     UNITY_OUTPUT_CHAR(':');
 #endif
@@ -537,9 +545,10 @@ static void UnityTestResultsBegin(const char* file, const UNITY_LINE_TYPE line)
 /*-----------------------------------------------*/
 static void UnityTestResultsFailBegin(const UNITY_LINE_TYPE line)
 {
+    UNITY_TEST_RESULT_FAIL_PREFIX();
     UnityTestResultsBegin(Unity.TestFile, line);
     UnityPrint(UnityStrFail);
-    UNITY_OUTPUT_CHAR(':');
+    UNITY_TEST_RESULT_MESSAGE_PREFIX();
 }
 
 /*-----------------------------------------------*/
@@ -551,6 +560,7 @@ void UnityConcludeTest(void)
     }
     else if (!Unity.CurrentTestFailed)
     {
+        UNITY_TEST_RESULT_PASS_PREFIX();
         UnityTestResultsBegin(Unity.TestFile, Unity.CurrentTestLineNumber);
         UnityPrint(UnityStrPass);
     }
@@ -1959,11 +1969,12 @@ void UnityFail(const char* msg, const UNITY_LINE_TYPE line)
 {
     RETURN_IF_FAIL_OR_IGNORE;
 
+    UNITY_TEST_RESULT_FAIL_PREFIX();
     UnityTestResultsBegin(Unity.TestFile, line);
     UnityPrint(UnityStrFail);
     if (msg != NULL)
     {
-        UNITY_OUTPUT_CHAR(':');
+        UNITY_TEST_RESULT_MESSAGE_PREFIX();
 
 #ifdef UNITY_PRINT_TEST_CONTEXT
         UNITY_PRINT_TEST_CONTEXT();
@@ -1985,6 +1996,7 @@ void UnityFail(const char* msg, const UNITY_LINE_TYPE line)
         {
             UNITY_OUTPUT_CHAR(' ');
         }
+
         UnityPrint(msg);
     }
 
@@ -2033,17 +2045,30 @@ void UnityDefaultTestRun(UnityTestFunction Func, const char* FuncName, const int
     UNITY_EXEC_TIME_START();
     if (TEST_PROTECT())
     {
-        setUp();
+        if (Unity.CurrentSetUpFunction) 
+        {
+            Unity.CurrentSetUpFunction();
+        }
         Func();
     }
     if (TEST_PROTECT())
     {
-        tearDown();
+        if (Unity.CurrentTearDownFunction)
+        {
+            Unity.CurrentTearDownFunction();
+        }
     }
     UNITY_EXEC_TIME_STOP();
     UnityConcludeTest();
 }
 #endif
+
+/*-----------------------------------------------*/
+void UnitySetSuiteName(const char* suite)
+{
+    Unity.SuiteName = suite;
+}
+
 
 /*-----------------------------------------------*/
 void UnitySetTestFile(const char* filename)
@@ -2052,8 +2077,9 @@ void UnitySetTestFile(const char* filename)
 }
 
 /*-----------------------------------------------*/
-void UnityBegin(const char* filename)
+void UnityBegin(const char* suite, const char* filename)
 {
+    Unity.SuiteName = suite;
     Unity.TestFile = filename;
     Unity.CurrentTestName = NULL;
     Unity.CurrentTestLineNumber = 0;
@@ -2062,17 +2088,33 @@ void UnityBegin(const char* filename)
     Unity.TestIgnores = 0;
     Unity.CurrentTestFailed = 0;
     Unity.CurrentTestIgnored = 0;
+    Unity.CurrentSetUpFunction = NULL;
+    Unity.CurrentTearDownFunction = NULL;
 
     UNITY_CLR_DETAILS();
     UNITY_OUTPUT_START();
+    
+    if (Unity.SuiteName)
+    {
+        UnityPrint(UnityStrBreaker);
+        UNITY_PRINT_EOL();
+
+        UnityPrint(UnityStrSuiteName);
+        UnityPrint(Unity.SuiteName);
+        UNITY_PRINT_EOL();
+    }
+    
+    UnityPrint(UnityStrBreaker);
+    UNITY_PRINT_EOL();
 }
 
 /*-----------------------------------------------*/
 int UnityEnd(void)
 {
-    UNITY_PRINT_EOL();
     UnityPrint(UnityStrBreaker);
     UNITY_PRINT_EOL();
+
+    UnityPrint(UnityStrResultsLabel);
     UnityPrintNumber((UNITY_INT)(Unity.NumberOfTests));
     UnityPrint(UnityStrResultsTests);
     UnityPrintNumber((UNITY_INT)(Unity.TestFailures));
@@ -2080,12 +2122,17 @@ int UnityEnd(void)
     UnityPrintNumber((UNITY_INT)(Unity.TestIgnores));
     UnityPrint(UnityStrResultsIgnored);
     UNITY_PRINT_EOL();
+
+    UnityPrint(UnityStrStatusLabel);
     if (Unity.TestFailures == 0U)
     {
+        UNITY_TEST_RESULT_PASS_PREFIX();
         UnityPrint(UnityStrOk);
     }
     else
     {
+        
+        UNITY_TEST_RESULT_FAIL_PREFIX();
         UnityPrint(UnityStrFail);
 #ifdef UNITY_DIFFERENTIATE_FINAL_FAIL
         UNITY_OUTPUT_CHAR('E'); UNITY_OUTPUT_CHAR('D');

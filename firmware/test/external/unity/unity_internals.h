@@ -339,6 +339,22 @@ typedef UNITY_FLOAT_TYPE UNITY_FLOAT;
 #define UNITY_OUTPUT_COMPLETE()
 #endif
 
+#ifndef UNITY_TEST_RESULT_PREFIX
+#define UNITY_TEST_RESULT_PREFIX()
+#endif
+
+#ifndef UNITY_TEST_RESULT_PASS_PREFIX
+#define UNITY_TEST_RESULT_PASS_PREFIX()
+#endif
+
+#ifndef UNITY_TEST_RESULT_FAIL_PREFIX
+#define UNITY_TEST_RESULT_FAIL_PREFIX()
+#endif
+
+#ifndef UNITY_TEST_RESULT_MESSAGE_PREFIX
+#define UNITY_TEST_RESULT_MESSAGE_PREFIX() UNITY_OUTPUT_CHAR(':');
+#endif
+
 #ifdef UNITY_INCLUDE_EXEC_TIME
   #if !defined(UNITY_EXEC_TIME_START) && \
       !defined(UNITY_EXEC_TIME_STOP) && \
@@ -418,7 +434,9 @@ typedef UNITY_FLOAT_TYPE UNITY_FLOAT;
  * Internal Structs Needed
  *-------------------------------------------------------*/
 
+typedef void (*UnitySetUpFunction)(void);
 typedef void (*UnityTestFunction)(void);
+typedef void (*UnityTearDownFunction)(void);
 
 #define UNITY_DISPLAY_RANGE_INT  (0x10)
 #define UNITY_DISPLAY_RANGE_UINT (0x20)
@@ -491,12 +509,15 @@ typedef enum
 
 struct UNITY_STORAGE_T
 {
+    const char* SuiteName;
     const char* TestFile;
     const char* CurrentTestName;
 #ifndef UNITY_EXCLUDE_DETAILS
     const char* CurrentDetail1;
     const char* CurrentDetail2;
 #endif
+    UnitySetUpFunction CurrentSetUpFunction;
+    UnityTearDownFunction CurrentTearDownFunction;
     UNITY_LINE_TYPE CurrentTestLineNumber;
     UNITY_COUNTER_TYPE NumberOfTests;
     UNITY_COUNTER_TYPE TestFailures;
@@ -518,8 +539,9 @@ extern struct UNITY_STORAGE_T Unity;
  * Test Suite Management
  *-------------------------------------------------------*/
 
-void UnityBegin(const char* filename);
+void UnityBegin(const char* suite, const char* filename);
 int  UnityEnd(void);
+void UnitySetSuiteName(const char* suite);
 void UnitySetTestFile(const char* filename);
 void UnityConcludeTest(void);
 
@@ -795,11 +817,19 @@ extern const char UnityStrErrShorthand[];
     Unity.NumberOfTests++;
 
 #ifndef UNITY_BEGIN
-#define UNITY_BEGIN() UnityBegin(__FILE__)
+#define UNITY_BEGIN(suite) UnityBegin(suite, __FILE__)
 #endif
 
 #ifndef UNITY_END
 #define UNITY_END() UnityEnd()
+#endif
+
+#ifndef UNITY_SETUP
+#define UNITY_SETUP(func) Unity.CurrentSetUpFunction = func
+#endif
+
+#ifndef UNITY_TEARDOWN
+#define UNITY_TEARDOWN(func) Unity.CurrentTearDownFunction = func
 #endif
 
 #ifndef UNITY_SHORTHAND_AS_INT
