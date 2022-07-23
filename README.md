@@ -1,4 +1,4 @@
-# PS2+
+# PS2+ [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kbhomes/ps2plus/blob/main/LICENSE) [![CI](https://github.com/kbhomes/ps2plus/actions/workflows/compilation.yml/badge.svg)](https://github.com/kbhomes/ps2plus/actions/workflows/compilation.yml)
 
 Under construction!
 
