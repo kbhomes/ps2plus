@@ -7,8 +7,8 @@ RUN dpkg --add-architecture i386 && \
   apt-get autoremove && \
   rm -rf /var/lib/apt/lists/*
 
-# Install the SCons build tool
-RUN pip3 install scons
+# Install Python-based build tools
+RUN pip3 install scons gcovr
 
 # Fix Git repository settings (used to determine version numbers)
 RUN git config --global --add safe.directory /project

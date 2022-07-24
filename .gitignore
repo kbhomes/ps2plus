@@ -43,6 +43,11 @@ __pycache__
 *.smod
 *.lai
 
+### Gcov Coverage Data ###
+*.gcno
+*.gcda
+*.gcov
+
 ### MPLabX ###
 *.pre
 *.p1

@@ -27,13 +27,13 @@ services:
     <<: *project-common
     image: ps2plus/build-ps2sdk
     depends_on: [build-ps2sdk]
-    command: scons -Q --version-configurator-metadata=${VERSION_METADATA-dev} dist/configurator
+    command: scons -Q --test --version-configurator-metadata=${VERSION_METADATA-dev} dist/configurator
       
   firmware-pic18f46k42: # Microchip PIC18F46K42, using the XC8 compiler toolchain
     <<: *project-common
     image: ps2plus/build-microchip-xc8
     depends_on: [build-microchip-xc8]
-    command: scons -Q --platform=PIC18F46K42 --version-firmware-metadata=${VERSION_METADATA-dev} --version-bootloader-metadata=${VERSION_METADATA-dev} dist/firmware
+    command: scons -Q --platform=PIC18F46K42 --test --version-firmware-metadata=${VERSION_METADATA-dev} --version-bootloader-metadata=${VERSION_METADATA-dev} dist/firmware
       
   test-native: # Native platform unit tests
     <<: *project-common

@@ -1,4 +1,6 @@
 from . import toolchains, targets
+import os
+import shutil
 import subprocess
 import sys
 
@@ -10,7 +12,7 @@ class AbstractFirmwarePlatform:
     def setup_env_for_target(self, env, target: targets.Target):
         pass
 
-    def execute_test_for_target(self, env, target: targets.Target, executable: object) -> int:
+    def execute_test_for_target(self, env, target: targets.Target, build_folder: str, executable: object) -> int:
         pass
 
     def generate_ide_project_configuration_for_target(self, env, target: targets.Target):
@@ -25,20 +27,48 @@ class NativePlatform(AbstractFirmwarePlatform):
     valid_targets = [targets.TestBootloaderTarget, targets.TestFirmwareTarget]
 
     def setup_env_for_target(self, env, target: targets.Target):
-        env.Append(
-            CFLAGS=[
-                '-g',                   # Debugging symbols,
-                '-fprofile-arcs',       # Profiles program control flow (required for coverage)
-                '-ftest-coverage',      # Generates test coverage data
-            ],
-            LIBS=[
-                'gcov',                 # Link the coverage library
-            ]
-        )
+        if target.is_test:
+            env.Append(
+                CFLAGS=[
+                    '-g',                   # Debugging symbols,
+                    '-fprofile-arcs',       # Profiles program control flow (required for coverage)
+                    '-ftest-coverage',      # Generates test coverage data
+                ],
+                LIBS=[
+                    'gcov',                 # Link the coverage library
+                ]
+            )
 
-    def execute_test_for_target(self, env, target: targets.Target, executable: object) -> int:
+    def execute_test_for_target(self, env, target: targets.Target, build_folder: str, executable: object) -> int:
         # Native tests can be directly executed on the host
-        return subprocess.run(str(executable), stdout=sys.stdout).returncode
+        ret = subprocess.run(str(executable), stdout=sys.stdout).returncode
+
+        if not ret:
+            # Run coverage report generation
+            if shutil.which('gcovr'):
+                coverage_folder = os.path.join(build_folder, 'coverage')
+                coverage_report = os.path.join(coverage_folder, 'index.html')
+
+                # Delete any existing coverage data
+                if os.path.isdir(coverage_folder):
+                    shutil.rmtree(coverage_folder)
+
+                # Create the coverage report folder
+                os.makedirs(coverage_folder, exist_ok=True)
+
+                # Execute gcovr to generate the coverage report from gcov
+                coverage_command = [
+                    'gcovr', 
+                    '--exclude=firmware/test', 
+                    '--print-summary',
+                    '--html-details=' + coverage_report,
+                ]
+                print(f'Generating coverage report: {" ".join(coverage_command)}')
+                ret = subprocess.run(coverage_command).returncode
+            else:
+                print('Unable to run coverage report due to missing `gcovr` executable')
+
+        return ret
 
 class PIC18F46K42Platform(AbstractFirmwarePlatform):
     name = 'PIC18F46K42'

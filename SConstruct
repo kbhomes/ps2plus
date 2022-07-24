@@ -99,6 +99,7 @@ if 'dist/firmware' in BUILD_TARGETS:
             )
 
         # Gather all target files to distribute
+        # TODO: Make each platform be responsible for how it merges target distributibles, if they want to
         if len(firmware_dists):
             # Merge the different targets into a single combined image
             combined_version = '-'.join([f'{target.name}-{getattr(ps2plus_versions, target.name)}' for target in firmware_dists.keys()])
@@ -124,7 +125,15 @@ if GetOption('test'):
         # Runs executable nodes, exiting the build if the executable fails
         def run_test_action(target, source, env):
             for executable in env.Flatten([target]):
-                ret = platform.execute_test_for_target(env, test_target, executable)
+                source_paths = env.Flatten([source])
+
+                # Quick diagnostic check -- we expect a single source element
+                if len(source_paths) > 1:
+                    print(f'Warning: expected a single built test binary for platform "{platform.name}" and target "{test_target.name}, ' + 
+                          f'but received "{list(map(str, source_paths))}"; executing the first test binary')
+
+                build_folder = os.path.dirname(str(source_paths[0]))
+                ret = platform.execute_test_for_target(env, test_target, build_folder, executable)
                 if ret:
                     env.Exit(ret)
 
