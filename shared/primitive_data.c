@@ -136,6 +136,7 @@ void primitive_data_deserialize(primitive_data *pd, uint8_t *in) {
 
     case PDT_Unknown:
     default:
+      pd->type = PDT_Unknown;
       return;
   }
 }
