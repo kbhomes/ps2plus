@@ -48,6 +48,12 @@ int suite_commands() {
   RUN_TEST(test_command_ps2plus_get_version_firmware);
   RUN_TEST(test_command_ps2plus_get_version_microcontroller);
   RUN_TEST(test_command_ps2plus_get_version_configuration);
+  RUN_TEST(test_command_ps2plus_get_configuration_valid);
+  RUN_TEST(test_command_ps2plus_get_configuration_unknown);
+  RUN_TEST(test_command_ps2plus_set_configuration_valid);
+  RUN_TEST(test_command_ps2plus_set_configuration_unknown);
+  RUN_TEST(test_command_ps2plus_disable_enable_configuration);
+  RUN_TEST(test_command_ps2plus_disable_restore_configuration_defaults);
 
   return UNITY_END();
 }

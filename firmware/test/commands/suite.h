@@ -55,5 +55,11 @@ void test_command_controller_configure_analog_response_analog_full_mode();
 void test_command_ps2plus_get_version_firmware();
 void test_command_ps2plus_get_version_microcontroller();
 void test_command_ps2plus_get_version_configuration();
+void test_command_ps2plus_get_configuration_valid();
+void test_command_ps2plus_get_configuration_unknown();
+void test_command_ps2plus_set_configuration_valid();
+void test_command_ps2plus_set_configuration_unknown();
+void test_command_ps2plus_disable_enable_configuration();
+void test_command_ps2plus_disable_restore_configuration_defaults();
 
 #endif

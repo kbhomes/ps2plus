@@ -88,7 +88,7 @@ void sc_finalize(volatile command_packet *packet, controller_state *state) {
 }
 
 const command_processor command_ps2plus_set_configuration = {
-  .id = 0x71,
+  .id = 0x72,
   .initialize = &sc_initialize,
   .process = &sc_process,
   .finalize = &sc_finalize,
