@@ -118,17 +118,19 @@ if 'dist/firmware' in BUILD_TARGETS:
         # Generate the IDE project(s), if any, for this platform
         platform.generate_ide_project(platform_env, f'firmware/build-projects/{platform.name}', firmware_sources)
 
-# Runs executable nodes, exiting the build if the executable fails
-def run_test_action(target, source, env):
-    for executable in env.Flatten([target]):
-        ret = subprocess.run(str(executable), stdout=sys.stdout).returncode
-        if ret:
-            env.Exit(ret)
-
 # If the `test` flag was passed, run any generated test targets
 if GetOption('test'):
-    for (platform, target, output) in test_targets:
-        env.AlwaysBuild(env.AddPostAction(output, run_test_action))
+    for platform, test_target, output in test_targets:
+        # Runs executable nodes, exiting the build if the executable fails
+        def run_test_action(target, source, env):
+            for executable in env.Flatten([target]):
+                ret = platform.execute_test_for_target(env, test_target, executable)
+                if ret:
+                    env.Exit(ret)
+
+        test_action = env.Action(run_test_action, f'Running test: platform "{platform.name}" for target "{test_target.name}"\n')
+        post_action = env.AddPostAction(output, test_action)
+        env.AlwaysBuild(post_action)
 
 # Generate VS Code autocompletion
 env.AlwaysBuild(env.VSCodeCCppProperties('.vscode/c_cpp_properties.json', vscode_configurations))

@@ -19,12 +19,9 @@ class NativeToolchain(AbstractFirmwareToolchain):
     vscode_properties = None
 
     def setup_env(self, env):
-        env.Replace(
-            CFLAGS=[
-                '-g'       # Debugging symbols
-            ],
+        env.Append(
             LIBS=[
-                'm'        # Link the math library for <math.h>
+                'm', # Link the math library for <math.h>
             ]
         )
     

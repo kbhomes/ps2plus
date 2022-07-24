@@ -1,4 +1,6 @@
 from . import toolchains, targets
+import subprocess
+import sys
 
 class AbstractFirmwarePlatform:
     name: str
@@ -6,6 +8,9 @@ class AbstractFirmwarePlatform:
     valid_targets: list[targets.Target] = targets.ALL_TARGETS
 
     def setup_env_for_target(self, env, target: targets.Target):
+        pass
+
+    def execute_test_for_target(self, env, target: targets.Target, executable: object) -> int:
         pass
 
     def generate_ide_project_configuration_for_target(self, env, target: targets.Target):
@@ -18,6 +23,22 @@ class NativePlatform(AbstractFirmwarePlatform):
     name = 'native'
     toolchain = toolchains.NativeToolchain()
     valid_targets = [targets.TestBootloaderTarget, targets.TestFirmwareTarget]
+
+    def setup_env_for_target(self, env, target: targets.Target):
+        env.Append(
+            CFLAGS=[
+                '-g',                   # Debugging symbols,
+                '-fprofile-arcs',       # Profiles program control flow (required for coverage)
+                '-ftest-coverage',      # Generates test coverage data
+            ],
+            LIBS=[
+                'gcov',                 # Link the coverage library
+            ]
+        )
+
+    def execute_test_for_target(self, env, target: targets.Target, executable: object) -> int:
+        # Native tests can be directly executed on the host
+        return subprocess.run(str(executable), stdout=sys.stdout).returncode
 
 class PIC18F46K42Platform(AbstractFirmwarePlatform):
     name = 'PIC18F46K42'

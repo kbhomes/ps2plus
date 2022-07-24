@@ -8,6 +8,14 @@ Under construction!
 
 ### Software
 
+| Name | Purpose |
+|-|-|
+| Python 3 | Build system |
+| Docker | Build system |
+| SCons (`pip install scons`) | Build system (local) |
+| gcovr (`pip install gcovr`) | Code coverage (local) |
+| gcc/mingw | Compiler (local)
+
 ### Hardware
 
 ## Build instructions
