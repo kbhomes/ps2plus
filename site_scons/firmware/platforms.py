@@ -62,6 +62,7 @@ class NativePlatform(AbstractFirmwarePlatform):
                     '--exclude=firmware/test', 
                     '--print-summary',
                     '--html-details=' + coverage_report,
+                    f'--html-title=PS2+ Code Coverage - Platform: {self.name} - Target: {target.name}',
                 ]
                 print(f'Generating coverage report: {" ".join(coverage_command)}')
                 ret = subprocess.run(coverage_command).returncode

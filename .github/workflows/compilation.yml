@@ -1,4 +1,4 @@
-name: CI
+name: build/test/release
 
 on: push
 
@@ -102,6 +102,28 @@ jobs:
 
       - name: Run tests (via Docker Compose)
         run: docker compose run ${{ steps.service-name.outputs.lowercase }}
+        shell: bash
+
+      - name: Find the generated coverage report, if any
+        id: find-coverage-report
+        run: echo "::set-output name=coverage-folder::$(find build/ -type d -wholename */*/coverage)"
+        shell: bash
+
+      - name: Publish coverage report
+        id: publish-coverage-report
+        if: steps.find-coverage-report.outputs.coverage-folder != ''
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: ${{ steps.find-coverage-report.outputs.coverage-folder }}
+          target-folder: ${{ steps.find-coverage-report.outputs.coverage-folder }}
+          clean: true
+          silent: true
+
+      - name: Generate coverage report link
+        if: steps.publish-coverage-report.outputs.deployment-status == 'success'
+        run: |
+          GITHUB_REPOSITORY_NAME=$(echo "$GITHUB_REPOSITORY" | awk -F / '{print $2}' | sed -e "s/:refs//")
+          echo ✅ Published coverage report: "https://$GITHUB_REPOSITORY_OWNER.github.io/$GITHUB_REPOSITORY_NAME/${{ steps.find-coverage-report.outputs.coverage-folder }}"
         shell: bash
 
   release:
