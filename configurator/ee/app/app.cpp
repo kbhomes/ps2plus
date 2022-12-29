@@ -98,11 +98,11 @@ void app_display(ImGuiIO &io, configurator_state *state) {
             ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocusedActive) : ImVec4(0, 0, 0, 0));
 
             if (PS2Plus::Graphics::IsGamepadNavActive()) {
-                if (state->pad_status.IsButtonPressed(PAD_L1)) {
+                if (state->pad_summary.IsButtonPressed(PAD_L1)) {
                     active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
                 }
 
-                if (state->pad_status.IsButtonPressed(PAD_R1)) {
+                if (state->pad_summary.IsButtonPressed(PAD_R1)) {
                     active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
                 }
             }

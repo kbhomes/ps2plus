@@ -15,37 +15,37 @@ void app_section_about(ImGuiIO &io, configurator_state *state) {
     PS2Plus::UI::StatusText("Rebooting controller", PS2Plus::UI::StatusType_Loading);
     PS2Plus::UI::LoadingProgress("##Progress", fmodf(ImGui::GetTime(), 5.f) / 5.f, "%0.f%%");
 
-    ImGui::TextColored(ICON_PLAYSTATION_COLOR_TRIANGLE, state->pad_status.IsButtonDown(PAD_TRIANGLE) 
+    ImGui::TextColored(ICON_PLAYSTATION_COLOR_TRIANGLE, state->pad_summary.IsButtonDown(PAD_TRIANGLE) 
         ? ICON_PLAYSTATION_TRIANGLE_BUTTON_ALT 
         : ICON_PLAYSTATION_TRIANGLE_BUTTON); 
     ImGui::SameLine(); 
     ImGui::Text("Options");
 
-    ImGui::TextColored(ICON_PLAYSTATION_COLOR_CIRCLE, state->pad_status.IsButtonDown(PAD_CIRCLE) 
+    ImGui::TextColored(ICON_PLAYSTATION_COLOR_CIRCLE, state->pad_summary.IsButtonDown(PAD_CIRCLE) 
         ? ICON_PLAYSTATION_CIRCLE_BUTTON_ALT 
         : ICON_PLAYSTATION_CIRCLE_BUTTON); 
     ImGui::SameLine(); 
     ImGui::Text("Cancel");
 
-    ImGui::TextColored(ICON_PLAYSTATION_COLOR_CROSS, state->pad_status.IsButtonDown(PAD_CROSS) 
+    ImGui::TextColored(ICON_PLAYSTATION_COLOR_CROSS, state->pad_summary.IsButtonDown(PAD_CROSS) 
         ? ICON_PLAYSTATION_CROSS_BUTTON_ALT 
         : ICON_PLAYSTATION_CROSS_BUTTON); 
     ImGui::SameLine(); 
     ImGui::Text("Select");
 
-    ImGui::TextColored(ICON_PLAYSTATION_COLOR_SQUARE, state->pad_status.IsButtonDown(PAD_SQUARE) 
+    ImGui::TextColored(ICON_PLAYSTATION_COLOR_SQUARE, state->pad_summary.IsButtonDown(PAD_SQUARE) 
         ? ICON_PLAYSTATION_SQUARE_BUTTON_ALT 
         : ICON_PLAYSTATION_SQUARE_BUTTON); 
     ImGui::SameLine(); 
     ImGui::Text("Mark");
 
-    ImGui::Text(state->pad_status.IsButtonDown(PAD_START) 
+    ImGui::Text(state->pad_summary.IsButtonDown(PAD_START) 
         ? ICON_PLAYSTATION_START_BUTTON_ALT
         : ICON_PLAYSTATION_START_BUTTON); 
     ImGui::SameLine(); 
     ImGui::Text("Start");
 
-    ImGui::Text(state->pad_status.IsButtonDown(PAD_SELECT) 
+    ImGui::Text(state->pad_summary.IsButtonDown(PAD_SELECT) 
         ? ICON_PLAYSTATION_SELECT_BUTTON_ALT 
         : ICON_PLAYSTATION_SELECT_BUTTON); 
     ImGui::SameLine(); 

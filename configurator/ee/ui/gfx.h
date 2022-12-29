@@ -11,7 +11,7 @@ namespace PS2Plus::Graphics {
     void Initialize(bool hiresFlag = false);
     void BeginFrame(uint64_t color = GS_SETREG_RGBA(0, 0, 0, 0xFF));
     void EndFrame();
-    void UpdateGamepad(const PS2Plus::Gamepad::PadStatus& pad);
+    void UpdateGamepad(const PS2Plus::Gamepad::PadSummary& pad);
 
     ImFont *GetFontPlayStationLarge();
 

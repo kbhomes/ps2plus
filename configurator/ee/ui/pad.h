@@ -19,6 +19,14 @@ namespace PS2Plus::Gamepad {
         PadPortDisconnected,
     };
 
+    enum PadSummaryStatus {
+        PadSummaryInactive,
+        PadSummaryActive,
+    };
+
+    /**
+     * Represents the current status of a single gamepad (e.g., controller 1)
+     */
     struct PadStatus {
         PadPortStatus status;
         int port;
@@ -42,7 +50,28 @@ namespace PS2Plus::Gamepad {
         uint8_t GetRumbleActuatorLargePower();
     };
 
+    /**
+     * Represents the aggregated button/joystick status across all connected gamepads
+     */
+    struct PadSummary {
+        PadSummaryStatus status;
+        padButtonStatus pad;
+        u16 rawButtons;
+        u16 rawButtonsPrevious;
+        u16 rawButtonsNew;
+
+        bool IsButtonDown(int button);
+        bool IsButtonPressed(int button);
+        uint8_t GetJoystickAxisRaw(JoystickAxis axis);
+        float GetJoystickAxis(JoystickAxis axis);
+        PadSummaryStatus GetStatus();
+    };
+
     void Initialize();
+    void StartAll();
+    void StopAll();
+    const PadSummary& ReadSummary();
+
     void Start(int port = 0);
     void Stop(int port = 0);
     const PadStatus& Read(int port = 0); 

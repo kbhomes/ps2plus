@@ -67,7 +67,7 @@ void update_controllers() {
     bool connected = true;
 
     // Stop the gamepad
-    PS2Plus::Gamepad::Stop();
+    PS2Plus::Gamepad::StopAll();
 
     if ((ret = ps2plman_get_firmware_version(&state.controllers[0].versions.firmware)) != PS2PLMAN_RET_OK) {
         printf("Error retrieving PS2+ firmware version: %d\n", ret);
@@ -125,7 +125,7 @@ void update_controllers() {
     }
 
     // Start reading controller data again
-    PS2Plus::Gamepad::Start();
+    PS2Plus::Gamepad::StartAll();
 }
 
 float get_time() {
@@ -167,7 +167,7 @@ void handle_update() {
         if (controller->update.status == StatusPending) {
             controller->update.status = StatusRebooting;
             controller->update.last_check_time = get_time();
-            PS2Plus::Gamepad::Stop();
+            PS2Plus::Gamepad::StopAll();
 
             // Begin rebooting the controller
             printf("[handle_update] ps2plman_reboot_controller() = %d\n", ps2plman_reboot_controller());
@@ -185,7 +185,7 @@ void handle_update() {
             } else if (dt_check > 5.0) {
                 printf("[handle_update] Timed out waiting for bootloader ready\n");
                 controller->update.status = StatusFailed;
-                PS2Plus::Gamepad::Start();
+                PS2Plus::Gamepad::StartAll();
             }
         } else if (controller->update.status == StatusUpdating) {
             controller->update.status = StatusUpdatePending;
@@ -200,7 +200,7 @@ void handle_update() {
                 // Final record won't have a response
                 controller->update.status = StatusCompleted;
                 controller->update.last_check_time = get_time();
-                PS2Plus::Gamepad::Start();
+                PS2Plus::Gamepad::StartAll();
             } else {
                 // Check if the controller is in `BLStatusOk` mode, indicating the bootloader can accept the next record
                 ret = ps2plman_bootloader_query_firmware_update_status(&bl_status, &bl_error);
@@ -214,11 +214,11 @@ void handle_update() {
                     } else if (bl_status == BLStatusError) {
                         printf("[handle_update] Error processing record %d: %d\n", controller->update.last_record_index, bl_error);
                         controller->update.status = StatusFailed;
-                        PS2Plus::Gamepad::Start();
+                        PS2Plus::Gamepad::StartAll();
                     } else if (dt_check > 5.0) {
                         printf("[handle_update] Timed out waiting for bootloader ready\n");
                         controller->update.status = StatusFailed;
-                        PS2Plus::Gamepad::Start();
+                        PS2Plus::Gamepad::StartAll();
                     }
                 }
             }
@@ -241,7 +241,7 @@ int main(int argc, char **argv) {
     ps2plman_init();
 
     PS2Plus::Gamepad::Initialize();
-    PS2Plus::Gamepad::Start();
+    PS2Plus::Gamepad::StartAll();
     PS2Plus::Graphics::Initialize();
     
     update_controllers();
@@ -274,10 +274,11 @@ int main(int argc, char **argv) {
         handle_update();
 
         // Update the gamepad
-        state.pad_status = PS2Plus::Gamepad::Read();
+        state.current_pad = PS2Plus::Gamepad::Read();
+        state.pad_summary = PS2Plus::Gamepad::ReadSummary();
         
         // Update the graphics state
-        PS2Plus::Graphics::UpdateGamepad(state.pad_status);
+        PS2Plus::Graphics::UpdateGamepad(state.pad_summary);
         PS2Plus::Graphics::BeginFrame(GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
         app_display(ImGui::GetIO(), &state);
         PS2Plus::Graphics::EndFrame();
