@@ -26,7 +26,7 @@
 struct ImGui_ImplPs2Sdk_Data
 {
     GSGLOBAL* Global;
-    u64 Time;
+    float Time;
 
     ImGui_ImplPs2Sdk_Data()   { memset(this, 0, sizeof(*this)); }
 };
