@@ -11,7 +11,6 @@
 #include "../util/resource.h"
 
 static GSGLOBAL *gsGlobal;
-static bool hires;
 static ImFont *fontPlayStationLarge;
 
 // External font resources
@@ -20,20 +19,7 @@ RESOURCE_EXTERNS(fonts_forkawesome_subset_ttf);
 RESOURCE_EXTERNS(fonts_playstation_ttf);
 
 void initializeGsKit() {
-    // TODO: Can't get hires to work on my PS2 :(
-    int hiresPassCount;
-
-    if (hires) {
-        gsGlobal = gsKit_hires_init_global();
-        gsGlobal->Mode = GS_MODE_DTV_720P;
-        gsGlobal->Interlace = GS_NONINTERLACED;
-        gsGlobal->Field = GS_FRAME;
-        gsGlobal->Width = 1280;
-        gsGlobal->Height = 720;
-        hiresPassCount = 3;
-    } else {
-        gsGlobal = gsKit_init_global();
-    }
+    gsGlobal = gsKit_init_global();
 
     if ((gsGlobal->Interlace == GS_INTERLACED) && (gsGlobal->Field == GS_FRAME))
         gsGlobal->Height /= 2;
@@ -54,12 +40,7 @@ void initializeGsKit() {
     dmaKit_init(D_CTRL_RELE_OFF, D_CTRL_MFD_OFF, D_CTRL_STS_UNSPEC, D_CTRL_STD_OFF, D_CTRL_RCYC_8, 1 << DMA_CHANNEL_GIF);
     dmaKit_chan_init(DMA_CHANNEL_GIF);
 
-    if (hires) {
-        gsKit_hires_init_screen(gsGlobal, hiresPassCount);
-    } else {
-        gsKit_init_screen(gsGlobal);
-    }
-
+    gsKit_init_screen(gsGlobal);
     gsKit_vram_clear(gsGlobal);
     gsKit_TexManager_init(gsGlobal);
 }
@@ -142,8 +123,7 @@ void initializeImGui() {
     ImGui_ImplPs2GsKit_Init(gsGlobal);
 }
 
-void PS2Plus::Graphics::Initialize(bool hiresFlag) {
-    hires = hiresFlag;
+void PS2Plus::Graphics::Initialize() {
     initializeGsKit();
     initializeImGui();
 }
@@ -168,15 +148,8 @@ void PS2Plus::Graphics::EndFrame() {
     ImGui::Render();
 
     ImGui_ImplPs2GsKit_RenderDrawData(ImGui::GetDrawData(), ImVec2(-0.5f, -0.5f));
-
-    if (hires) {
-        gsKit_hires_sync(gsGlobal);
-        gsKit_hires_flip(gsGlobal);
-    } else {
-        gsKit_queue_exec(gsGlobal);
-        gsKit_sync_flip(gsGlobal);
-    }
-
+    gsKit_queue_exec(gsGlobal);
+    gsKit_sync_flip(gsGlobal);
     gsKit_TexManager_nextFrame(gsGlobal);
 }
 
