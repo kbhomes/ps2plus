@@ -71,12 +71,16 @@ class NativePlatform(AbstractFirmwarePlatform):
 
         return ret
 
-class PIC18F46K42Platform(AbstractFirmwarePlatform):
-    name = 'PIC18F46K42'
-    toolchain = toolchains.MicrochipXC8Toolchain('PIC18F46K42')
+class AbstractMicrochipPICPlatform(AbstractFirmwarePlatform):
+    name: str
+    toolchain: toolchains.AbstractFirmwareToolchain
     valid_targets = [targets.BootloaderTarget, targets.FirmwareTarget]
 
     mplab_configurations = []
+
+    def __init__(self, name: str, mcu: str):
+        self.name = name
+        self.toolchain = toolchains.MicrochipXC8Toolchain(mcu)
 
     def setup_env_for_target(self, env, target):
         if target == targets.BootloaderTarget:
@@ -103,6 +107,14 @@ class PIC18F46K42Platform(AbstractFirmwarePlatform):
             env.Dir(project_path), 
             self.mplab_configurations, 
             source_files=source_files))
+
+class PIC18F46K42Platform(AbstractMicrochipPICPlatform):
+    def __init__(self):
+        super().__init__('PIC18F46K42', 'PIC18F46K42')
+
+class PIC16F18876Platform(AbstractMicrochipPICPlatform):
+    def __init__(self):
+        super().__init__('PIC16F18876', 'PIC16F18876')
 
 ALL_PLATFORMS: list[AbstractFirmwarePlatform] = [
     NativePlatform(),

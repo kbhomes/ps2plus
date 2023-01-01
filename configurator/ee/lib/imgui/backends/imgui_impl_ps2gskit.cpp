@@ -52,8 +52,6 @@ bool ImGui_ImplPs2GsKit_Init(GSGLOBAL *global)
     bd->Global = global;
     bd->FontTexture = NULL;
 
-    gsKit_TexManager_init(global);
-
     return true;
 }
 
@@ -195,6 +193,7 @@ bool ImGui_ImplPs2GsKit_CreateFontsTexture()
     ImGui_ImplPs2GsKit_Data* bd = ImGui_ImplPs2GsKit_GetBackendData();
     unsigned char* pixels;
     int width, height, bpp;
+    io.Fonts->Flags |= ImFontAtlasFlags_NoPowerOfTwoHeight;
     io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &bpp);   // Load as RGBA 32-bit (75% of the memory is wasted, but default font is so small) because it is more likely to be compatible with user's existing shaders.
 
     // TODO: use gsKit to create a font texture
@@ -206,6 +205,13 @@ bool ImGui_ImplPs2GsKit_CreateFontsTexture()
     bd->FontTexture->Filter = GS_FILTER_NEAREST;
     bd->FontTexture->Clut = NULL;
     bd->FontTexture->VramClut = 0;
+
+    printf("bd->FontTexture:\n\tWidth: %u\n\tHeight: %u\n\tPSM: %u\n\tFilter: %u\n",
+        bd->FontTexture->Width,
+        bd->FontTexture->Height,
+        bd->FontTexture->PSM,
+        bd->FontTexture->Filter
+    );
 
     // Copy the pixel data into the texture
     size_t textureSize = gsKit_texture_size_ee(bd->FontTexture->Width, bd->FontTexture->Height, bd->FontTexture->PSM);
@@ -226,9 +232,11 @@ void ImGui_ImplPs2GsKit_DestroyFontsTexture()
     if (bd->FontTexture)
     {
         // TODO: use gsKit to delete the font texture
-        
-        io.Fonts->SetTexID(0);
+        gsKit_TexManager_free(bd->Global, bd->FontTexture);
+        free(bd->FontTexture->Mem);
+        free(bd->FontTexture);
         bd->FontTexture = 0;
+        io.Fonts->SetTexID(0);
     }
 }
 

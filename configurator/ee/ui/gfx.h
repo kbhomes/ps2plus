@@ -5,13 +5,21 @@
 #include <gsKit.h>
 #include <stdint.h>
 #include <tamtypes.h>
+#include <map>
 #include "pad.h"
 
 namespace PS2Plus::Graphics {
-    void Initialize();
+    enum VideoMode { Interlaced, Progressive480 };
+    static std::map<VideoMode, const char *> VideoModeStrings = {
+        { Interlaced, "Standard" },
+        { Progressive480, "Progressive (480p)" },
+    };
+
+    void Initialize(VideoMode mode);
     void BeginFrame(uint64_t color = GS_SETREG_RGBA(0, 0, 0, 0xFF));
     void EndFrame();
     void UpdateGamepad(const PS2Plus::Gamepad::PadSummary& pad);
+    void SetVideoMode(VideoMode mode);
 
     ImFont *GetFontPlayStationLarge();
 

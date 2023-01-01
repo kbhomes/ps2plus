@@ -3,6 +3,7 @@
 #include <ps2plus_common.h>
 #include <shared/config.h>
 #include "ui/pad.h"
+#include "ui/gfx.h"
 #include "util/firmware-update.h"
 
 typedef enum {
@@ -38,4 +39,5 @@ typedef struct {
     configurator_ps2plus_controller *current_controller;
     PS2Plus::Gamepad::PadStatus current_pad;
     PS2Plus::Gamepad::PadSummary pad_summary;
+    PS2Plus::Graphics::VideoMode video_mode;
 } configurator_state;

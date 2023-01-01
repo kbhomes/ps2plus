@@ -18,33 +18,6 @@ RESOURCE_EXTERNS(fonts_cousine_regular_ttf);
 RESOURCE_EXTERNS(fonts_forkawesome_subset_ttf);
 RESOURCE_EXTERNS(fonts_playstation_ttf);
 
-void initializeGsKit() {
-    gsGlobal = gsKit_init_global();
-
-    if ((gsGlobal->Interlace == GS_INTERLACED) && (gsGlobal->Field == GS_FRAME))
-        gsGlobal->Height /= 2;
-
-    // Setup GS global settings
-    gsGlobal->PSM = GS_PSM_CT32;
-    gsGlobal->PSMZ = GS_PSMZ_16S;
-    gsGlobal->Dithering = GS_SETTING_ON;
-    gsGlobal->DoubleBuffering = GS_SETTING_ON;
-    gsGlobal->ZBuffering = GS_SETTING_ON;
-    gsGlobal->PrimAlphaEnable = GS_SETTING_ON;
-    gsKit_set_test(gsGlobal, GS_ZTEST_ON);
-    gsKit_set_test(gsGlobal, GS_ATEST_ON);
-    gsKit_set_primalpha(gsGlobal, GS_SETREG_ALPHA(0, 1, 0, 1, 128), 0);
-    gsKit_set_clamp(gsGlobal, GS_CMODE_CLAMP);
-
-    // Initialize DMA settings
-    dmaKit_init(D_CTRL_RELE_OFF, D_CTRL_MFD_OFF, D_CTRL_STS_UNSPEC, D_CTRL_STD_OFF, D_CTRL_RCYC_8, 1 << DMA_CHANNEL_GIF);
-    dmaKit_chan_init(DMA_CHANNEL_GIF);
-
-    gsKit_init_screen(gsGlobal);
-    gsKit_vram_clear(gsGlobal);
-    gsKit_TexManager_init(gsGlobal);
-}
-
 void initializeImGui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -60,6 +33,7 @@ void initializeImGui() {
     // exceeds 512x512, the GSKit ImGui backend fails to render at all, leading to a black screen. To avoid
     // this, oversampling can be disabled on fonts, and fonts should have glyph ranges minimized to only
     // characters that are used.
+    // See: https://github.com/ocornut/imgui/blob/master/docs/FONTS.md
 
     // Add the default font
     {
@@ -123,8 +97,9 @@ void initializeImGui() {
     ImGui_ImplPs2GsKit_Init(gsGlobal);
 }
 
-void PS2Plus::Graphics::Initialize() {
-    initializeGsKit();
+void PS2Plus::Graphics::Initialize(PS2Plus::Graphics::VideoMode mode) {
+    gsGlobal = gsKit_init_global();
+    PS2Plus::Graphics::SetVideoMode(mode);
     initializeImGui();
 }
 
@@ -172,4 +147,44 @@ void PS2Plus::Graphics::ResumeGamepadNav() {
 
 bool PS2Plus::Graphics::IsGamepadNavActive() {
     return ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NavEnableGamepad;
+}
+
+void PS2Plus::Graphics::SetVideoMode(PS2Plus::Graphics::VideoMode mode) {
+    if (mode == Interlaced) {
+        gsGlobal->Mode = GS_MODE_NTSC;
+        gsGlobal->Interlace = GS_INTERLACED;
+        gsGlobal->Field = GS_FIELD;
+        gsGlobal->Width = 640;
+        gsGlobal->Height = 448;
+    } else if (mode == Progressive480) {
+        gsGlobal->Mode = GS_MODE_DTV_480P;
+        gsGlobal->Interlace = GS_NONINTERLACED;
+        gsGlobal->Field = GS_FRAME;
+        gsGlobal->Width = 704;
+        gsGlobal->Height = 480;
+    }
+
+    if ((gsGlobal->Interlace == GS_INTERLACED) && (gsGlobal->Field == GS_FRAME)) {
+        gsGlobal->Height /= 2;
+    }
+
+    // Setup GS global settings
+    gsGlobal->PSM = GS_PSM_CT32;
+    gsGlobal->PSMZ = GS_PSMZ_16S;
+    gsGlobal->Dithering = GS_SETTING_ON;
+    gsGlobal->DoubleBuffering = GS_SETTING_ON;
+    gsGlobal->ZBuffering = GS_SETTING_ON;
+    gsGlobal->PrimAlphaEnable = GS_SETTING_ON;
+    gsKit_set_test(gsGlobal, GS_ZTEST_ON);
+    gsKit_set_test(gsGlobal, GS_ATEST_ON);
+    gsKit_set_primalpha(gsGlobal, GS_SETREG_ALPHA(0, 1, 0, 1, 128), 0);
+    gsKit_set_clamp(gsGlobal, GS_CMODE_CLAMP);
+
+    // Initialize DMA settings
+    dmaKit_init(D_CTRL_RELE_OFF, D_CTRL_MFD_OFF, D_CTRL_STS_UNSPEC, D_CTRL_STD_OFF, D_CTRL_RCYC_8, 1 << DMA_CHANNEL_GIF);
+    dmaKit_chan_init(DMA_CHANNEL_GIF);
+
+    gsKit_init_screen(gsGlobal);
+    gsKit_vram_clear(gsGlobal);
+    gsKit_TexManager_init(gsGlobal);
 }

@@ -6,7 +6,32 @@
 
 #include <math.h>
 
+void video_mode_selection(configurator_state *state) {
+    PS2Plus::Graphics::VideoMode previousMode = state->video_mode;
+    const char *modeDisplay = PS2Plus::Graphics::VideoModeStrings[state->video_mode];
+    if (ImGui::BeginCombo("Video Mode", modeDisplay)) {
+        for (auto const &entry : PS2Plus::Graphics::VideoModeStrings) {
+            const bool isSelected = entry.first == state->video_mode;
+            if (ImGui::Selectable(entry.second, isSelected)) {
+                state->video_mode = entry.first;
+            }
+
+            if (isSelected) {
+                ImGui::SetItemDefaultFocus();
+            }
+        }
+        ImGui::EndCombo();
+    }
+
+    if (state->video_mode != previousMode) {
+        PS2Plus::Graphics::SetVideoMode(state->video_mode);
+    }
+}
+
 void app_section_about(ImGuiIO &io, configurator_state *state) {
+    video_mode_selection(state);
+    ImGui::Separator();
+
     ImGui::ShowStyleEditor();
 
     PS2Plus::UI::StatusText("Firmware updated!", PS2Plus::UI::StatusType_Success);

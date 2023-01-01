@@ -27,7 +27,9 @@
 bool is_reading_ps2_state = false;
 bool should_mock = false;
 
-configurator_state state;
+configurator_state state = {
+    .video_mode = PS2Plus::Graphics::Interlaced,
+};
 
 static void load_modules(void) {
     int ret;
@@ -242,7 +244,7 @@ int main(int argc, char **argv) {
 
     PS2Plus::Gamepad::Initialize();
     PS2Plus::Gamepad::StartAll();
-    PS2Plus::Graphics::Initialize();
+    PS2Plus::Graphics::Initialize(state.video_mode);
     
     update_controllers();
     state.current_controller = &state.controllers[0];

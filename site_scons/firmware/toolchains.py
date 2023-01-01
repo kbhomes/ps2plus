@@ -91,6 +91,11 @@ class MicrochipXC8Toolchain(AbstractFirmwareToolchain):
                 '_PIC18',
                 '__PICC18__',
             ]
+        elif mcu.startswith('PIC16'):
+            self.vscode_properties.additional_defines += [
+                '_PIC16',
+                '__PICC16__',
+            ]
 
         # Point VS Code to the underlying clang executable so its IntelliSense is accurate (and doesn't default to MSVC)
         self.vscode_properties.compiler_path = self.xc8_clang
