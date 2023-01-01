@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-07-25 03:22:50</td>
+      <td>2023-01-01 20:16:21</td>
     </tr>
   </table>
 </div>
@@ -126,7 +126,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;latching_bool.h&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;latching_bool.h&quot;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -142,7 +142,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">latching_init</span><span class="p">(</span><span class="n">latching_bool</span><span class="w"> </span><span class="o">*</span><span class="n">latch</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">initial_value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">latching_init</span><span class="p">(</span><span class="n">latching_bool</span><span class="w"> </span><span class="o">*</span><span class="n">latch</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">initial_value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -150,7 +150,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">is_actuating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">is_actuating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -158,7 +158,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initial_value</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">initial_value</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -166,7 +166,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -182,7 +182,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">bool</span><span class="w"> </span><span class="nf">latching_update</span><span class="p">(</span><span class="n">latching_bool</span><span class="w"> </span><span class="o">*</span><span class="n">latch</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">active</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="kt">bool</span><span class="w"> </span><span class="nf">latching_update</span><span class="p">(</span><span class="n">latching_bool</span><span class="w"> </span><span class="o">*</span><span class="n">latch</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">active</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -198,7 +198,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">active</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">is_actuating</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">active</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">is_actuating</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -214,7 +214,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -238,7 +238,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">is_actuating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">active</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">is_actuating</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">active</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -254,7 +254,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -262,7 +262,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -278,7 +278,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="kt">bool</span><span class="w"> </span><span class="nf">latching_read</span><span class="p">(</span><span class="n">latching_bool</span><span class="w"> </span><span class="o">*</span><span class="n">latch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="kt">bool</span><span class="w"> </span><span class="nf">latching_read</span><span class="p">(</span><span class="n">latching_bool</span><span class="w"> </span><span class="o">*</span><span class="n">latch</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -286,7 +286,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">latch</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -294,7 +294,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -311,7 +311,7 @@
     </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.2)</a>
     </footer>
   </body>
 </html>

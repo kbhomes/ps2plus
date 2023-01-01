@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-07-25 03:22:50</td>
+      <td>2023-01-01 20:16:21</td>
     </tr>
   </table>
 </div>
@@ -115,7 +115,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../command.h&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;../command.h&quot;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -131,7 +131,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">CONFIG_MODE_RESPONSE_BYTES</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mh">0x00</span><span class="w"> </span><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">CONFIG_MODE_RESPONSE_BYTES</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="mh">0x00</span><span class="w"> </span><span class="p">};</span></td>
     </tr>
 
     <tr class="source-line">
@@ -147,7 +147,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">struct</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="k">struct</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -155,7 +155,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">response_data</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">response_data</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -163,7 +163,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">response_length</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">response_length</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -171,7 +171,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"> </span><span class="n">memory</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="p">}</span><span class="w"> </span><span class="n">memory</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -187,7 +187,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">167</td>
-      <td class="src coveredLine"><span class="n">command_result</span><span class="w"> </span><span class="nf">mp_initialize</span><span class="p">(</span><span class="k">volatile</span><span class="w"> </span><span class="n">command_packet</span><span class="w"> </span><span class="o">*</span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">controller_state</span><span class="w"> </span><span class="o">*</span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="n">command_result</span><span class="w"> </span><span class="nf">mp_initialize</span><span class="p">(</span><span class="k">volatile</span><span class="w"> </span><span class="n">command_packet</span><span class="w"> </span><span class="o">*</span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">controller_state</span><span class="w"> </span><span class="o">*</span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -218,7 +218,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">167</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">config_mode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">config_mode</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -234,7 +234,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CONFIG_MODE_RESPONSE_BYTES</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CONFIG_MODE_RESPONSE_BYTES</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -242,7 +242,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -250,7 +250,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -266,7 +266,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">165</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">input</span><span class="p">.</span><span class="n">button_data</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">input</span><span class="p">.</span><span class="n">button_data</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -289,7 +289,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">165</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">analog_mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CMDigital</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">analog_mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CMDigital</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -297,7 +297,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">36</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -312,7 +312,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">129</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">analog_mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CMAnalog</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">analog_mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CMAnalog</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -320,7 +320,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">36</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -335,7 +335,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">93</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">analog_mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CMAnalogFull</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">state</span><span class="o">-&gt;</span><span class="n">analog_mode</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CMAnalogFull</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -343,7 +343,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">93</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">18</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -351,7 +351,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -359,7 +359,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">      </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -367,7 +367,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -375,7 +375,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -399,7 +399,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">input</span><span class="p">.</span><span class="n">button_data</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">input</span><span class="p">.</span><span class="n">button_data</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -407,7 +407,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -431,7 +431,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">167</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">CRInitialized</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">CRInitialized</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -439,7 +439,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -455,7 +455,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">1974</td>
-      <td class="src coveredLine"><span class="n">command_result</span><span class="w"> </span><span class="nf">mp_process</span><span class="p">(</span><span class="k">volatile</span><span class="w"> </span><span class="n">command_packet</span><span class="w"> </span><span class="o">*</span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">controller_state</span><span class="w"> </span><span class="o">*</span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="n">command_result</span><span class="w"> </span><span class="nf">mp_process</span><span class="p">(</span><span class="k">volatile</span><span class="w"> </span><span class="n">command_packet</span><span class="w"> </span><span class="o">*</span><span class="n">packet</span><span class="p">,</span><span class="w"> </span><span class="n">controller_state</span><span class="w"> </span><span class="o">*</span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -463,7 +463,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">1974</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">write</span><span class="p">(</span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="p">[</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">data_index</span><span class="p">]);</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">write</span><span class="p">(</span><span class="n">memory</span><span class="p">.</span><span class="n">response_data</span><span class="p">[</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">data_index</span><span class="p">]);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -494,7 +494,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">1974</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x42</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x42</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -519,7 +519,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">1258</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_small</span><span class="p">.</span><span class="n">mapping</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x00</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_small</span><span class="p">.</span><span class="n">mapping</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x00</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -534,7 +534,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">31</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_small</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_byte</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mh">0xFF</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">0x00</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_small</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_byte</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0xFF</span><span class="p">)</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mh">0xFF</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mh">0x00</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -542,7 +542,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -567,7 +567,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">1258</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_large</span><span class="p">.</span><span class="n">mapping</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x01</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_large</span><span class="p">.</span><span class="n">mapping</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x01</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -575,7 +575,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">31</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_large</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_byte</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">rumble_motor_large</span><span class="p">.</span><span class="n">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_byte</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -583,7 +583,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -598,7 +598,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">716</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x43</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">id</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x43</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -613,7 +613,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">716</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_index</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -621,7 +621,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">70</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">config_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_byte</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x01</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">state</span><span class="o">-&gt;</span><span class="n">config_mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">command_byte</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mh">0x01</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -629,7 +629,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -637,7 +637,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -676,7 +676,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">1974</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">data_index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">packet</span><span class="o">-&gt;</span><span class="n">data_index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">memory</span><span class="p">.</span><span class="n">response_length</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -684,7 +684,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">1807</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">CRProcessing</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">CRProcessing</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -692,7 +692,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -708,7 +708,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">167</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">CRCompleted</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">CRCompleted</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -716,7 +716,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
+      <td class="src "><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -740,7 +740,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x42</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x42</span><span class="p">,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -748,7 +748,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">initialize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_initialize</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">initialize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_initialize</span><span class="p">,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -756,7 +756,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_process</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_process</span><span class="p">,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -764,7 +764,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="p">};</span></td>
     </tr>
 
     <tr class="source-line">
@@ -804,7 +804,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">const</span><span class="w"> </span><span class="n">command_processor</span><span class="w"> </span><span class="n">command_controller_enter_exit_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="k">const</span><span class="w"> </span><span class="n">command_processor</span><span class="w"> </span><span class="n">command_controller_enter_exit_config</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -812,7 +812,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x43</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mh">0x43</span><span class="p">,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -820,7 +820,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">initialize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_initialize</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">initialize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_initialize</span><span class="p">,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -828,7 +828,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_process</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">.</span><span class="n">process</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">mp_process</span><span class="p">,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -836,7 +836,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="p">};</span></td>
     </tr>
 
     <tr class="source-line">
@@ -853,7 +853,7 @@
     </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.2)</a>
     </footer>
   </body>
 </html>
