@@ -93,7 +93,6 @@ void ImGui_ImplPs2Sdk_UpdateGamepad(const padButtonStatus *pad)
     ImGui_ImplPs2Sdk_Data* bd = ImGui_ImplPs2Sdk_GetBackendData();
     IM_ASSERT(bd != NULL && "Did you call ImGui_ImplPs2Sdk_Init()?");
     ImGuiIO& io = ImGui::GetIO();
-    memset(io.NavInputs, 0, sizeof(io.NavInputs));
     if ((io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad) == 0)
         return;
 
@@ -106,26 +105,26 @@ void ImGui_ImplPs2Sdk_UpdateGamepad(const padButtonStatus *pad)
     // Invert active-low button states
     u16 buttons = pad->btns ^ 0xFFFF;
 
-    #define MAP_DIGITAL_BUTTON(NAV_NO, BUTTON_MASK) { io.NavInputs[NAV_NO] = (buttons & BUTTON_MASK) ? 1.0f : 0.0f; }
-    #define MAP_ANALOG(NAV_NO, AXIS_VAL, V0, V1, DZF) { float vn = (float)(AXIS_VAL - V0) / (float)(V1 - V0); if (vn > 1.0f) vn = 1.0f; if (vn > DZF && io.NavInputs[NAV_NO] < vn) io.NavInputs[NAV_NO] = vn; }
+    #define MAP_DIGITAL_BUTTON(GAMEPAD_KEY, BUTTON_MASK)    do { io.AddKeyEvent(GAMEPAD_KEY, (buttons & BUTTON_MASK) ? 1.0f : 0.0f); } while (0);
+    #define MAP_ANALOG(GAMEPAD_KEY, AXIS_VAL, V0, V1, DZF)  do { float vn = (float)(AXIS_VAL - V0) / (float)(V1 - V0); if (vn < 0.0f) vn = 0.0f; if (vn > 1.0f) vn = 1.0f; io.AddKeyAnalogEvent(GAMEPAD_KEY, vn > DZF, vn); } while (0);
 
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_Activate,   PAD_CROSS);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_Cancel,     PAD_CIRCLE);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_Menu,       PAD_TRIANGLE);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_Input,      PAD_SQUARE);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_DpadLeft,   PAD_LEFT);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_DpadRight,  PAD_RIGHT);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_DpadUp,     PAD_UP);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_DpadDown,   PAD_DOWN);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_FocusPrev,  PAD_L1);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_FocusNext,  PAD_R1);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_TweakSlow,  PAD_L2);
-    MAP_DIGITAL_BUTTON(ImGuiNavInput_TweakFast,  PAD_R2);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadFaceDown,    PAD_CROSS);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadFaceRight,   PAD_CIRCLE);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadFaceLeft,    PAD_SQUARE);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadFaceUp,      PAD_TRIANGLE);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadDpadLeft,    PAD_LEFT);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadDpadRight,   PAD_RIGHT);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadDpadUp,      PAD_UP);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadDpadDown,    PAD_DOWN);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadL1,          PAD_L1);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadR1,          PAD_R1);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadL2,          PAD_L2);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadR2,          PAD_R2);
 
-    MAP_ANALOG(ImGuiNavInput_LStickLeft, pad->ljoy_h, 0x7F, 0x00, 0.15);
-    MAP_ANALOG(ImGuiNavInput_LStickRight, pad->ljoy_h, 0x80, 0xFF, 0.15);
-    MAP_ANALOG(ImGuiNavInput_LStickUp, pad->ljoy_v, 0x7F, 0x00, 0.15);
-    MAP_ANALOG(ImGuiNavInput_LStickDown, pad->ljoy_v, 0x80, 0xFF, 0.15);
+    MAP_ANALOG(ImGuiKey_GamepadLStickLeft, pad->ljoy_h, 0x7F, 0x00, 0.15);
+    MAP_ANALOG(ImGuiKey_GamepadLStickRight, pad->ljoy_h, 0x80, 0xFF, 0.15);
+    MAP_ANALOG(ImGuiKey_GamepadLStickUp, pad->ljoy_v, 0x7F, 0x00, 0.15);
+    MAP_ANALOG(ImGuiKey_GamepadLStickDown, pad->ljoy_v, 0x80, 0xFF, 0.15);
 
     #undef MAP_DIGITAL_BUTTON
     #undef MAP_ANALOG
@@ -138,12 +137,14 @@ void ImGui_ImplPs2Sdk_UpdateGamepad(const padButtonStatus *pad)
     // Show and adjust the mouse cursor if the right analog stick has been touched
     if (rstickX || rstickY) {
         io.MouseDrawCursor = true;
-        io.MousePos = ImVec2(fminf(io.DisplaySize.x - 1, fmaxf(0, io.MousePos.x + rstickX * 8)), fminf(io.DisplaySize.y - 1, fmaxf(0, io.MousePos.y + rstickY * 8)));
+        io.AddMousePosEvent(
+            fminf(io.DisplaySize.x - 1, fmaxf(0, io.MousePos.x + rstickX * 8)), 
+            fminf(io.DisplaySize.y - 1, fmaxf(0, io.MousePos.y + rstickY * 8)));
     }
 
     // Only allow emulated mouse clicks if we are in cursor mode
     if (io.MouseDrawCursor) {
-        io.MouseDown[0] = (buttons & PAD_R3) | (buttons & PAD_R2);
+        io.AddMouseButtonEvent(ImGuiMouseButton_Left, (buttons & PAD_R3) | (buttons & PAD_R2));
     }
 
     // Hide the mouse cursor if the D-pad has been touched
