@@ -1,5 +1,8 @@
 #include "app.h"
 #include "ui/fonts/playstation.h"
+#include "ui/widgets/tab-menu/tab-menu.h"
+
+#include <functional>
 
 bool dialog_displaying = false;
 
@@ -58,9 +61,6 @@ void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
 }
 
 void app_display(ImGuiIO &io, configurator_state *state) {
-    static int active_tab = 0;
-    static int tab_count = 5;
-
     // Full screen "window" that can't be moved or resized
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(io.DisplaySize);
@@ -74,80 +74,13 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         app_ps2plus_ports_display(io, state);
 
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 6));
-        if (ImGui::BeginTabBar("Sections")) {
-            // Control buttons on the ends have transparent backgrounds
-            ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_Text, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
-            ImGui::BeginDisabled(!PS2Plus::Graphics::IsGamepadNavActive());
-            if (ImGui::TabItemButton(ICON_PLAYSTATION_L1_BUTTON_ALT, ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_NoTooltip)) {
-                active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
-            }
-
-            if (ImGui::TabItemButton(ICON_PLAYSTATION_R1_BUTTON_ALT, ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoTooltip)) {
-                active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
-            }
-            ImGui::EndDisabled();
-            ImGui::PopStyleColor(/* ImGuiCol_Text */);
-            ImGui::PopStyleColor(/* ImGuiCol_Tab */);
-
-            // Indicate disabled tabs
-            ImGui::PushStyleColor(ImGuiCol_Tab, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Tab) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabActive, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabActive) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabHovered, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabHovered) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabUnfocused, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocused) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocusedActive) : ImVec4(0, 0, 0, 0));
-
-            if (PS2Plus::Graphics::IsGamepadNavActive()) {
-                if (state->pad_summary.IsButtonPressed(PAD_L1)) {
-                    active_tab = (active_tab > 0) ? active_tab - 1 : tab_count - 1;
-                }
-
-                if (state->pad_summary.IsButtonPressed(PAD_R1)) {
-                    active_tab = (active_tab < tab_count - 1) ? active_tab + 1 : 0;
-                }
-            }
-
-            if (ImGui::BeginTabItem("Information", NULL, active_tab == 0 ? ImGuiTabItemFlags_SetSelected : 0)) {
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 2));
-                ImGui::BeginChild("InformationChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true, ImGuiWindowFlags_NavFlattened);
-                app_section_information(io, state);
-                ImGui::EndChild();
-                ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
-                ImGui::EndTabItem();
-            }
-
-            if (ImGui::BeginTabItem("Test", NULL, active_tab == 1 ? ImGuiTabItemFlags_SetSelected : 0)) {
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 2));
-                app_section_test(io, state);
-                ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
-                ImGui::EndTabItem();
-            }
-
-            if (ImGui::BeginTabItem("Configuration", NULL, active_tab == 2 ? ImGuiTabItemFlags_SetSelected : 0)) {
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 2));
-                app_section_configuration(io, state);
-                ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
-                ImGui::EndTabItem();
-            }
-
-            if (ImGui::BeginTabItem("Firmware", NULL, active_tab == 3 ? ImGuiTabItemFlags_SetSelected : 0)) {
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 2));
-                app_section_firmware(io, state);
-                ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
-                ImGui::EndTabItem();
-            }
-
-            if (ImGui::BeginTabItem("About", NULL, active_tab == 4 ? ImGuiTabItemFlags_SetSelected : 0)) {
-                ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 2));
-                app_section_about(io, state);
-                ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
-                ImGui::EndTabItem();
-            }
-
-            ImGui::PopStyleColor(5 /* ImGuiCol_Tab/TabActive/TabHovered/TabUnfocused/TabUnfocusedActive */);
-
-            ImGui::EndTabBar();
-        }
+        PS2Plus::UI::TabMenu("Sections", [&]{
+            PS2Plus::UI::TabMenuItem("Information", std::bind(app_section_information, io, state));
+            PS2Plus::UI::TabMenuItem("Test", std::bind(app_section_test, io, state));
+            PS2Plus::UI::TabMenuItem("Configuration", std::bind(app_section_configuration, io, state));
+            PS2Plus::UI::TabMenuItem("Firmware", std::bind(app_section_firmware, io, state));
+            PS2Plus::UI::TabMenuItem("About", std::bind(app_section_about, io, state));
+        });
         ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
     }
     ImGui::End();

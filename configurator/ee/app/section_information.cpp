@@ -7,6 +7,8 @@ void app_section_information(ImGuiIO &io, configurator_state *state) {
         return;
     }
 
+    ImGui::BeginChild("InformationChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true, ImGuiWindowFlags_NavFlattened);
+
     // Version data
     if (ImGui::BeginTable("PS2+ Version Number", 2, ImGuiTableFlags_Borders)) {
         ImGui::TableSetupColumn("Version Number", ImGuiTableColumnFlags_WidthFixed);
@@ -44,4 +46,6 @@ void app_section_information(ImGuiIO &io, configurator_state *state) {
     }
     
     ImGui::Separator();
+    
+    ImGui::EndChild();
 }
