@@ -25,7 +25,7 @@
 #include <time.h>
 
 bool is_reading_ps2_state = false;
-bool should_mock = false;
+bool should_mock = true;
 
 configurator_state state = {
     .video_mode = PS2Plus::Graphics::Interlaced,

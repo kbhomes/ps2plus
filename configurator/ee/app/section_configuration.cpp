@@ -538,6 +538,7 @@ void app_configuration_status(ImGuiIO &io, configurator_state *state) {
 
 void app_section_configuration(ImGuiIO &io, configurator_state *state) {
     if (!state->current_controller || !state->current_controller->connected) {
+        app_no_controller_connected();
         return;
     }
 

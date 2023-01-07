@@ -5,10 +5,6 @@
 #include <math.h>
 
 void app_section_test(ImGuiIO &io, configurator_state *state) {
-    if (!state->current_controller || !state->current_controller->connected) {
-        return;
-    }
-
     static bool is_testing = false;
     
     // Flags for actuator controls

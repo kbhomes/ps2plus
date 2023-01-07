@@ -305,6 +305,7 @@ void wizard_perform_update(ImGuiIO &io, configurator_state *state) {
 
 void app_section_firmware(ImGuiIO &io, configurator_state *state) {
   if (!state->current_controller || !state->current_controller->connected) {
+    app_no_controller_connected();
     return;
   }
   

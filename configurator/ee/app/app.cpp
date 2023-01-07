@@ -1,8 +1,10 @@
 #include "app.h"
 #include "ui/fonts/playstation.h"
 #include "ui/widgets/tab-menu/tab-menu.h"
-
 #include "views/controller-port-status.h"
+
+#define IMGUI_DEFINE_MATH_OPERATORS
+#include <imgui/imgui_internal.h>
 
 #include <functional>
 
@@ -18,6 +20,14 @@ void app_begin_dialog() {
 
 void app_end_dialog() {
     dialog_displaying = false;
+}
+
+
+void app_no_controller_connected() {
+    const char *labelDisconnected = "No PS2+ controller connected";
+    ImVec2 labelSize = ImGui::CalcTextSize(labelDisconnected);
+    ImGui::SetCursorPos((ImGui::GetWindowSize() - labelSize) * 0.5f);
+    ImGui::Text(labelDisconnected);
 }
 
 void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
@@ -55,9 +65,9 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 6));
         PS2Plus::UI::TabMenu("Sections", [&]{
             PS2Plus::UI::TabMenuItem("Information", std::bind(app_section_information, io, state));
-            PS2Plus::UI::TabMenuItem("Test", std::bind(app_section_test, io, state));
             PS2Plus::UI::TabMenuItem("Configuration", std::bind(app_section_configuration, io, state));
             PS2Plus::UI::TabMenuItem("Firmware", std::bind(app_section_firmware, io, state));
+            PS2Plus::UI::TabMenuItem("Test", std::bind(app_section_test, io, state));
             PS2Plus::UI::TabMenuItem("About", std::bind(app_section_about, io, state));
         });
         ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
