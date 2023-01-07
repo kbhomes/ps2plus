@@ -56,6 +56,7 @@ namespace PS2Plus::Gamepad {
 
         for (int i = 0; i < PAD_NUM_PORTS; i++) {
             const PadStatus& status = Read(i);
+            _summary.ports[i] = status.status;
             if (status.status == PadPortReady) {
                 num_active_pads++;
                 _summary.pad.ok = std::max(status.pad.ok, _summary.pad.ok); // Highest `ok` value across pads

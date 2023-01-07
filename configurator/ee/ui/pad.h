@@ -55,6 +55,7 @@ namespace PS2Plus::Gamepad {
      */
     struct PadSummary {
         PadSummaryStatus status;
+        PadPortStatus ports[2];
         padButtonStatus pad;
         u16 rawButtons;
         u16 rawButtonsPrevious;

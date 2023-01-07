@@ -2,6 +2,8 @@
 #include "ui/fonts/playstation.h"
 #include "ui/widgets/tab-menu/tab-menu.h"
 
+#include "views/controller-port-status.h"
+
 #include <functional>
 
 bool dialog_displaying = false;
@@ -19,45 +21,22 @@ void app_end_dialog() {
 }
 
 void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
-    // Information section
-    if (ImGui::BeginTable("PS2+ Ports#Table", 2)) {
-        ImGui::TableNextRow();
-        for (size_t i = 0; i < sizeof(state->controllers) / sizeof(configurator_ps2plus_controller); i++) {
-            configurator_ps2plus_controller *controller = &state->controllers[i];
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, ImVec2(10.f, 10.f));
+    ImGui::PushStyleColor(ImGuiCol_TableBorderLight, ImVec4(0.3, 0.3, 0.3, 0.5));
+    ImGui::PushStyleColor(ImGuiCol_TableBorderStrong, ImVec4(0.3, 0.3, 0.3, 0.5));
 
+    int numControllers = sizeof(state->controllers) / sizeof(configurator_ps2plus_controller);
+    if (ImGui::BeginTable("PS2+ Ports#Table", numControllers, ImGuiTableFlags_Borders)) {
+        ImGui::TableNextRow();
+        for (size_t i = 0; i < numControllers; i++) {
             ImGui::TableSetColumnIndex(i);
-            
-            // Draw a custom icon
-            const ImVec2 p = ImGui::GetCursorScreenPos();
-            const float icon_size = ImGui::GetFontSize();
-            const ImVec2 icon_center = ImVec2(p.x + icon_size/2, p.y + icon_size/2);
-            ImDrawList *draw_list = ImGui::GetWindowDrawList();
-            if (controller->connected) {
-                draw_list->AddCircleFilled(icon_center, icon_size/2, IM_COL32(0x00, 0xFF, 0x00, 0x80));
-            } else {
-                draw_list->AddCircle(icon_center, icon_size/2, IM_COL32(0xFF, 0xFF, 0xFF, 0x80));
-            }
-            ImGui::Dummy(ImVec2(icon_size, icon_size));
-            ImGui::SameLine();
-            
-            ImGui::BeginGroup();
-            {
-                if (controller->connected) {
-                    ImGui::TextColored(ImVec4(0, 1, 0, 1.0), "Connected to PS2+");
-                    ImGui::SetWindowFontScale(0.75);
-                    ImGui::Text("Port %d", i + 1);
-                    ImGui::SetWindowFontScale(1.0);
-                } else {
-                    ImGui::TextDisabled("No PS2+ found");
-                    ImGui::SetWindowFontScale(0.75);
-                    ImGui::TextDisabled("Port %d", i + 1);
-                    ImGui::SetWindowFontScale(1.0);
-                }
-            }
-            ImGui::EndGroup();
+            PS2Plus::App::Views::ControllerPortStatus(state, i);
         }
         ImGui::EndTable();
     }
+
+    ImGui::PopStyleColor(2);
+    ImGui::PopStyleVar();
 }
 
 void app_display(ImGuiIO &io, configurator_state *state) {

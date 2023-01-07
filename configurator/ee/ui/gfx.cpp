@@ -26,6 +26,8 @@ void initializeImGui() {
     io.IniFilename = NULL;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.MousePos = ImVec2(0, 0);
+    io.KeyRepeatDelay = 0.75f;
+    io.KeyRepeatRate = 0.1f;
 
     // NOTE: Adding fonts increases the font texture atlas size. At some point, if the font texture atlas
     // exceeds 512x512, the GSKit ImGui backend fails to render at all, leading to a black screen. To avoid
