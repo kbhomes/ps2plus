@@ -29,12 +29,14 @@ namespace PS2Plus::Gamepad {
     }
 
     void StartAll() {
+        printf("[PS2Plus::Gamepad::StartAll] Starting %d gamepads\n", PAD_NUM_PORTS);
         for (int i = 0; i < PAD_NUM_PORTS; i++) {
             Start(i);
         }
     }
 
     void StopAll() {
+        printf("[PS2Plus::Gamepad::StopAll] Stopping %d gamepads\n", PAD_NUM_PORTS);
         for (int i = 0; i < PAD_NUM_PORTS; i++) {
             Stop(i);
         }

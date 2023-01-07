@@ -22,8 +22,6 @@ void initializeImGui() {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    // ImGui::StyleColorsClassic();
-    ImGui::StyleColorsDark();
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = NULL;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
@@ -90,7 +88,11 @@ void initializeImGui() {
     style.TouchExtraPadding = ImVec2(8, 8);
     style.MouseCursorScale = 0.8;
     style.SelectableTextAlign = ImVec2(0, 0.5);
-    style.Colors[ImGuiCol_Tab].w = 0.2f;
+
+    ImGui::StyleColorsDark();
+    ImVec4* colors = style.Colors;
+    colors[ImGuiCol_WindowBg] = ImVec4(0.078f, 0.098f, 0.118f, 0.941f);
+    colors[ImGuiCol_Tab].w = 0.2f;
 
     // Setup ImGui backends
     ImGui_ImplPs2Sdk_InitForGsKit(gsGlobal);

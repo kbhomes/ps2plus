@@ -150,6 +150,7 @@ void app_configuration_button_remapping(ImGuiIO &io, configurator_state *state) 
 
         ImGui::EndTable();
     }
+    ImGui::Unindent(28.f);
     ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
     ImGui::PopStyleVar(/* ImGuiStyleVar_CellPadding */);
     ImGui::EndDisabled();

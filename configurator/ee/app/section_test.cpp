@@ -22,7 +22,7 @@ void app_section_test(ImGuiIO &io, configurator_state *state) {
     float joystick_lx = state->current_pad.GetJoystickAxis(JSLeftX);
     float joystick_ly = state->current_pad.GetJoystickAxis(JSLeftY);
     float joystick_distance = sqrtf(joystick_lx*joystick_lx + joystick_ly*joystick_ly);
-    uint8_t joystick_power = (uint8_t)(joystick_distance * 0xFF);
+    uint8_t joystick_power = (uint8_t)(fminf(joystick_distance, 1.f) * 0xFF);
     bool joystick_active = joystick_power > 0x40; // From the Curious Inventor PS2 document, 0x40 was the practical minimum for spinning the motors
 
     // Enter/exit testing mode via L3+R3 -- to prevent app navigation while testing
