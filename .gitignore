@@ -74,6 +74,7 @@ disassembly/
 
 ### VS Code ###
 .vscode/*
+!.vscode/pre-include.h
 !.vscode/c_cpp_properties.json
 !.vscode/settings.json
 !.vscode/tasks.json

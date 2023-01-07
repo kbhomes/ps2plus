@@ -16,7 +16,8 @@
             "compilerPath": "/usr/local/ps2dev/iop/bin/mipsel-ps2-irx-gcc",
             "cStandard": "c99",
             "cppStandard": "c++03",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "forcedInclude": [".vscode/pre-include.h"]
         },
         {
             "name": "PS2SDK (EE)",
@@ -38,7 +39,8 @@
             "cStandard": "c99",
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-gcc-x64",
-            "configurationProvider": "ms-vscode.makefile-tools"
+            "configurationProvider": "ms-vscode.makefile-tools",
+            "forcedInclude": [".vscode/pre-include.h"]
         },
         {
             "name": "Generic",
@@ -49,7 +51,8 @@
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
-            "intelliSenseMode": "linux-gcc-x64"
+            "intelliSenseMode": "linux-gcc-x64",
+            "forcedInclude": [".vscode/pre-include.h"]
         }
     ],
     "version": 4
