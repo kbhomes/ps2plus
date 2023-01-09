@@ -1,5 +1,6 @@
 #include "pad.h"
 
+#include "cmath"
 #include "cstring"
 #include "stdio.h"
 #include <algorithm>
@@ -49,7 +50,8 @@ namespace PS2Plus::Gamepad {
 
         // Set accumulators to average out the values across all active pads
         int num_active_pads = 0;
-        int rjoy_h = 0, rjoy_v = 0, ljoy_h = 0, ljoy_v = 0;
+        int rjoy_h = 0x7F, rjoy_v = 0x7F, ljoy_h = 0x7F, ljoy_v = 0x7F;
+        int rjoy_h_maxdist = 0, rjoy_v_maxdist = 0, ljoy_h_maxdist = 0, ljoy_v_maxdist = 0;
         u32 right_p = 0, left_p = 0, up_p = 0, down_p = 0, 
             triangle_p = 0, circle_p = 0, cross_p = 0, square_p = 0, 
             l1_p = 0, r1_p = 0, l2_p = 0, r2_p = 0;
@@ -63,11 +65,11 @@ namespace PS2Plus::Gamepad {
                 _summary.pad.mode = std::max(status.pad.mode, _summary.pad.mode); // Highest `mode` across pads
                 _summary.pad.btns &= status.pad.btns; // Merge all active-low button values across pads
                 
-                // Accumulate joystick differences from center
-                rjoy_h += status.pad.rjoy_h - 0x7f;
-                rjoy_v += status.pad.rjoy_v - 0x7f;
-                ljoy_h += status.pad.ljoy_h - 0x7f;
-                ljoy_v += status.pad.ljoy_v - 0x7f;
+                // Independently determine the four joystick axes that have the largest deviation from center
+                if (std::abs(status.pad.rjoy_h - 0x7F) > rjoy_h_maxdist) { rjoy_h = status.pad.rjoy_h; rjoy_h_maxdist = std::abs(status.pad.rjoy_h - 0x7F); }
+                if (std::abs(status.pad.rjoy_v - 0x7F) > rjoy_v_maxdist) { rjoy_v = status.pad.rjoy_v; rjoy_v_maxdist = std::abs(status.pad.rjoy_v - 0x7F); }
+                if (std::abs(status.pad.ljoy_h - 0x7F) > ljoy_h_maxdist) { ljoy_h = status.pad.ljoy_h; ljoy_h_maxdist = std::abs(status.pad.ljoy_h - 0x7F); }
+                if (std::abs(status.pad.ljoy_v - 0x7F) > ljoy_v_maxdist) { ljoy_v = status.pad.ljoy_v; ljoy_v_maxdist = std::abs(status.pad.ljoy_v - 0x7F); }
 
                 // Accumulate pressure values
                 right_p += status.pad.right_p;
@@ -92,10 +94,10 @@ namespace PS2Plus::Gamepad {
 
         if (num_active_pads > 0) {
             // Apply accumulated values to the pad status
-            _summary.pad.rjoy_h = std::clamp(0x7f + rjoy_h, 0, 0xff);
-            _summary.pad.rjoy_v = std::clamp(0x7f + rjoy_v, 0, 0xff);
-            _summary.pad.ljoy_h = std::clamp(0x7f + ljoy_h, 0, 0xff);
-            _summary.pad.ljoy_v = std::clamp(0x7f + ljoy_v, 0, 0xff);
+            _summary.pad.rjoy_h = rjoy_h;
+            _summary.pad.rjoy_v = rjoy_v;
+            _summary.pad.ljoy_h = ljoy_h;
+            _summary.pad.ljoy_v = ljoy_v;
             _summary.pad.right_p = right_p / num_active_pads;
             _summary.pad.left_p = left_p / num_active_pads;
             _summary.pad.up_p = up_p / num_active_pads;
