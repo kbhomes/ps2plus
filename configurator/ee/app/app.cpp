@@ -1,7 +1,7 @@
 #include "app.h"
 #include "ui/fonts/playstation.h"
-#include "ui/widgets/tab-menu/tab-menu.h"
-#include "views/controller-port-status.h"
+#include "components/tab-menu.h"
+#include "components/controller-port-status.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include <imgui/imgui_internal.h>
@@ -40,7 +40,7 @@ void app_ps2plus_ports_display(ImGuiIO &io, configurator_state *state) {
         ImGui::TableNextRow();
         for (size_t i = 0; i < numControllers; i++) {
             ImGui::TableSetColumnIndex(i);
-            PS2Plus::App::Views::ControllerPortStatus(state, i);
+            PS2Plus::Components::ControllerPortStatus(state, i);
         }
         ImGui::EndTable();
     }
@@ -63,12 +63,12 @@ void app_display(ImGuiIO &io, configurator_state *state) {
         app_ps2plus_ports_display(io, state);
 
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(10, 6));
-        PS2Plus::UI::TabMenu("Sections", [&]{
-            PS2Plus::UI::TabMenuItem("Information", std::bind(app_section_information, io, state));
-            PS2Plus::UI::TabMenuItem("Configuration", std::bind(app_section_configuration, io, state));
-            PS2Plus::UI::TabMenuItem("Firmware", std::bind(app_section_firmware, io, state));
-            PS2Plus::UI::TabMenuItem("Test", std::bind(app_section_test, io, state));
-            PS2Plus::UI::TabMenuItem("About", std::bind(app_section_about, io, state));
+        PS2Plus::Components::TabMenu("Sections", [&]{
+            PS2Plus::Components::TabMenuItem("Information", std::bind(app_section_information, io, state));
+            PS2Plus::Components::TabMenuItem("Configuration", std::bind(app_section_configuration, io, state));
+            PS2Plus::Components::TabMenuItem("Firmware", std::bind(app_section_firmware, io, state));
+            PS2Plus::Components::TabMenuItem("Test", std::bind(app_section_test, io, state));
+            PS2Plus::Components::TabMenuItem("About", std::bind(app_section_about, io, state));
         });
         ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);
     }

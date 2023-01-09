@@ -2,12 +2,12 @@
 
 #include <imgui/imgui.h>
 
-namespace PS2Plus::UI {
+namespace PS2Plus::Components {
     enum StatusType {
-        StatusType_Success,
-        StatusType_Error,
-        StatusType_Warning,
-        StatusType_Loading,
+        kStatusSuccess,
+        kStatusError,
+        kStatusWarning,
+        kStatusLoading,
     };
 
     void StatusText(const char *label, StatusType status, ...);

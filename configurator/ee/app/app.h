@@ -1,10 +1,10 @@
 #pragma once
 
 #include "../state.h"
+#include "components/help-marker.h"
 #include <imgui/imgui.h>
 #include <imgui/backends/imgui_impl_ps2sdk.h>
 #include <imgui/backends/imgui_impl_ps2gskit.h>
-#include <ui/widgets/widget.h>
 
 extern bool dialog_displaying;
 

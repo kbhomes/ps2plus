@@ -1,3 +1,5 @@
+#pragma once
+
 #include <imgui/imgui.h>
 
 #include <dirent.h>
@@ -5,7 +7,7 @@
 #include <time.h>
 #include <vector>
 
-namespace PS2Plus::UI {
+namespace PS2Plus::Components {
     class FileDialog_ {
     public:
         enum EntryType {

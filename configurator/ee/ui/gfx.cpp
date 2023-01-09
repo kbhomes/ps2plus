@@ -7,7 +7,7 @@
 #include "fonts/forkawesome.h"
 #include "fonts/playstation.h"
 #include "drawing/drawing.h"
-#include "widgets/widget.h"
+#include "components/mouse-cursor.h"
 #include "../util/resource.h"
 
 static GSGLOBAL *gsGlobal;
@@ -123,7 +123,7 @@ void PS2Plus::Graphics::EndFrame() {
     // Draw our custom mouse cursor for this frame; see `widgets/widget_cursor.cpp` for 
     // examples on how to draw a custom cursor depending on the cursor type. Must be 
     // called at the end of the frame so ImGui has time to update the cursor type.
-    PS2Plus::UI::MouseCursor();
+    PS2Plus::Components::MouseCursor();
     ImGui::Render();
 
     ImGui_ImplPs2GsKit_RenderDrawData(ImGui::GetDrawData(), ImVec2(-0.5f, -0.5f));

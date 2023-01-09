@@ -1,6 +1,7 @@
 #include "app.h"
 
-#include "../ui/fonts/playstation.h"
+#include "ui/fonts/playstation.h"
+#include "components/gamepad-visualizer.h"
 
 #include <math.h>
 
@@ -117,7 +118,7 @@ void app_section_test(ImGuiIO &io, configurator_state *state) {
         }
 
         ImGui::Separator();
-        PS2Plus::UI::GamePadVisualizer("GamepadTester", state->current_pad, ImGui::GetContentRegionAvail(), !is_testing);
+        PS2Plus::Components::GamepadVisualizer("GamepadTester", state->current_pad, ImGui::GetContentRegionAvail(), !is_testing);
     }
     ImGui::EndChild();
     

@@ -1,8 +1,8 @@
 #include "app.h"
 
 #include "ui/fonts/playstation.h"
-#include "ui/widgets/status/status.h"
-#include "ui/widgets/status/loading-progress.h"
+#include "components/status.h"
+#include "components/loading-progress.h"
 
 #include <math.h>
 
@@ -34,11 +34,11 @@ void app_section_about(ImGuiIO &io, configurator_state *state) {
 
     ImGui::ShowStyleEditor();
 
-    PS2Plus::UI::StatusText("Firmware updated!", PS2Plus::UI::StatusType_Success);
-    PS2Plus::UI::StatusText("Update taking longer than expected", PS2Plus::UI::StatusType_Warning);
-    PS2Plus::UI::StatusText("Error occurred during update", PS2Plus::UI::StatusType_Error);
-    PS2Plus::UI::StatusText("Rebooting controller", PS2Plus::UI::StatusType_Loading);
-    PS2Plus::UI::LoadingProgress("##Progress", fmodf(ImGui::GetTime(), 5.f) / 5.f, "%0.f%%");
+    PS2Plus::Components::StatusText("Firmware updated!", PS2Plus::Components::kStatusSuccess);
+    PS2Plus::Components::StatusText("Update taking longer than expected", PS2Plus::Components::kStatusWarning);
+    PS2Plus::Components::StatusText("Error occurred during update", PS2Plus::Components::kStatusError);
+    PS2Plus::Components::StatusText("Rebooting controller", PS2Plus::Components::kStatusLoading);
+    PS2Plus::Components::LoadingProgress("##Progress", fmodf(ImGui::GetTime(), 5.f) / 5.f, "%0.f%%");
 
     ImGui::TextColored(ICON_PLAYSTATION_COLOR_TRIANGLE, state->pad_summary.IsButtonDown(PAD_TRIANGLE) 
         ? ICON_PLAYSTATION_TRIANGLE_BUTTON_ALT 
