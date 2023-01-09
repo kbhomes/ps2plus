@@ -16,7 +16,7 @@ namespace PS2Plus::Graphics {
     };
 
     void Initialize(VideoMode mode);
-    void BeginFrame(uint64_t color = GS_SETREG_RGBA(0, 0, 0, 0xFF));
+    void BeginFrame(uint64_t color = GS_SETREG_RGBA(20, 25, 30, 255));
     void EndFrame();
     void UpdateGamepad(const PS2Plus::Gamepad::PadSummary& pad);
     void SetVideoMode(VideoMode mode);

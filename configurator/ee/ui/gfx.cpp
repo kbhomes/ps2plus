@@ -25,7 +25,7 @@ void initializeImGui() {
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = NULL;
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
-    io.MousePos = ImVec2(0, 0);
+    io.MousePos = ImVec2(gsGlobal->Width / 2, gsGlobal->Height / 2);
     io.KeyRepeatDelay = 0.75f;
     io.KeyRepeatRate = 0.1f;
 
@@ -93,7 +93,7 @@ void initializeImGui() {
 
     ImGui::StyleColorsDark();
     ImVec4* colors = style.Colors;
-    colors[ImGuiCol_WindowBg] = ImVec4(0.078f, 0.098f, 0.118f, 0.941f);
+    colors[ImGuiCol_WindowBg] = ImVec4(0.078f, 0.098f, 0.118f, 1.f);
     colors[ImGuiCol_Tab].w = 0.2f;
 
     // Setup ImGui backends

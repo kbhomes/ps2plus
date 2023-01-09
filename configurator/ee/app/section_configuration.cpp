@@ -376,11 +376,13 @@ void app_configuration_joysticks_axis_range_remapping(ImGuiIO &io, configurator_
             ImGui::EndDisabled();
 
             if (is_calibrating) {
-                PS2Plus::UI::GamePadIcon(PS2Plus::UI::WidgetGamePadIconType_Square); ImGui::SameLine();
-                    ImGui::Text("Update centers");
+                ImGui::TextColored(ICON_PLAYSTATION_COLOR_SQUARE, ICON_PLAYSTATION_SQUARE_BUTTON);
+                ImGui::SameLine();
+                ImGui::Text("Update centers");
 
-                PS2Plus::UI::GamePadIcon(PS2Plus::UI::WidgetGamePadIconType_Circle); ImGui::SameLine();
-                    ImGui::Text("Finish calibration");
+                ImGui::TextColored(ICON_PLAYSTATION_COLOR_CIRCLE, ICON_PLAYSTATION_CIRCLE_BUTTON);
+                ImGui::SameLine();
+                ImGui::Text("Finish calibration");
             }
 
             if (is_calibrating && state->current_pad.IsButtonPressed(PAD_SQUARE)) {

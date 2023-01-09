@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
         
         // Update the graphics state
         PS2Plus::Graphics::UpdateGamepad(state.pad_summary);
-        PS2Plus::Graphics::BeginFrame(GS_SETREG_RGBA(0x30, 0x30, 0x40, 0x80));
+        PS2Plus::Graphics::BeginFrame();
         app_display(ImGui::GetIO(), &state);
         PS2Plus::Graphics::EndFrame();
     }
