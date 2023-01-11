@@ -1,5 +1,6 @@
 #include "app.h"
 #include "libps2plman.h"
+#include "ui/drawing/drawing.h"
 #include "ui/fonts/forkawesome.h"
 #include "ui/fonts/playstation.h"
 
