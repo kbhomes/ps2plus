@@ -17,15 +17,27 @@
 #include "ui/drawing/drawing.h"
 #include "ui/gfx.h"
 #include "ui/pad.h"
-#include "ui/widgets/widget.h"
 
 #define NEWLIB_PORT_AWARE
 #include <fileXio_rpc.h>
 #include <io_common.h>
 #include <time.h>
 
-bool is_reading_ps2_state = false;
-bool should_mock = true;
+bool is_on_hw() {
+    float num = 2.0f;
+    asm __volatile__
+    (
+        "QMTC2 %1, $vf1\n" // thr:lat 1:1
+        "VDIV $Q, $vf1x, $vf1x\n" // Divide 2.0 / 2.0 
+        "VWAITQ\n" // Q will be 1 after this
+        "VDIV $Q, $vf0x, $vf1x\n" // Divide 0 / 2
+        "VMULQ $vf1, $vf1, $Q\n" // Multiply 2 by Q and store in vf1
+        "SQC2 $vf1, %0\n"
+    :"=m"(num):"r"(num));
+    return num == 2.0f;
+}
+
+bool should_mock = !is_on_hw();
 
 configurator_state state = {
     .video_mode = PS2Plus::Graphics::Interlaced,
