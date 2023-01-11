@@ -1,5 +1,7 @@
 #include "controller.h"
 
+#include <string.h>
+
 const char *ps2plus_controller_digital_button_name(ps2plus_controller_digital_button button) {
   switch (button) {
     case DBSelect:   return "Select";
@@ -34,18 +36,41 @@ const char *ps2plus_controller_joystick_axis_name(ps2plus_controller_joystick_ax
 
 const char *ps2plus_controller_joystick_axis_range_name(ps2plus_controller_joystick_axis_range axis_range) {
   switch (axis_range) {
-    case JSAxisRange_LeftXMin:     return "LX-Min";
-    case JSAxisRange_LeftXCenter:  return "LX-Center";
-    case JSAxisRange_LeftXMax:     return "LX-Max";
-    case JSAxisRange_LeftYMin:     return "LY-Min";
-    case JSAxisRange_LeftYCenter:  return "LY-Center";
-    case JSAxisRange_LeftYMax:     return "LY-Max";
-    case JSAxisRange_RightXMin:    return "RX-Min";
-    case JSAxisRange_RightXCenter: return "RX-Center";
-    case JSAxisRange_RightXMax:    return "RX-Max";
-    case JSAxisRange_RightYMin:    return "RY-Min";
-    case JSAxisRange_RightYCenter: return "RY-Center";
-    case JSAxisRange_RightYMax:    return "RY-Max";
+    case JSAxisRange_LeftXMin:     return "LXMin";
+    case JSAxisRange_LeftXCenter:  return "LXCenter";
+    case JSAxisRange_LeftXMax:     return "LXMax";
+    case JSAxisRange_LeftYMin:     return "LYMin";
+    case JSAxisRange_LeftYCenter:  return "LYCenter";
+    case JSAxisRange_LeftYMax:     return "LYMax";
+    case JSAxisRange_RightXMin:    return "RXMin";
+    case JSAxisRange_RightXCenter: return "RXCenter";
+    case JSAxisRange_RightXMax:    return "RXMax";
+    case JSAxisRange_RightYMin:    return "RYMin";
+    case JSAxisRange_RightYCenter: return "RYCenter";
+    case JSAxisRange_RightYMax:    return "RYMax";
     default: return "<unknown>";
   }
 }
+
+#ifndef _IOP
+ps2plus_controller_digital_button ps2plus_controller_digital_button_from_name(const char *name) {
+  if (strcmp(name, "Select") == 0)    return DBSelect;
+  if (strcmp(name, "L3") == 0)        return DBL3;
+  if (strcmp(name, "R3") == 0)        return DBR3;
+  if (strcmp(name, "Start") == 0)     return DBStart;
+  if (strcmp(name, "Up") == 0)        return DDUp;
+  if (strcmp(name, "Right") == 0)     return DDRight;
+  if (strcmp(name, "Down") == 0)      return DDDown;
+  if (strcmp(name, "Left") == 0)      return DDLeft;
+  if (strcmp(name, "L2") == 0)        return DBL2;
+  if (strcmp(name, "R2") == 0)        return DBR2;
+  if (strcmp(name, "L1") == 0)        return DBL1;
+  if (strcmp(name, "R1") == 0)        return DBR1;
+  if (strcmp(name, "Triangle") == 0)  return DBTriangle;
+  if (strcmp(name, "Circle") == 0)    return DBCircle;
+  if (strcmp(name, "Cross") == 0)     return DBCross;
+  if (strcmp(name, "Square") == 0)    return DBSquare;
+
+  return (ps2plus_controller_digital_button)0;
+}
+#endif

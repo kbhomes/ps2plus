@@ -54,4 +54,8 @@ const char *ps2plus_controller_digital_button_name(ps2plus_controller_digital_bu
 const char *ps2plus_controller_joystick_axis_name(ps2plus_controller_joystick_axis axis);
 const char *ps2plus_controller_joystick_axis_range_name(ps2plus_controller_joystick_axis_range axis_range);
 
+#ifndef _IOP
+ps2plus_controller_digital_button ps2plus_controller_digital_button_from_name(const char *name);
+#endif
+
 #endif /* SHARED_CONTROLLER_H */
