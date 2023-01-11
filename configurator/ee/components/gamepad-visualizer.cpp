@@ -6,7 +6,7 @@
 #include <math.h>
 
 namespace PS2Plus::Components {
-    void GamepadVisualizer(const char *id, PS2Plus::Gamepad::PadStatus &pad, const ImVec2& size, bool disabled) {
+    void GamepadVisualizer(const char *id, const PS2Plus::Gamepad::PadStatus &pad, const ImVec2& size, bool disabled) {
         ImVec2 p = ImGui::GetCursorScreenPos();
         ImDrawList* draw_list = ImGui::GetWindowDrawList();
 

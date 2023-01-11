@@ -38,6 +38,8 @@ public:
   // Create a new configuration object from the TOML format in the given input stream
   static Configuration Import(std::istream& in);
 
+  auto version() const { return version_; }
+
 private:
   uint16_t version_;
   ps2plus_configuration config_;

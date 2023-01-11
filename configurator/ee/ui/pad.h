@@ -39,15 +39,15 @@ namespace PS2Plus::Gamepad {
 
         void Reset();
         bool Update();
-        bool IsButtonDown(int button);
-        bool IsButtonPressed(int button);
-        uint8_t GetJoystickAxisRaw(JoystickAxis axis);
-        float GetJoystickAxis(JoystickAxis axis);
-        PadPortStatus GetStatus();
+        bool IsButtonDown(int button) const;
+        bool IsButtonPressed(int button) const;
+        uint8_t GetJoystickAxisRaw(JoystickAxis axis) const;
+        float GetJoystickAxis(JoystickAxis axis) const;
+        PadPortStatus GetStatus() const;
         void SetRumbleActuatorSmall(bool active);
         void SetRumbleActuatorLargePower(uint8_t power);
-        bool IsRumbleActuatorSmallActive();
-        uint8_t GetRumbleActuatorLargePower();
+        bool IsRumbleActuatorSmallActive() const;
+        uint8_t GetRumbleActuatorLargePower() const;
     };
 
     /**

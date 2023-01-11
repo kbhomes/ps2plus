@@ -131,10 +131,10 @@ namespace PS2Plus::Gamepad {
         // Open the pad port
         ret = padPortOpen(status.port, status.slot, _padBuffers[port]);
         if (!ret) {
-            printf("[PS2Plus::Gamepad::Start] padPortOpen(%d, %d, ...) = %d - failed\n", status.port, status.slot, ret);
+            printf("[PS2Plus::Gamepad::Start] padPortOpen(%d, %d, ...) = %d - failed\n", port, status.port, status.slot, ret);
             status.status = PadPortError;
         } else {
-            printf("[PS2Plus::Gamepad::Start] padPortOpen(%d, %d, ...) succeeded!\n", status.port, status.slot);
+            printf("[PS2Plus::Gamepad::Start] padPortOpen(%d, %d, ...) succeeded!\n", port, status.port, status.slot);
         }
     }
 
@@ -143,17 +143,17 @@ namespace PS2Plus::Gamepad {
         PadStatus &status = _statuses[port];
 
         // Close the pad port
-        printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) ...\n", status.port, status.slot);
+        printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) ...\n", port, status.port, status.slot);
         ret = padPortClose(status.port, status.slot);
         if (!ret) {
-            printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) = %d - failed\n", status.port, status.slot, ret);
+            printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) = %d - failed\n", port, status.port, status.slot, ret);
             status.status = PadPortError;
         } else {
-            printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) succeeded!\n", status.port, status.slot);
+            printf("[PS2Plus::Gamepad::Stop] padPortClose(%d, %d) succeeded!\n", port, status.port, status.slot);
         }
 
         // // End pad communication
-        // printf("[PS2Plus::Gamepad::Stop] padEnd() ...\n", status.port, status.slot);
+        // printf("[PS2Plus::Gamepad::Stop] padEnd() ...\n", port, status.port, status.slot);
         // ret = padEnd();
         // if (!ret) {
         //     printf("[PS2Plus::Gamepad::Stop] padEnd() = %d - failed\n", ret);
@@ -201,22 +201,22 @@ namespace PS2Plus::Gamepad {
 
                 // If DualShock mode is available, enable it and lock it
                 if (hasDualShockMode) {
-                    printf("[PS2Plus::Gamepad::Update][status=%d] Setting DualShock mode\n", status);
+                    printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Setting DualShock mode\n", port, status);
                     padSetMainMode(port, slot, PAD_MMODE_DUALSHOCK, PAD_MMODE_LOCK);
 
                     if (padInfoAct(port, slot, -1, 0)) {
-                        printf("[PS2Plus::Gamepad::Update][status=%d] Controller has actuators\n", status);
+                        printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller has actuators\n", port, status);
                         
                         // Update the status
                         status = PadPortSettingActuators;
                     } else {
-                        printf("[PS2Plus::Gamepad::Update][status=%d] Controller has no actuators\n", status);
+                        printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller has no actuators\n", port, status);
 
                         // Update the status
                         status = PadPortSettingMode;
                     }
                 } else {
-                    printf("[PS2Plus::Gamepad::Update][status=%d] Controller remaining in digital mode\n", status);
+                    printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller remaining in digital mode\n", port, status);
 
                         // Update the status
                         status = PadPortSettingMode;
@@ -224,7 +224,7 @@ namespace PS2Plus::Gamepad {
             }
         } else if (status == PadPortSettingActuators) {
             if (rawState == PAD_STATE_STABLE || rawState == PAD_STATE_FINDCTP1) {
-                printf("[PS2Plus::Gamepad::Update][status=%d] Controller is in DualShock mode\n", status);
+                printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller is in DualShock mode\n", port, status);
 
                 // Initialize both motors
                 _actuators[port][0] = 0;   // Enable small engine
@@ -235,7 +235,7 @@ namespace PS2Plus::Gamepad {
                 _actuators[port][5] = 0xff;
 
                 int ret = padSetActAlign(port, slot, _actuators[port]);
-                printf("[PS2Plus::Gamepad::Update][status=%d] Controller setting actuators: ret=%d\n", status, ret);
+                printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller setting actuators: ret=%d\n", port, status, ret);
 
 
                 // Update the status
@@ -243,7 +243,7 @@ namespace PS2Plus::Gamepad {
             }
         } else if (status == PadPortSettingMode) {
             if (rawState == PAD_STATE_STABLE || rawState == PAD_STATE_FINDCTP1) {
-                printf("[PS2Plus::Gamepad::Update][status=%d] Controller is ready\n", status);
+                printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller is ready\n", port, status);
 
                 // Update the status
                 status = PadPortReady;
@@ -264,10 +264,10 @@ namespace PS2Plus::Gamepad {
                     return false;
                 }
             } else if (rawState == PAD_STATE_DISCONN) {
-                printf("[PS2Plus::Gamepad::Update][status=%d] Controller disconnected!\n", status);
+                printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller disconnected!\n", port, status);
                 status = PadPortDisconnected;
             } else if (rawState == PAD_STATE_ERROR) {
-                printf("[PS2Plus::Gamepad::Update][status=%d] Controller error!\n", status);
+                printf("[PS2Plus::Gamepad::Update][port=%d][status=%d] Controller error!\n", port, status);
                 status = PadPortError;
             }
         }
@@ -275,15 +275,15 @@ namespace PS2Plus::Gamepad {
         return false;
     }
 
-    bool PadStatus::IsButtonDown(int button) {
+    bool PadStatus::IsButtonDown(int button) const {
         return (rawButtons & button) != 0;
     }
 
-    bool PadStatus::IsButtonPressed(int button) {
+    bool PadStatus::IsButtonPressed(int button) const {
         return (rawButtonsNew & button) != 0;
     }
 
-    uint8_t PadStatus::GetJoystickAxisRaw(JoystickAxis axis) {
+    uint8_t PadStatus::GetJoystickAxisRaw(JoystickAxis axis) const {
         switch (axis) {
             case JSRightX:  return pad.rjoy_h;
             case JSRightY:  return pad.rjoy_v;
@@ -293,12 +293,12 @@ namespace PS2Plus::Gamepad {
         }
     }
 
-    float PadStatus::GetJoystickAxis(JoystickAxis axis) {
+    float PadStatus::GetJoystickAxis(JoystickAxis axis) const {
         uint8_t raw = GetJoystickAxisRaw(axis);
         return (raw / 255.f) * 2 - 1;
     }
 
-    PadPortStatus PadStatus::GetStatus() {
+    PadPortStatus PadStatus::GetStatus() const {
         return status;
     }
 
@@ -312,11 +312,11 @@ namespace PS2Plus::Gamepad {
         padSetActDirect(port, slot, _actuators[port]);
     }
 
-    bool PadStatus::IsRumbleActuatorSmallActive() {
+    bool PadStatus::IsRumbleActuatorSmallActive() const {
         return _actuators[port][0] != 0;
     }
 
-    uint8_t PadStatus::GetRumbleActuatorLargePower() {
+    uint8_t PadStatus::GetRumbleActuatorLargePower() const {
         return _actuators[port][1];
     }
 

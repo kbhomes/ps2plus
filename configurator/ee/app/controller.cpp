@@ -82,36 +82,32 @@ void ControllerVersion::Dump() {
   std::printf("[versions] configuration = 0x%02x\n", configuration);
 }
 
-Controller Controller::CreateMockedController(int port) {
-  Controller mocked(port);
-
+void Controller::MockData() {
   // Setup controller versions
-  mocked.connected_ = true;
-  mocked.versions_.firmware = VERSION64(1, 12, 0, VERSION_METADATA_DEV);
-  mocked.versions_.configuration = 1;
-  std::strncpy(mocked.versions_.microcontroller, "PIC18F46K42", 12);
+  connected_ = true;
+  versions_.firmware = VERSION64(1, 12, 0, VERSION_METADATA_DEV);
+  versions_.configuration = 1;
+  std::strncpy(versions_.microcontroller, "PIC18F46K42", 12);
 
   // Setup controller configurations
-  primitive_data_initialize_boolean(mocked.configuration_.Field(CONFIGURATION_ID(enable_button_remapping)), false);
+  primitive_data_initialize_boolean(configuration_.Field(CONFIGURATION_ID(enable_button_remapping)), false);
   for (size_t i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
     ConfigurationId button_config_id = CONFIGURATION_ID(button_remapping) + i;
-    primitive_data_initialize_uint8(mocked.configuration_.Field(button_config_id), i);
+    primitive_data_initialize_uint8(configuration_.Field(button_config_id), i);
   }
 
-  primitive_data_initialize_boolean(mocked.configuration_.Field(CONFIGURATION_ID(enable_joystick_axis_range_remapping)), false);
+  primitive_data_initialize_boolean(configuration_.Field(CONFIGURATION_ID(enable_joystick_axis_range_remapping)), false);
   for (size_t i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
     ConfigurationId remapping_config_id = CONFIGURATION_ID(joystick_axis_range_remapping) + i;
     uint8_t remapping_value = (i % 3 == 0) ? 0 : (i % 3 == 1) ? 127 : 255;
-    primitive_data_initialize_uint8(mocked.configuration_.Field(remapping_config_id), remapping_value);
+    primitive_data_initialize_uint8(configuration_.Field(remapping_config_id), remapping_value);
   }
 
-  primitive_data_initialize_uint8(mocked.configuration_.Field(CONFIGURATION_ID(joystick_deadzone_left)), 0);
-  primitive_data_initialize_uint8(mocked.configuration_.Field(CONFIGURATION_ID(joystick_deadzone_right)), 0);
-  primitive_data_initialize_boolean(mocked.configuration_.Field(CONFIGURATION_ID(joystick_digital_enable_left)), false);
-  primitive_data_initialize_boolean(mocked.configuration_.Field(CONFIGURATION_ID(joystick_digital_enable_right)), false);
-  primitive_data_initialize_uint8(mocked.configuration_.Field(CONFIGURATION_ID(joystick_digital_threshold_left)), 0x40);
-  primitive_data_initialize_uint8(mocked.configuration_.Field(CONFIGURATION_ID(joystick_digital_threshold_right)), 0x40);
-
-  return mocked;
+  primitive_data_initialize_uint8(configuration_.Field(CONFIGURATION_ID(joystick_deadzone_left)), 0);
+  primitive_data_initialize_uint8(configuration_.Field(CONFIGURATION_ID(joystick_deadzone_right)), 0);
+  primitive_data_initialize_boolean(configuration_.Field(CONFIGURATION_ID(joystick_digital_enable_left)), false);
+  primitive_data_initialize_boolean(configuration_.Field(CONFIGURATION_ID(joystick_digital_enable_right)), false);
+  primitive_data_initialize_uint8(configuration_.Field(CONFIGURATION_ID(joystick_digital_threshold_left)), 0x40);
+  primitive_data_initialize_uint8(configuration_.Field(CONFIGURATION_ID(joystick_digital_threshold_right)), 0x40);
 }
 } // namespace PS2Plus::App

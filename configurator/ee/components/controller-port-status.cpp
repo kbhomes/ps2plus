@@ -1,5 +1,7 @@
 #include "controller-port-status.h"
 
+#include "app/controller.h"
+#include "app/state.h"
 #include "ui/pad.h"
 
 namespace PS2Plus::Components {
@@ -25,13 +27,14 @@ namespace PS2Plus::Components {
         };
     }
 
-    void ControllerPortStatus(configurator_state *state, int port) {
-        configurator_ps2plus_controller *ps2plus = &state->controllers[port];
-        const PS2Plus::Gamepad::PadSummary &pad_summary = state->pad_summary;
+    void ControllerPortStatus(int port) {
+        PS2Plus::App::State& state = PS2Plus::App::GetState();
+        PS2Plus::App::Controller *ps2plus = state.controllers().at(port);
+        const PS2Plus::Gamepad::PadSummary& pad_summary = state.gamepad_summary();
         
         // Determine which type of controller is connected ont his port
         ControllerPortType port_type;
-        if (ps2plus->connected)
+        if (ps2plus->connected())
             port_type = kPS2PlusController;
         else if (pad_summary.ports[port] == PS2Plus::Gamepad::PadPortReady)
             port_type = kNormalController;
