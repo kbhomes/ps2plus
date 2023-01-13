@@ -6274,7 +6274,7 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
                 "Left-click on color square to open color picker,\n"
                 "Right-click to open edit options menu.");
 
-            ImGui::BeginChild("##colors", ImVec2(0, 0), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NavFlattened);
+            ImGui::BeginChild("##colors", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysVerticalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NavFlattened);
             ImGui::PushItemWidth(-160);
             for (int i = 0; i < ImGuiCol_COUNT; i++)
             {

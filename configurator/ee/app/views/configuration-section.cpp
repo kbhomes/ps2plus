@@ -1,4 +1,5 @@
 #include "app.h"
+#include "components/file-dialog.h"
 #include "libps2plman.h"
 #include "ui/drawing/drawing.h"
 #include "ui/fonts/forkawesome.h"
@@ -8,6 +9,8 @@
 
 #include <algorithm>
 #include <map>
+#include <iostream>
+#include <fstream>
 #include <utility>
 #include <vector>
 
@@ -547,27 +550,99 @@ void PersistConfiguration() {
   is_configuration_stale = true;
 }
 
-void FooterMenu() {
+void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
   PS2Plus::App::State& state = PS2Plus::App::GetState();
-  if (state.current_controller()->configuration() != staging_config) {
-    ImGui::Text("Changed!");
+  bool options_modal_open = ImGui::IsPopupOpen("Configuration Options");
+  bool save_modal_open = ImGui::IsPopupOpen("Save Configuration");
+  bool any_modal_open = ImGui::IsPopupOpen((const char *)NULL, ImGuiPopupFlags_AnyPopupId);
+
+  ImGui::BeginDisabled(any_modal_open);
+  {
+    ImGui::TextColored(any_modal_open ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ICON_PLAYSTATION_COLOR_TRIANGLE,
+                       ICON_PLAYSTATION_START_BUTTON_LABEL);
     ImGui::SameLine();
-    if (ImGui::Button("Save")) {
-      PersistConfiguration();
-    }
-  } else {
-    ImGui::Text("No change.");
+    ImGui::Text("Save ");
+    ImGui::SameLine();
+
+    ImGui::TextColored(any_modal_open ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ICON_PLAYSTATION_COLOR_CIRCLE,
+                       ICON_PLAYSTATION_SELECT_BUTTON_LABEL);
+    ImGui::SameLine();
+    ImGui::Text("Reset ");
+    ImGui::SameLine();
+
+    ImGui::TextColored(any_modal_open ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ICON_PLAYSTATION_COLOR_SQUARE,
+                       ICON_PLAYSTATION_SQUARE_BUTTON);
+    ImGui::SameLine();
+    ImGui::Text("Options ");
+    ImGui::SameLine();
   }
+  ImGui::EndDisabled();
+
+  // static bool options_modal_open = false;
+  if (!options_modal_open && ImGui::IsKeyPressed(ImGuiKey_GamepadFaceLeft)) {
+    ImGui::SetNextWindowPos(child_window_pos + ImVec2(1, 1));
+    ImGui::SetNextWindowSize(child_window_size - ImVec2(2, 2));
+    ImGui::OpenPopup("Configuration Options");
+  }
+
+  bool should_open_save_modal = false;
+  if (ImGui::BeginPopupModal("Configuration Options", NULL,
+                             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
+    if (ImGui::Selectable("Save")) {
+      should_open_save_modal = true;
+    }
+
+    ImGui::Selectable("Reset");
+    ImGui::Separator();
+    ImGui::Selectable("Import");
+    ImGui::Selectable("Export");
+
+    if (ImGui::IsKeyPressed(ImGuiKey_GamepadFaceRight)) {
+      ImGui::CloseCurrentPopup();
+    }
+
+    ImGui::EndPopup();
+  }
+
+  if (should_open_save_modal) {
+      ImGui::SetNextWindowPos(child_window_pos + ImVec2(1, 1));
+      ImGui::SetNextWindowSize(child_window_size - ImVec2(2, 2));
+      ImGui::OpenPopup("Save Configuration");
+      should_open_save_modal = false;
+  }
+
+  static std::vector<std::string> device_list = {"host:", "mc0:", "mc1:", "mass:", "mass0:", "mass1:"};
+  static char path[255];
+  if (ImGui::BeginPopupModal("Save Configuration", NULL,
+                            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
+    if (PS2Plus::Components::FileDialog("FileDialog-SaveConfiguration", NULL, device_list, path, true)) {
+      printf("Got path: %s\n", path);
+      std::ofstream export_stream(std::string(path) + "/controller.toml", std::ios::out);
+      staging_config.Export(export_stream);
+      export_stream.close();
+      ImGui::CloseCurrentPopup();
+    }
+
+    ImGui::EndPopup();
+  }
+
+  // if (state.current_controller()->configuration() != staging_config) {
+  //   ImGui::Text("Changed!");
+  //   ImGui::SameLine();
+  //   if (ImGui::Button("Save")) {
+  //     PersistConfiguration();
+  //   }
+  // } else {
+  //   ImGui::Text("No change.");
+  // }
 }
 
 void VersionMismatchView() {
-  const char *label = (
-    "    Configuration versions do not match between    \n"
-    "     the configurator and the PS2+ controller.     \n"
-    "                                                   \n"
-    "Please upgrade both the configurator and the latest\n"
-    "  version to enable modifying PS2+ configuration.  "
-  );
+  const char *label = ("    Configuration versions do not match between    \n"
+                       "     the configurator and the PS2+ controller.     \n"
+                       "                                                   \n"
+                       "Please upgrade both the configurator and the latest\n"
+                       "  version to enable modifying PS2+ configuration.  ");
   ImVec2 label_size = ImGui::CalcTextSize(label);
   ImGui::SetCursorPos((ImGui::GetWindowSize() - label_size) * 0.5f);
   ImGui::Text(label);
@@ -590,13 +665,20 @@ void ConfigurationSection() {
     ReloadConfiguration();
   }
 
+  // Track the position and size of child window for use in the footer's option overlay menu
+  ImVec2 child_window_pos;
+  ImVec2 child_window_size;
+
   ImGui::BeginChild("ConfigurationChildSection", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true, ImGuiWindowFlags_NavFlattened);
   {
     ButtonsConfiguration();
     JoysticksConfiguration();
+
+    child_window_pos = ImGui::GetWindowPos();
+    child_window_size = ImGui::GetWindowSize();
   }
   ImGui::EndChild();
 
-  FooterMenu();
+  FooterMenu(child_window_pos, child_window_size);
 }
 } // namespace PS2Plus::App::Views

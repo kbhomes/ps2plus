@@ -22,7 +22,7 @@ namespace PS2Plus::Components {
             struct timespec modified;
         };
 
-        FileDialog_(std::string initialDirectory);
+        FileDialog_(std::string initialDirectory, bool dironly = false);
         void ScanDirectory(std::string directory);
         void ScanSubdirectory(std::string directory);
         void ScanParentDirectory();
@@ -39,7 +39,7 @@ namespace PS2Plus::Components {
         bool HasRecentlyChanged();
 
     private:
-
+        bool _dironly = false;
         bool _opened = false;
         bool _showingDeviceList = false;
         std::string _initialDirectory;
@@ -51,5 +51,5 @@ namespace PS2Plus::Components {
         bool _recentlyChanged;
     };
 
-    bool FileDialog(const char *key, const char *initialDirectory, std::vector<std::string> deviceList, char *selectedFile);
+    bool FileDialog(const char *key, const char *initialDirectory, std::vector<std::string> deviceList, char *selectedFile, bool dironly = false);
 };
