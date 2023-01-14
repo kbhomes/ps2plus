@@ -129,9 +129,20 @@ void ImGui_ImplPs2GsKit_RenderDrawData(ImDrawData* draw_data, ImVec2 pixelOffset
             }
             else
             {
-                // Project scissor/clipping rectangles into framebuffer space
+                // Project scissor/clipping rectangles into framebuffer space (clip_max is offset by (-1, -1) since GS scissor rects are inclusive of the max coordinate)
                 ImVec2 clip_min((pcmd->ClipRect.x - clip_off.x) * clip_scale.x, (pcmd->ClipRect.y - clip_off.y) * clip_scale.y);
-                ImVec2 clip_max((pcmd->ClipRect.z - clip_off.x) * clip_scale.x, (pcmd->ClipRect.w - clip_off.y) * clip_scale.y);
+                ImVec2 clip_max((pcmd->ClipRect.z - clip_off.x) * clip_scale.x - 1, (pcmd->ClipRect.w - clip_off.y) * clip_scale.y - 1);
+
+                // Adjust scissor clip boundaries to match GS expectations (must be within screen boundaries)
+                if (clip_min.x < 0) 
+                    clip_min.x = 0;
+                if (clip_min.y < 0) 
+                    clip_min.y = 0;
+                if (clip_max.x > bd->Global->Width - 1) 
+                    clip_max.x = bd->Global->Width - 1;
+                if (clip_max.y > bd->Global->Height - 1) 
+                    clip_max.y = bd->Global->Height - 1;
+
                 if (clip_max.x <= clip_min.x || clip_max.y <= clip_min.y)
                     continue;
                     

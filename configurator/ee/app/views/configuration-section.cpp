@@ -8,9 +8,9 @@
 #include <shared/versions.h>
 
 #include <algorithm>
-#include <map>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <map>
 #include <utility>
 #include <vector>
 
@@ -552,7 +552,7 @@ void PersistConfiguration() {
 
 void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
   PS2Plus::App::State& state = PS2Plus::App::GetState();
-  bool options_modal_open = ImGui::IsPopupOpen("Configuration Options");
+  bool options_modal_open = ImGui::IsPopupOpen("Options##Configuration");
   bool save_modal_open = ImGui::IsPopupOpen("Save Configuration");
   bool any_modal_open = ImGui::IsPopupOpen((const char *)NULL, ImGuiPopupFlags_AnyPopupId);
 
@@ -580,13 +580,12 @@ void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
 
   // static bool options_modal_open = false;
   if (!options_modal_open && ImGui::IsKeyPressed(ImGuiKey_GamepadFaceLeft)) {
-    ImGui::SetNextWindowPos(child_window_pos + ImVec2(1, 1));
-    ImGui::SetNextWindowSize(child_window_size - ImVec2(2, 2));
-    ImGui::OpenPopup("Configuration Options");
+    ImGui::SetNextWindowSize(ImVec2(150, 0));
+    ImGui::OpenPopup("Options##Configuration");
   }
 
   bool should_open_save_modal = false;
-  if (ImGui::BeginPopupModal("Configuration Options", NULL,
+  if (ImGui::BeginPopupModal("Options##Configuration", NULL,
                              ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
     if (ImGui::Selectable("Save")) {
       should_open_save_modal = true;
@@ -605,16 +604,15 @@ void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
   }
 
   if (should_open_save_modal) {
-      ImGui::SetNextWindowPos(child_window_pos + ImVec2(1, 1));
-      ImGui::SetNextWindowSize(child_window_size - ImVec2(2, 2));
-      ImGui::OpenPopup("Save Configuration");
-      should_open_save_modal = false;
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x - 10, ImGui::GetIO().DisplaySize.y - 10));
+    ImGui::OpenPopup("Save Configuration");
+    should_open_save_modal = false;
   }
 
   static std::vector<std::string> device_list = {"host:", "mc0:", "mc1:", "mass:", "mass0:", "mass1:"};
   static char path[255];
   if (ImGui::BeginPopupModal("Save Configuration", NULL,
-                            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
+                             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
     if (PS2Plus::Components::FileDialog("FileDialog-SaveConfiguration", NULL, device_list, path, true)) {
       printf("Got path: %s\n", path);
       std::ofstream export_stream(std::string(path) + "/controller.toml", std::ios::out);

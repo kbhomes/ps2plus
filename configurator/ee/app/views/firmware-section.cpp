@@ -50,8 +50,7 @@ void FirmwareWizardStep_Update() {
       ImGui::OpenPopup("Choose firmware update file");
     }
     // Display the file chooser popup
-    ImGui::SetNextWindowPos(ImVec2(10, 10));
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x - 20, ImGui::GetIO().DisplaySize.y - 20));
+    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x - 10, ImGui::GetIO().DisplaySize.y - 10));
     if (ImGui::BeginPopupModal("Choose firmware update file")) {
       if (PS2Plus::Components::FileDialog("FileDialog-FirmwareUpdate", NULL, device_list, path)) {
         printf("Got path: %s\n", path);

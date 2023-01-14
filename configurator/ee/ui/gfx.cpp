@@ -94,6 +94,7 @@ void initializeImGui() {
     ImGui::StyleColorsDark();
     ImVec4* colors = style.Colors;
     colors[ImGuiCol_WindowBg] = ImVec4(0.078f, 0.098f, 0.118f, 1.f);
+    colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.50f, 0.50f, 0.50f, 0.35f);
     colors[ImGuiCol_Tab].w = 0.2f;
 
     // Setup ImGui backends
