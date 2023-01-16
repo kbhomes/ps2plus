@@ -1,4 +1,6 @@
 #include "app.h"
+#include "app/views/configuration/export-dialog.h"
+#include "app/views/configuration/options-dialog.h"
 #include "components/file-dialog.h"
 #include "libps2plman.h"
 #include "ui/drawing/drawing.h"
@@ -40,6 +42,10 @@ const std::vector<std::pair<ps2plus_controller_digital_button, const char *>> kD
     {DBStart, ICON_PLAYSTATION_START_BUTTON_LABEL},
     {DBSelect, ICON_PLAYSTATION_SELECT_BUTTON_LABEL},
 };
+
+// Reusable modal dialog components
+PS2Plus::App::Views::Configuration::OptionsDialog options_dialog(staging_config);
+PS2Plus::App::Views::Configuration::ExportDialog export_dialog(staging_config);
 
 /**
  * Render a single combo box that can control the button remapping for a single digital button
@@ -552,8 +558,8 @@ void PersistConfiguration() {
 
 void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
   PS2Plus::App::State& state = PS2Plus::App::GetState();
-  bool options_modal_open = ImGui::IsPopupOpen("Options##Configuration");
-  bool save_modal_open = ImGui::IsPopupOpen("Save Configuration");
+  bool options_modal_open = options_dialog.IsOpen();
+  bool export_modal_option = export_dialog.IsOpen();
   bool any_modal_open = ImGui::IsPopupOpen((const char *)NULL, ImGuiPopupFlags_AnyPopupId);
 
   ImGui::BeginDisabled(any_modal_open);
@@ -578,50 +584,23 @@ void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
   }
   ImGui::EndDisabled();
 
-  // static bool options_modal_open = false;
   if (!options_modal_open && ImGui::IsKeyPressed(ImGuiKey_GamepadFaceLeft)) {
-    ImGui::SetNextWindowSize(ImVec2(150, 0));
-    ImGui::OpenPopup("Options##Configuration");
+    options_dialog.Open();
   }
 
-  bool should_open_save_modal = false;
-  if (ImGui::BeginPopupModal("Options##Configuration", NULL,
-                             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
-    if (ImGui::Selectable("Save")) {
-      should_open_save_modal = true;
-    }
-
-    ImGui::Selectable("Reset");
-    ImGui::Separator();
-    ImGui::Selectable("Import");
-    ImGui::Selectable("Export");
-
-    if (ImGui::IsKeyPressed(ImGuiKey_GamepadFaceRight)) {
-      ImGui::CloseCurrentPopup();
-    }
-
-    ImGui::EndPopup();
+  auto options_result = options_dialog.Render();
+  if (options_result == PS2Plus::App::Views::Configuration::kOptionsResultExport) {
+    export_dialog.Open();
   }
 
-  if (should_open_save_modal) {
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x - 10, ImGui::GetIO().DisplaySize.y - 10));
-    ImGui::OpenPopup("Save Configuration");
-    should_open_save_modal = false;
-  }
-
-  static std::vector<std::string> device_list = {"host:", "mc0:", "mc1:", "mass:", "mass0:", "mass1:"};
-  static char path[255];
-  if (ImGui::BeginPopupModal("Save Configuration", NULL,
-                             ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
-    if (PS2Plus::Components::FileDialog("FileDialog-SaveConfiguration", NULL, device_list, path, true)) {
-      printf("Got path: %s\n", path);
-      std::ofstream export_stream(std::string(path) + "/controller.toml", std::ios::out);
-      staging_config.Export(export_stream);
-      export_stream.close();
-      ImGui::CloseCurrentPopup();
-    }
-
-    ImGui::EndPopup();
+  auto export_result = export_dialog.Render();
+  if (export_result) {
+    std::string& path = export_result.value();
+    printf("Got path: %s\n", path.c_str());
+    std::ofstream export_stream(path + "/controller.toml", std::ios::out);
+    staging_config.Export(export_stream);
+    export_stream.close();
+    printf("Wrote configuration: %s\n", path.c_str());
   }
 
   // if (state.current_controller()->configuration() != staging_config) {

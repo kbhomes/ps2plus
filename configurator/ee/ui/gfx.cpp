@@ -150,8 +150,8 @@ void PS2Plus::Graphics::ResumeGamepadNav() {
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
 }
 
-bool PS2Plus::Graphics::IsGamepadNavActive() {
-    return ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NavEnableGamepad;
+bool PS2Plus::Graphics::IsGamepadGlobalNavActive() {
+    return ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_NavEnableGamepad && !ImGui::IsPopupOpen((const char *)NULL, ImGuiPopupFlags_AnyPopupId);
 }
 
 void PS2Plus::Graphics::SetVideoMode(PS2Plus::Graphics::VideoMode mode) {

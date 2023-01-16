@@ -34,11 +34,11 @@ namespace PS2Plus::Components {
         bool ret = ImGui::BeginTabBar("Sections");
         if (ret) {
             // Indicate disabled tabs
-            ImGui::PushStyleColor(ImGuiCol_Tab, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Tab) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabActive, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabActive) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabHovered, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabHovered) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabUnfocused, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocused) : ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocusedActive) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_Tab, PS2Plus::Graphics::IsGamepadGlobalNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Tab) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabActive, PS2Plus::Graphics::IsGamepadGlobalNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabActive) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabHovered, PS2Plus::Graphics::IsGamepadGlobalNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabHovered) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabUnfocused, PS2Plus::Graphics::IsGamepadGlobalNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocused) : ImVec4(0, 0, 0, 0));
+            ImGui::PushStyleColor(ImGuiCol_TabUnfocusedActive, PS2Plus::Graphics::IsGamepadGlobalNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_TabUnfocusedActive) : ImVec4(0, 0, 0, 0));
         }
 
         return ret;
@@ -52,15 +52,15 @@ namespace PS2Plus::Components {
 
             // Control buttons on the ends have transparent backgrounds
             ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0, 0, 0, 0));
-            ImGui::PushStyleColor(ImGuiCol_Text, PS2Plus::Graphics::IsGamepadNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
-            ImGui::BeginDisabled(!PS2Plus::Graphics::IsGamepadNavActive());
+            ImGui::PushStyleColor(ImGuiCol_Text, PS2Plus::Graphics::IsGamepadGlobalNavActive() ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+            ImGui::BeginDisabled(!PS2Plus::Graphics::IsGamepadGlobalNavActive());
 
             // Determine whether the user clicked the L1/R1 buttons in the tab bar
             bool move_previous = ImGui::TabItemButton(ICON_PLAYSTATION_L1_BUTTON_ALT, ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_NoTooltip);
             bool move_next = ImGui::TabItemButton(ICON_PLAYSTATION_R1_BUTTON_ALT, ImGuiTabItemFlags_Trailing | ImGuiTabItemFlags_NoTooltip);
 
             // Determine whether the user clicked the L1/R1 buttons on their gamepad
-            if (PS2Plus::Graphics::IsGamepadNavActive()) {
+            if (PS2Plus::Graphics::IsGamepadGlobalNavActive()) {
                 move_previous = move_previous || ImGui::IsKeyPressed(ImGuiKey_GamepadL1);
                 move_next = move_next || ImGui::IsKeyPressed(ImGuiKey_GamepadR1);
             }

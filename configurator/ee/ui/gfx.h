@@ -25,7 +25,7 @@ namespace PS2Plus::Graphics {
 
     void PauseGamepadNav();
     void ResumeGamepadNav();
-    bool IsGamepadNavActive();
+    bool IsGamepadGlobalNavActive();
 };
 
 #endif /* UI_GFX_H */
