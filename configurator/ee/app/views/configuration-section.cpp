@@ -2,6 +2,7 @@
 #include "app/views/configuration/export-dialog.h"
 #include "app/views/configuration/options-dialog.h"
 #include "components/file-dialog.h"
+#include "components/footer-command-menu.h"
 #include "libps2plman.h"
 #include "ui/drawing/drawing.h"
 #include "ui/fonts/forkawesome.h"
@@ -558,60 +559,31 @@ void PersistConfiguration() {
 
 void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
   PS2Plus::App::State& state = PS2Plus::App::GetState();
-  bool options_modal_open = options_dialog.IsOpen();
-  bool export_modal_option = export_dialog.IsOpen();
-  bool any_modal_open = ImGui::IsPopupOpen((const char *)NULL, ImGuiPopupFlags_AnyPopupId);
 
-  ImGui::BeginDisabled(any_modal_open);
+  PS2Plus::Components::BeginFooterCommandMenu("ConfigurationFooterMenu", PS2Plus::Components::kFooterCommandMenuEnabledWithGlobalNav);
   {
-    ImGui::TextColored(any_modal_open ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ICON_PLAYSTATION_COLOR_TRIANGLE,
-                       ICON_PLAYSTATION_START_BUTTON_LABEL);
-    ImGui::SameLine();
-    ImGui::Text("Save ");
-    ImGui::SameLine();
+    if (PS2Plus::Components::FooterCommand("Save", ICON_PLAYSTATION_START_BUTTON, ICON_PLAYSTATION_COLOR_GREEN, ImGuiKey_GamepadStart)) {
+    }
 
-    ImGui::TextColored(any_modal_open ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ICON_PLAYSTATION_COLOR_CIRCLE,
-                       ICON_PLAYSTATION_SELECT_BUTTON_LABEL);
-    ImGui::SameLine();
-    ImGui::Text("Reset ");
-    ImGui::SameLine();
+    if (PS2Plus::Components::FooterCommand("Reset", ICON_PLAYSTATION_SELECT_BUTTON, ICON_PLAYSTATION_COLOR_RED, ImGuiKey_GamepadBack)) {
+    }
 
-    ImGui::TextColored(any_modal_open ? ImGui::GetStyleColorVec4(ImGuiCol_Text) : ICON_PLAYSTATION_COLOR_SQUARE,
-                       ICON_PLAYSTATION_SQUARE_BUTTON);
-    ImGui::SameLine();
-    ImGui::Text("Options ");
-    ImGui::SameLine();
+    if (PS2Plus::Components::FooterCommand("Options", ICON_PLAYSTATION_SQUARE_BUTTON, ICON_PLAYSTATION_COLOR_SQUARE,
+                                           ImGuiKey_GamepadFaceLeft)) {
+      if (!options_dialog.IsOpen()) {
+        options_dialog.Open();
+      }
+    }
   }
-  ImGui::EndDisabled();
+  PS2Plus::Components::EndFooterCommandMenu();
 
-  if (!options_modal_open && ImGui::IsKeyPressed(ImGuiKey_GamepadFaceLeft)) {
-    options_dialog.Open();
-  }
-
-  auto options_result = options_dialog.Render();
-  if (options_result == PS2Plus::App::Views::Configuration::kOptionsResultExport) {
+  if (options_dialog.Render() == PS2Plus::App::Views::Configuration::kOptionsResultExport) {
     export_dialog.Open();
   }
 
-  auto export_result = export_dialog.Render();
-  if (export_result) {
-    std::string& path = export_result.value();
-    printf("Got path: %s\n", path.c_str());
-    std::ofstream export_stream(path + "/controller.toml", std::ios::out);
-    staging_config.Export(export_stream);
-    export_stream.close();
-    printf("Wrote configuration: %s\n", path.c_str());
-  }
+  export_dialog.Render();
 
-  // if (state.current_controller()->configuration() != staging_config) {
-  //   ImGui::Text("Changed!");
-  //   ImGui::SameLine();
-  //   if (ImGui::Button("Save")) {
-  //     PersistConfiguration();
-  //   }
-  // } else {
-  //   ImGui::Text("No change.");
-  // }
+  // PersistConfiguration();
 }
 
 void VersionMismatchView() {

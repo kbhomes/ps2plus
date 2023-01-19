@@ -1,5 +1,8 @@
 #include "file-dialog.h"
 
+#include "components/footer-command-menu.h"
+#include "ui/fonts/playstation.h"
+
 #define IMGUI_DISABLE_SSE
 #include <imgui/imgui_internal.h>
 
@@ -376,7 +379,7 @@ bool FileDialog(const char *key, const char *initialDirectory, std::vector<std::
     std::vector<FileDialog_::Entry> displayedEntries = dialog->GetEntries();
 
     if (ImGui::BeginTable("FilesTable", 4, ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY,
-                          ImVec2(0, -2 * ImGui::GetFrameHeightWithSpacing()))) {
+                          ImVec2(0, (-2 * ImGui::GetFrameHeightWithSpacing()) + (-2 * ImGui::GetStyle().ItemSpacing.y)))) {
       ImGui::TableSetupColumn("##Type", ImGuiTableColumnFlags_WidthFixed, 0.0f);
       ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthFixed, 0.0f);
       ImGui::TableSetupColumn("Size", ImGuiTableColumnFlags_WidthFixed, 0.0f);
@@ -447,6 +450,8 @@ bool FileDialog(const char *key, const char *initialDirectory, std::vector<std::
     }
   }
 
+  ImGui::Separator();
+
   std::string selectedPath = dialog->GetSelectedPath();
   ImGui::AlignTextToFramePadding();
   if (dironly) {
@@ -456,23 +461,55 @@ bool FileDialog(const char *key, const char *initialDirectory, std::vector<std::
   }
   ImGui::SameLine();
   ImGui::SetNextItemWidth(-FLT_MIN);
+  ImGui::BeginDisabled();
   ImGui::InputText("##SelectedPath", (char *)selectedPath.c_str(), selectedPath.size(), ImGuiInputTextFlags_ReadOnly);
+  ImGui::EndDisabled();
+
+  ImGui::Separator();
 
   bool finished = false;
 
-  ImGui::BeginDisabled(selectedPath.empty());
-  if (ImGui::Button("OK")) {
-    strncpy(selectedFile, selectedPath.c_str(), MAX_PATH);
-    dialogs.erase(key);
-    finished = true;
+  // ImGui::BeginDisabled(selectedPath.empty());
+  // if (ImGui::Button("OK")) {
+  //   strncpy(selectedFile, selectedPath.c_str(), MAX_PATH);
+  //   dialogs.erase(key);
+  //   finished = true;
+  // }
+  // ImGui::EndDisabled();
+  // ImGui::SameLine();
+  // if (ImGui::Button("Cancel")) {
+  //   selectedFile[0] = 0;
+  //   dialogs.erase(key);
+  //   finished = true;
+  // }
+
+  PS2Plus::Components::BeginFooterCommandMenu("FileMenu", PS2Plus::Components::kFooterCommandMenuEnabledAlways);
+  {
+    if (PS2Plus::Components::FooterCommand("OK", ICON_PLAYSTATION_START_BUTTON, ICON_PLAYSTATION_COLOR_GREEN, ImGuiKey_GamepadStart)) {
+      strncpy(selectedFile, selectedPath.c_str(), MAX_PATH);
+      dialogs.erase(key);
+      finished = true;
+    }
+
+    if (PS2Plus::Components::FooterCommand("Cancel", ICON_PLAYSTATION_SELECT_BUTTON, ICON_PLAYSTATION_COLOR_RED, ImGuiKey_GamepadBack)) {
+      selectedFile[0] = 0;
+      dialogs.erase(key);
+      finished = true;
+    }
+
+    if (!dialog->GetDeviceList().empty()) {
+      if (PS2Plus::Components::FooterCommand("Devices", ICON_PLAYSTATION_SQUARE_BUTTON, ICON_PLAYSTATION_COLOR_SQUARE, ImGuiKey_GamepadFaceLeft)) {
+        dialog->ShowDeviceList();
+      }
+    }
+
+    if (!dialog->IsShowingDeviceList()) {
+      if (PS2Plus::Components::FooterCommand("Up", ICON_PLAYSTATION_TRIANGLE_BUTTON, ICON_PLAYSTATION_COLOR_TRIANGLE, ImGuiKey_GamepadFaceUp)) {
+        dialog->ScanParentDirectory();
+      }
+    }
   }
-  ImGui::EndDisabled();
-  ImGui::SameLine();
-  if (ImGui::Button("Cancel")) {
-    selectedFile[0] = 0;
-    dialogs.erase(key);
-    finished = true;
-  }
+  PS2Plus::Components::EndFooterCommandMenu();
 
   return finished;
 }

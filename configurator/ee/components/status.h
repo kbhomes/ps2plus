@@ -11,4 +11,5 @@ namespace PS2Plus::Components {
     };
 
     void StatusText(const char *label, StatusType status, ...);
+    void StatusTextCentered(const char *label, StatusType status, ...);
 }

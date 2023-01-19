@@ -120,6 +120,8 @@ void ImGui_ImplPs2Sdk_UpdateGamepad(const padButtonStatus *pad)
     MAP_DIGITAL_BUTTON(ImGuiKey_GamepadR1,          PAD_R1);
     MAP_DIGITAL_BUTTON(ImGuiKey_GamepadL2,          PAD_L2);
     MAP_DIGITAL_BUTTON(ImGuiKey_GamepadR2,          PAD_R2);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadStart,       PAD_START);
+    MAP_DIGITAL_BUTTON(ImGuiKey_GamepadBack,        PAD_SELECT);
 
     MAP_ANALOG(ImGuiKey_GamepadLStickLeft, pad->ljoy_h, 0x7F, 0x00, 0.15);
     MAP_ANALOG(ImGuiKey_GamepadLStickRight, pad->ljoy_h, 0x80, 0xFF, 0.15);

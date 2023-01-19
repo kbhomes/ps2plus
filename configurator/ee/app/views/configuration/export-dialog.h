@@ -7,17 +7,26 @@
 #include <vector>
 
 namespace PS2Plus::App::Views::Configuration {
-class ExportDialog : public PS2Plus::Components::ModalDialog<std::string> {
+enum ExportDialogState { kExportDialogSelectingPath, kExportDialogSuccessfulWrite, kExportDialogFailedWrite, kExportDialogFinished };
+
+class ExportDialog : public PS2Plus::Components::ModalDialog<bool> {
 public:
-  ExportDialog(PS2Plus::App::Configuration& config) : ModalDialog("Export Configuration"), config_(config), selected_path_{} {}
+  ExportDialog(PS2Plus::App::Configuration& config)
+      : ModalDialog("Export Configuration"), state_(kExportDialogSelectingPath), config_(config), selected_path_{} {}
 
 protected:
   virtual ImVec2 GetPopupSize();
   virtual ImGuiWindowFlags GetPopupFlags();
-  virtual std::optional<std::string> RenderContents();
+  virtual std::optional<bool> RenderContents();
 
 private:
+  void RenderState_SelectingPath();
+  void RenderState_SuccessfulWrite();
+  void RenderState_FailedWrite();
+
   PS2Plus::App::Configuration& config_;
-  char selected_path_[255];
+  ExportDialogState state_;
+  char selected_folder_[255];
+  std::string selected_path_;
 };
 } // namespace PS2Plus::App::Views::Configuration

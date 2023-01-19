@@ -3,6 +3,8 @@
 #include "icons.h"
 #include "spinner.h"
 
+#include <imgui/imgui_internal.h>
+
 namespace PS2Plus::Components {
     const ImU32 COLOR_SUCCESS = IM_COL32(0x00, 0xD0, 0x00, 0xFF);
     const ImU32 COLOR_ERROR = IM_COL32(0xFF, 0x00, 0x00, 0xFF);
@@ -37,6 +39,24 @@ namespace PS2Plus::Components {
 
         ImGui::SameLine();
         ImGui::TextWrappedV(label, args);
+        va_end(args);
+    }
+
+    void StatusTextCentered(const char *label, StatusType status, ...) {
+        va_list args;
+        va_start(args, status);
+        
+
+        const char *formatted_text, *formatted_ext_end;
+        ImFormatStringToTempBufferV(&formatted_text, &formatted_ext_end, label, args);
+        float text_width = ImGui::CalcTextSize(formatted_text, formatted_ext_end).x;
+
+        float icon_size = ImGui::GetFontSize();
+        float total_width = icon_size + ImGui::GetStyle().ItemSpacing.x + text_width;
+        
+        float distance = (ImGui::GetContentRegionAvail().x - total_width) / 2;
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + distance);
+        StatusText(label, status, args);
         va_end(args);
     }
 }

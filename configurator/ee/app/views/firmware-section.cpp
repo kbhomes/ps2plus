@@ -32,6 +32,7 @@ enum FirmwareUpdateType { NoChange, Upgrade, Downgrade };
 void FirmwareWizardStep_Update() {
   PS2Plus::App::State& state = PS2Plus::App::GetState();
   
+  bool should_open_file_dialog = false;
   if (ImGui::BeginTable("UpdateButtonTable", 3)) {
     ImGui::TableSetupColumn("Label", ImGuiTableColumnFlags_WidthFixed);
     ImGui::TableSetupColumn("Input", ImGuiTableColumnFlags_WidthStretch);
@@ -46,21 +47,24 @@ void FirmwareWizardStep_Update() {
     ImGui::InputText("##UpdatePath", path, IM_ARRAYSIZE(path), ImGuiInputTextFlags_ReadOnly);
 
     ImGui::TableNextColumn();
-    if (ImGui::Button("Browse")) {
-      ImGui::OpenPopup("Choose firmware update file");
-    }
-    // Display the file chooser popup
-    ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x - 10, ImGui::GetIO().DisplaySize.y - 10));
-    if (ImGui::BeginPopupModal("Choose firmware update file")) {
-      if (PS2Plus::Components::FileDialog("FileDialog-FirmwareUpdate", NULL, device_list, path)) {
-        printf("Got path: %s\n", path);
-        ImGui::CloseCurrentPopup();
-      }
-
-      ImGui::EndPopup();
-    }
+    should_open_file_dialog = ImGui::Button("Browse");
 
     ImGui::EndTable();
+  }
+
+  if (should_open_file_dialog) {
+    ImGui::OpenPopup("Choose firmware update file");
+  }
+
+  // Display the file chooser popup
+  ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x - 10, ImGui::GetIO().DisplaySize.y - 10));
+  if (ImGui::BeginPopupModal("Choose firmware update file", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse)) {
+    if (PS2Plus::Components::FileDialog("FileDialog-FirmwareUpdate", NULL, device_list, path)) {
+      printf("Got path: %s\n", path);
+      ImGui::CloseCurrentPopup();
+    }
+
+    ImGui::EndPopup();
   }
 
   ImGui::Separator();
