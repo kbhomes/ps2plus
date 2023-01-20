@@ -1,5 +1,6 @@
 #include "app.h"
 #include "app/views/configuration/export-dialog.h"
+#include "app/views/configuration/import-dialog.h"
 #include "app/views/configuration/options-dialog.h"
 #include "components/file-dialog.h"
 #include "components/footer-command-menu.h"
@@ -47,6 +48,7 @@ const std::vector<std::pair<ps2plus_controller_digital_button, const char *>> kD
 // Reusable modal dialog components
 PS2Plus::App::Views::Configuration::OptionsDialog options_dialog(staging_config);
 PS2Plus::App::Views::Configuration::ExportDialog export_dialog(staging_config);
+PS2Plus::App::Views::Configuration::ImportDialog import_dialog(&staging_config);
 
 /**
  * Render a single combo box that can control the button remapping for a single digital button
@@ -577,10 +579,19 @@ void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
   }
   PS2Plus::Components::EndFooterCommandMenu();
 
-  if (options_dialog.Render() == PS2Plus::App::Views::Configuration::kOptionsResultExport) {
-    export_dialog.Open();
+  if (auto options_result = options_dialog.Render()) {
+    switch (options_result.value()) {
+      case PS2Plus::App::Views::Configuration::kOptionsResultImport:
+        import_dialog.Open();
+        break;
+
+      case PS2Plus::App::Views::Configuration::kOptionsResultExport:
+        export_dialog.Open();
+        break;
+    }
   }
 
+  import_dialog.Render();
   export_dialog.Render();
 
   // PersistConfiguration();
