@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-01-07 17:07:43</td>
+      <td>2023-01-20 18:37:51</td>
     </tr>
   </table>
 </div>
@@ -42,19 +42,19 @@
     <tr>
       <th scope="row">Lines:</th>
       <td>0</td>
-      <td>41</td>
+      <td>59</td>
       <td class="coverage-none">0.0%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
       <td>0</td>
-      <td>3</td>
+      <td>4</td>
       <td class="coverage-none">0.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
       <td>0</td>
-      <td>35</td>
+      <td>67</td>
       <td class="coverage-none">0.0%</td>
     </tr>
   </table>
@@ -75,35 +75,46 @@
     </tr>
     <tr>
       <td>
-        <a href="#l3">ps2plus_controller_digital_button_name</a>
+        <a href="#l56">ps2plus_controller_digital_button_from_name</a>
       </td>
       <td>
-        <a href="#l3">3</a>
+        <a href="#l56">56</a>
       </td>
       <td>
-        <a href="#l3"> not called</a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#l25">ps2plus_controller_joystick_axis_name</a>
-      </td>
-      <td>
-        <a href="#l25">25</a>
-      </td>
-      <td>
-        <a href="#l25"> not called</a>
+        <a href="#l56"> not called</a>
       </td>
     </tr>
     <tr>
       <td>
-        <a href="#l35">ps2plus_controller_joystick_axis_range_name</a>
+        <a href="#l5">ps2plus_controller_digital_button_name</a>
       </td>
       <td>
-        <a href="#l35">35</a>
+        <a href="#l5">5</a>
       </td>
       <td>
-        <a href="#l35"> not called</a>
+        <a href="#l5"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l27">ps2plus_controller_joystick_axis_name</a>
+      </td>
+      <td>
+        <a href="#l27">27</a>
+      </td>
+      <td>
+        <a href="#l27"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l37">ps2plus_controller_joystick_axis_range_name</a>
+      </td>
+      <td>
+        <a href="#l37">37</a>
+      </td>
+      <td>
+        <a href="#l37"> not called</a>
       </td>
     </tr>
   </table>
@@ -141,16 +152,16 @@
       <td class="lineno"><a id="l3" href="#l3">3</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="nf">ps2plus_controller_digital_button_name</span><span class="p">(</span><span class="n">ps2plus_controller_digital_button</span><span class="w"> </span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string.h&gt;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l4" href="#l4">4</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -158,7 +169,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBSelect</span><span class="p">:</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Select&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="nf">ps2plus_controller_digital_button_name</span><span class="p">(</span><span class="n">ps2plus_controller_digital_button</span><span class="w"> </span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -166,7 +177,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBL3</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;L3&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">button</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -174,7 +185,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBR3</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;R3&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBSelect</span><span class="p">:</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Select&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -182,7 +193,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBStart</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Start&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBL3</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;L3&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -190,7 +201,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDUp</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Up&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBR3</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;R3&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -198,7 +209,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDRight</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Right&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBStart</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Start&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -206,7 +217,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDDown</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Down&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDUp</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Up&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -214,7 +225,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDLeft</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Left&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDRight</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Right&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -222,7 +233,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBL2</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;L2&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDDown</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Down&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -230,7 +241,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBR2</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;R2&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DDLeft</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Left&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -238,7 +249,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBL1</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;L1&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBL2</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;L2&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -246,7 +257,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBR1</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;R1&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBR2</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;R2&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -254,7 +265,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBTriangle</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Triangle&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBL1</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;L1&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -262,7 +273,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBCircle</span><span class="p">:</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Circle&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBR1</span><span class="p">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;R1&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -270,7 +281,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBCross</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Cross&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBTriangle</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Triangle&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -278,7 +289,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBSquare</span><span class="p">:</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Square&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBCircle</span><span class="p">:</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Circle&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -286,23 +297,23 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;&lt;unknown&gt;&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBCross</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Cross&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l22" href="#l22">22</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">DBSquare</span><span class="p">:</span><span class="w">   </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;Square&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l23" href="#l23">23</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w">         </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;&lt;unknown&gt;&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -310,23 +321,23 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l25" href="#l25">25</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="nf">ps2plus_controller_joystick_axis_name</span><span class="p">(</span><span class="n">ps2plus_controller_joystick_axis</span><span class="w"> </span><span class="n">axis</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l26" href="#l26">26</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">axis</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -334,7 +345,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSRightX</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RX&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="nf">ps2plus_controller_joystick_axis_name</span><span class="p">(</span><span class="n">ps2plus_controller_joystick_axis</span><span class="w"> </span><span class="n">axis</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -342,7 +353,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSRightY</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RY&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">axis</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -350,7 +361,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSLeftX</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LX&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSRightX</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RX&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -358,7 +369,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSLeftY</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LY&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSRightY</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RY&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -366,23 +377,23 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;&lt;unknown&gt;&quot;</span><span class="p">;</span></td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSLeftX</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LX&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSLeftY</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LY&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l33" href="#l33">33</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w">       </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;&lt;unknown&gt;&quot;</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -390,139 +401,11 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l35" href="#l35">35</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="nf">ps2plus_controller_joystick_axis_range_name</span><span class="p">(</span><span class="n">ps2plus_controller_joystick_axis_range</span><span class="w"> </span><span class="n">axis_range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l36" href="#l36">36</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">axis_range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l37" href="#l37">37</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftXMin</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LX-Min&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l38" href="#l38">38</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftXCenter</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LX-Center&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l39" href="#l39">39</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftXMax</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LX-Max&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l40" href="#l40">40</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftYMin</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LY-Min&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l41" href="#l41">41</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftYCenter</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LY-Center&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l42" href="#l42">42</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftYMax</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LY-Max&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l43" href="#l43">43</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightXMin</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RX-Min&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l44" href="#l44">44</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightXCenter</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RX-Center&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l45" href="#l45">45</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightXMax</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RX-Max&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l46" href="#l46">46</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightYMin</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RY-Min&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l47" href="#l47">47</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightYCenter</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RY-Center&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l48" href="#l48">48</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightYMax</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RY-Max&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l49" href="#l49">49</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;&lt;unknown&gt;&quot;</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l50" href="#l50">50</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
       <td class="src "><span class="w">  </span><span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l51" href="#l51">51</a></td>
+      <td class="lineno"><a id="l35" href="#l35">35</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -530,7 +413,335 @@
     </tr>
 
     <tr class="source-line">
+      <td class="lineno"><a id="l36" href="#l36">36</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l37" href="#l37">37</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="nf">ps2plus_controller_joystick_axis_range_name</span><span class="p">(</span><span class="n">ps2plus_controller_joystick_axis_range</span><span class="w"> </span><span class="n">axis_range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l38" href="#l38">38</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">axis_range</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l39" href="#l39">39</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftXMin</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LXMin&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l40" href="#l40">40</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftXCenter</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LXCenter&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l41" href="#l41">41</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftXMax</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LXMax&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l42" href="#l42">42</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftYMin</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LYMin&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l43" href="#l43">43</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftYCenter</span><span class="p">:</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LYCenter&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l44" href="#l44">44</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_LeftYMax</span><span class="p">:</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;LYMax&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l45" href="#l45">45</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightXMin</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RXMin&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l46" href="#l46">46</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightXCenter</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RXCenter&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l47" href="#l47">47</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightXMax</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RXMax&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l48" href="#l48">48</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightYMin</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RYMin&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l49" href="#l49">49</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightYCenter</span><span class="p">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RYCenter&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l50" href="#l50">50</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="no">JSAxisRange_RightYMax</span><span class="p">:</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;RYMax&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l51" href="#l51">51</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="s">&quot;&lt;unknown&gt;&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
       <td class="lineno"><a id="l52" href="#l52">52</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l53" href="#l53">53</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l54" href="#l54">54</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l55" href="#l55">55</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cp">#ifndef _IOP</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l56" href="#l56">56</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="n">ps2plus_controller_digital_button</span><span class="w"> </span><span class="nf">ps2plus_controller_digital_button_from_name</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l57" href="#l57">57</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Select&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DBSelect</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l58" href="#l58">58</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;L3&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">DBL3</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l59" href="#l59">59</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;R3&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">DBR3</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l60" href="#l60">60</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Start&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">DBStart</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l61" href="#l61">61</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Up&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">DDUp</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l62" href="#l62">62</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Right&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">DDRight</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l63" href="#l63">63</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Down&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">DDDown</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l64" href="#l64">64</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Left&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">DDLeft</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l65" href="#l65">65</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;L2&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">DBL2</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l66" href="#l66">66</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;R2&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">DBR2</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l67" href="#l67">67</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;L1&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">DBL1</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l68" href="#l68">68</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;R1&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">DBR1</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l69" href="#l69">69</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Triangle&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">DBTriangle</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l70" href="#l70">70</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Circle&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DBCircle</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l71" href="#l71">71</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Cross&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">     </span><span class="k">return</span><span class="w"> </span><span class="n">DBCross</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l72" href="#l72">72</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">strcmp</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Square&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">DBSquare</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l73" href="#l73">73</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l74" href="#l74">74</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">ps2plus_controller_digital_button</span><span class="p">)</span><span class="mi">0</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l75" href="#l75">75</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l76" href="#l76">76</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cp">#endif</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l77" href="#l77">77</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
