@@ -2,6 +2,7 @@
 #include "app/views/configuration/export-dialog.h"
 #include "app/views/configuration/import-dialog.h"
 #include "app/views/configuration/options-dialog.h"
+#include "app/views/configuration/reset-defaults-dialog.h"
 #include "components/file-dialog.h"
 #include "components/footer-command-menu.h"
 #include "libps2plman.h"
@@ -48,7 +49,8 @@ const std::vector<std::pair<ps2plus_controller_digital_button, const char *>> kD
 // Reusable modal dialog components
 PS2Plus::App::Views::Configuration::OptionsDialog options_dialog(staging_config);
 PS2Plus::App::Views::Configuration::ExportDialog export_dialog(staging_config);
-PS2Plus::App::Views::Configuration::ImportDialog import_dialog(&staging_config);
+PS2Plus::App::Views::Configuration::ImportDialog import_dialog(staging_config);
+PS2Plus::App::Views::Configuration::ResetDefaultsDialog reset_defaults_dialog(staging_config);
 
 /**
  * Render a single combo box that can control the button remapping for a single digital button
@@ -567,9 +569,6 @@ void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
     if (PS2Plus::Components::FooterCommand("Save", ICON_PLAYSTATION_START_BUTTON, ICON_PLAYSTATION_COLOR_GREEN, ImGuiKey_GamepadStart)) {
     }
 
-    if (PS2Plus::Components::FooterCommand("Reset", ICON_PLAYSTATION_SELECT_BUTTON, ICON_PLAYSTATION_COLOR_RED, ImGuiKey_GamepadBack)) {
-    }
-
     if (PS2Plus::Components::FooterCommand("Options", ICON_PLAYSTATION_SQUARE_BUTTON, ICON_PLAYSTATION_COLOR_SQUARE,
                                            ImGuiKey_GamepadFaceLeft)) {
       if (!options_dialog.IsOpen()) {
@@ -581,6 +580,10 @@ void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
 
   if (auto options_result = options_dialog.Render()) {
     switch (options_result.value()) {
+      case PS2Plus::App::Views::Configuration::kOptionsResultResetDefaults:
+        reset_defaults_dialog.Open();
+        break;
+
       case PS2Plus::App::Views::Configuration::kOptionsResultImport:
         import_dialog.Open();
         break;
@@ -593,6 +596,7 @@ void FooterMenu(ImVec2 child_window_pos, ImVec2 child_window_size) {
 
   import_dialog.Render();
   export_dialog.Render();
+  reset_defaults_dialog.Render();
 
   // PersistConfiguration();
 }

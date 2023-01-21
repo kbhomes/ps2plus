@@ -24,10 +24,10 @@ ImVec2 ImportDialog::GetPopupSize() {
 
 ImGuiWindowFlags ImportDialog::GetPopupFlags() { return ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse; }
 
-bool ReadConfiguration(std::string path, PS2Plus::App::Configuration *target_config) {
+bool ReadConfiguration(std::string path, PS2Plus::App::Configuration& target_config) {
   printf("Reading configuration: %s\n", path.c_str());
   std::ifstream import_stream(path, std::ios::in);
-  *target_config = PS2Plus::App::Configuration::Import(import_stream);
+  target_config = PS2Plus::App::Configuration::Import(import_stream);
   return true;
 }
 
@@ -68,7 +68,7 @@ void ImportDialog::RenderState_FailedRead() {
   }
 }
 
-std::optional<bool> ImportDialog::RenderContents() {
+void ImportDialog::RenderContents() {
   if (state_ == kImportDialogSelectingPath) {
     RenderState_SelectingPath();
   } else if (state_ == kImportDialogSuccessfulRead) {
@@ -81,7 +81,5 @@ std::optional<bool> ImportDialog::RenderContents() {
     selected_path_[0] = 0;
     ImGui::CloseCurrentPopup();
   }
-
-  return true;
 }
 } // namespace PS2Plus::App::Views::Configuration

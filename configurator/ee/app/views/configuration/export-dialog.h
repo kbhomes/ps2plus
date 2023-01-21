@@ -9,7 +9,7 @@
 namespace PS2Plus::App::Views::Configuration {
 enum ExportDialogState { kExportDialogSelectingPath, kExportDialogSuccessfulWrite, kExportDialogFailedWrite, kExportDialogFinished };
 
-class ExportDialog : public PS2Plus::Components::ModalDialog<bool> {
+class ExportDialog : public PS2Plus::Components::ModalDialog<void> {
 public:
   ExportDialog(PS2Plus::App::Configuration& config)
       : ModalDialog("Export Configuration"), state_(kExportDialogSelectingPath), config_(config), selected_path_{} {}
@@ -17,7 +17,7 @@ public:
 protected:
   virtual ImVec2 GetPopupSize();
   virtual ImGuiWindowFlags GetPopupFlags();
-  virtual std::optional<bool> RenderContents();
+  virtual void RenderContents();
 
 private:
   void RenderState_SelectingPath();

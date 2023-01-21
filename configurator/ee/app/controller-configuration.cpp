@@ -41,6 +41,27 @@ bool Configuration::operator==(Configuration& other) { return version_ == other.
 
 bool Configuration::operator!=(Configuration& other) { return !operator==(other); }
 
+void Configuration::Reset() {
+  // Setup controller configurations
+  primitive_data_initialize_boolean(&config_.enable_button_remapping, false);
+  for (size_t i = 0; i < NUM_DIGITAL_BUTTONS; i++) {
+    primitive_data_initialize_uint8(&config_.button_remapping[i], i);
+  }
+
+  primitive_data_initialize_boolean(&config_.enable_joystick_axis_range_remapping, false);
+  for (size_t i = 0; i < NUM_JOYSTICK_AXIS_RANGES; i++) {
+    uint8_t remapping_value = (i % 3 == 0) ? 0 : (i % 3 == 1) ? 127 : 255;
+    primitive_data_initialize_uint8(&config_.joystick_axis_range_remapping[i], remapping_value);
+  }
+
+  primitive_data_initialize_uint8(&config_.joystick_deadzone_left, 0);
+  primitive_data_initialize_uint8(&config_.joystick_deadzone_right, 0);
+  primitive_data_initialize_boolean(&config_.joystick_digital_enable_left, false);
+  primitive_data_initialize_boolean(&config_.joystick_digital_enable_right, false);
+  primitive_data_initialize_uint8(&config_.joystick_digital_threshold_left, 0x40);
+  primitive_data_initialize_uint8(&config_.joystick_digital_threshold_right, 0x40);
+}
+
 void Configuration::Export(std::ostream& out) {
   auto table = toml::table{{"__version__", version_}};
   auto table_button_remapping = toml::table{};

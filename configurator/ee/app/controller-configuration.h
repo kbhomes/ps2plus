@@ -32,6 +32,9 @@ public:
   bool operator==(Configuration& other);
   bool operator!=(Configuration& other);
 
+  // Reset configuration values to their defaults
+  void Reset();
+
   // Write this configuration in TOML format to the given output stream
   void Export(std::ostream& out);
 

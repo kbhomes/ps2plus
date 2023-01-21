@@ -76,7 +76,7 @@ void ExportDialog::RenderState_FailedWrite() {
   }
 }
 
-std::optional<bool> ExportDialog::RenderContents() {
+void ExportDialog::RenderContents() {
   if (state_ == kExportDialogSelectingPath) {
     RenderState_SelectingPath();
   } else if (state_ == kExportDialogSuccessfulWrite) {
@@ -89,7 +89,5 @@ std::optional<bool> ExportDialog::RenderContents() {
     selected_path_.clear();
     ImGui::CloseCurrentPopup();
   }
-
-  return true;
 }
 } // namespace PS2Plus::App::Views::Configuration

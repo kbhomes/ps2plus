@@ -4,12 +4,19 @@ namespace PS2Plus::App::Views::Configuration {
 std::optional<OptionsDialogResult> OptionsDialog::RenderContents() {
   std::optional<OptionsDialogResult> result;
 
+  ImGui::SetItemDefaultFocus();
   if (ImGui::Selectable("Save")) {
     result = kOptionsResultSave;
   }
 
-  if (ImGui::Selectable("Reset")) {
-    result = kOptionsResultReset;
+  if (ImGui::Selectable("Reload")) {
+    result = kOptionsResultReload;
+  }
+
+  ImGui::Separator();
+
+  if (ImGui::Selectable("Reset to Defaults")) {
+    result = kOptionsResultResetDefaults;
   }
 
   ImGui::Separator();
@@ -29,7 +36,7 @@ std::optional<OptionsDialogResult> OptionsDialog::RenderContents() {
   return result;
 }
 
-ImVec2 OptionsDialog::GetPopupSize() { return ImVec2(150.f, 0); }
+ImVec2 OptionsDialog::GetPopupSize() { return ImVec2(200.f, 0); }
 
 ImGuiWindowFlags OptionsDialog::GetPopupFlags() {
   return ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;

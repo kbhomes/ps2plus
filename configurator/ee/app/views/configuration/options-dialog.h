@@ -9,7 +9,8 @@
 namespace PS2Plus::App::Views::Configuration {
 enum OptionsDialogResult {
   kOptionsResultSave,
-  kOptionsResultReset,
+  kOptionsResultReload,
+  kOptionsResultResetDefaults,
   kOptionsResultImport,
   kOptionsResultExport,
 };
