@@ -10,7 +10,7 @@ namespace PS2Plus::App::Views {
 void InformationSection();
 void ConfigurationSection();
 void FirmwareSection();
-void TestSection();
+void TesterSection();
 void AboutSection();
 
 void NoPS2PlusConnectedMessage() {
@@ -61,8 +61,8 @@ void MainView() {
     PS2Plus::Components::TabMenu("Sections", [&] {
       PS2Plus::Components::TabMenuItem("Information", InformationSection);
       PS2Plus::Components::TabMenuItem("Configuration", ConfigurationSection);
+      PS2Plus::Components::TabMenuItem("Tester", TesterSection);
       PS2Plus::Components::TabMenuItem("Firmware", FirmwareSection);
-      PS2Plus::Components::TabMenuItem("Test", TestSection);
       PS2Plus::Components::TabMenuItem("About", AboutSection);
     });
     ImGui::PopStyleVar(/* ImGuiStyleVar_FramePadding */);

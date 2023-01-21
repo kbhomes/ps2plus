@@ -8,7 +8,7 @@
 namespace PS2Plus::App::Views {
 bool IsTesting = false;
 
-void TestSection() {
+void TesterSection() {
   PS2Plus::App::State& state = PS2Plus::App::GetState();
 
   // Flags for actuator controls
